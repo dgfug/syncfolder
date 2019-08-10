@@ -120,7 +120,7 @@ void MainWindow::saveFile()
         QFile file(currentFilePath);
         file.open(QFile::WriteOnly | QFile::Text);
         QTextStream fileToWrite(&file);
-        fileToWrite<<ui->markdownEditor->toPlainText();
+        fileToWrite << ui->markdownEditor->toPlainText();
         file.flush();
         file.close();
     }
@@ -159,14 +159,14 @@ void MainWindow::setupFileMenu()
 
 void MainWindow::launchSearchWindow() {
     if (searchWindow == nullptr) {
-        searchWindow = new SearchWindow();
+        searchWindow = new SearchWindow(this);
     }
     searchWindow->show();
 }
 
 void MainWindow::launchFindFileWindow() {
     if (findFileWindow == nullptr) {
-        findFileWindow = new FindFileWindow(this->fileNamesDictionary);
+        findFileWindow = new FindFileWindow(this, this->fileNamesDictionary);
     }
     findFileWindow->show();
 }

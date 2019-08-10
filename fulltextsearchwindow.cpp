@@ -50,7 +50,7 @@
 
 #include <QtWidgets>
 
-#include "searchwindow.h"
+#include "fulltextsearchwidow.h"
 
 #include "settings/settings_def.h"
 
@@ -73,8 +73,8 @@ static inline void openFile(const QString &fileName)
 //! [14]
 
 //! [0]
-SearchWindow::SearchWindow(QWidget *parent)
-    : QWidget(parent)
+SearchWindow::SearchWindow(DMEditorDelegate *delegate, QWidget *parent)
+    : QWidget(parent), editorDelegate(delegate)
 {
     setWindowTitle(tr("Find Files"));
     QPushButton *browseButton = new QPushButton(tr("&Browse..."), this);

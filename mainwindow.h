@@ -3,14 +3,14 @@
 
 #include <QItemSelection>
 #include <QMainWindow>
-#include "searchwindow.h"
+#include "fulltextsearchwidow.h"
 #include "findfilewindow.h"
 
 namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public DMEditorDelegate
 {
     Q_OBJECT
 
@@ -20,8 +20,7 @@ public:
 
     void setCurrentRootDirPath(const QString &value);
 
-protected:
-    void openFile_l(const QString &);
+    void openFile_l(const QString &) override;
 
 public slots:
     void newFile();

@@ -29,6 +29,12 @@ int main(int argc, char *argv[])
         w.setCurrentRootDirPath(rootPath);
     }
 
+    QString lastEditedFile = DMSettings::getString(KEY_LAST_FILE);
+    if (!lastEditedFile.isEmpty()) {
+        w.openFile_l(lastEditedFile);
+    }
+
+
     w.show();
 
     return a.exec();

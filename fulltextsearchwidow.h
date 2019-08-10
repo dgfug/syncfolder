@@ -54,6 +54,8 @@
 #include <QWidget>
 #include <QDir>
 
+#include "editerdelegate.h"
+
 QT_BEGIN_NAMESPACE
 class QComboBox;
 class QLabel;
@@ -68,7 +70,7 @@ class SearchWindow : public QWidget
     Q_OBJECT
 
 public:
-    SearchWindow(QWidget *parent = 0);
+    SearchWindow(DMEditorDelegate *delegate, QWidget *parent = 0);
 
 private slots:
     void browse();
@@ -91,5 +93,6 @@ private:
     QTableWidget *filesTable;
 
     QDir currentDir;
+    DMEditorDelegate *editorDelegate;
 };
 #endif
