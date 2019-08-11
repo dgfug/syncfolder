@@ -132,6 +132,19 @@ void MainWindow::saveFile()
     }
 }
 
+void MainWindow::syncFiles() {
+    unisonProcess = new QProcess(this);
+    /*
+        The synchronisation is divided into two steps: one starts the synchronisation, another handles all the necessary things
+        after synchronisation is done. Two steps are asynchronous. This allows client to send keepAlive messages during the sync
+        procedure.
+     */
+    connect(unisonProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(handleSyncFinished(int, QProcess::ExitStatus)));
+    QString command(QString("/Users/faywong/bin/unison %1 %2").arg("default", "-batch"));
+    qDebug() << "About to invoke" << command;
+    unisonProcess->start(command);
+}
+
 void MainWindow::setupFileMenu()
 {
     QMenu *fileMenu = new QMenu(tr("&File"), this);
@@ -149,6 +162,9 @@ void MainWindow::setupFileMenu()
     fileMenu->addAction(tr("&Save..."), this, SLOT(saveFile()),
                         QKeySequence::Save);
 
+    fileMenu->addAction(tr("&Sync"), this, SLOT(syncFiles()),
+                        QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_S));
+
     fileMenu->addAction(tr("&Exit"), qApp, SLOT(quit()),
                         QKeySequence::Quit);
 
@@ -156,6 +172,8 @@ void MainWindow::setupFileMenu()
     launchSearchAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_F);
     connect(launchSearchAction, SIGNAL(triggered()), this, SLOT(launchSearchWindow()));
     this->addAction(launchSearchAction);
+
+
 
     QAction *launchFindFileAction = new QAction(this);
     launchFindFileAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_O);
@@ -175,6 +193,11 @@ void MainWindow::launchFindFileWindow() {
         findFileWindow = new FindFileWindow(this, this->fileNamesDictionary);
     }
     findFileWindow->show();
+}
+
+void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    qDebug()<<"exitCode: " << exitCode << ", exitStatus: " << exitStatus;
 }
 
 MainWindow::~MainWindow()

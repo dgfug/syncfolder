@@ -3,6 +3,7 @@
 
 #include <QItemSelection>
 #include <QMainWindow>
+#include <QProcess>
 #include "fulltextsearchwidow.h"
 #include "findfilewindow.h"
 
@@ -23,6 +24,7 @@ public:
     void openFile_l(const QString &, size_t lineNo) override;
 
 public slots:
+    void syncFiles();
     void newFile();
     void openFile();
     void openDirectory();
@@ -30,6 +32,8 @@ public slots:
     void fileSelectionChanged(const QItemSelection&,const QItemSelection&);
     void launchSearchWindow();
     void launchFindFileWindow();
+    void handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatus);
+
 
 private:
     Ui::MainWindow *ui;
@@ -39,6 +43,7 @@ private:
     std::vector<std::string> fileNamesDictionary;
     FullTextSearchWindow *searchWindow;
     FindFileWindow *findFileWindow;
+    QProcess *unisonProcess;
 };
 
 #endif // MAINWINDOW_H
