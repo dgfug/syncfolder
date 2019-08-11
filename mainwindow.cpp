@@ -29,18 +29,24 @@ void MainWindow::fileSelectionChanged(const QItemSelection& selected,const QItem
         auto modelIndex = selectedList[0];
         if (!ui->fileTreeModel->isDir(modelIndex)) {
             QString path = ui->fileTreeModel->filePath(selectedList[0]);
-            openFile_l(path);
+            openFile_l(path, 1);
         }
     }
 }
 
-void MainWindow::openFile_l(const QString &filePath) {
+void MainWindow::openFile_l(const QString &filePath, size_t lineNo) {
     currentFilePath = filePath;
     if (!filePath.isEmpty()) {
         QFile file(filePath);
+        QFileInfo fileInfo(filePath);
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream fileToRead(&file);
         ui->markdownEditor->setText(fileToRead.readAll());
+        QTextCursor cursor(ui->markdownEditor->document()->findBlockByLineNumber(lineNo-1));
+        ui->markdownEditor->moveCursor(QTextCursor::End);
+        ui->markdownEditor->setTextCursor(cursor);
+        setWindowTitle(QCoreApplication::translate("MainWindow", fileInfo.fileName().toStdString().c_str(), nullptr));
+
         DMSettings::setString(KEY_LAST_FILE, filePath);
     }
 }
@@ -77,7 +83,7 @@ void MainWindow::openFile()
         if (checkFile.isDir()) {
             setCurrentRootDirPath(filePath);
         } else if (checkFile.isFile()) {
-            openFile_l(filePath);
+            openFile_l(filePath, 1);
         } else {
             QMessageBox msgBox;
             msgBox.setText("Error");
@@ -138,12 +144,12 @@ void MainWindow::setupFileMenu()
                         QKeySequence::Open);
 
     fileMenu->addAction(tr("&Open dir..."), this, SLOT(openDirectory()),
-                        QKeySequence(Qt::META + Qt::Key_N));
+                        QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_N));
 
     fileMenu->addAction(tr("&Save..."), this, SLOT(saveFile()),
                         QKeySequence::Save);
 
-    fileMenu->addAction(tr("E&xit"), qApp, SLOT(quit()),
+    fileMenu->addAction(tr("&Exit"), qApp, SLOT(quit()),
                         QKeySequence::Quit);
 
     QAction *launchSearchAction = new QAction(this);
@@ -159,7 +165,7 @@ void MainWindow::setupFileMenu()
 
 void MainWindow::launchSearchWindow() {
     if (searchWindow == nullptr) {
-        searchWindow = new SearchWindow(this);
+        searchWindow = new FullTextSearchWindow(this);
     }
     searchWindow->show();
 }

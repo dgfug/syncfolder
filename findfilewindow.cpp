@@ -42,7 +42,7 @@ FindFileWindow::FindFileWindow(DMEditorDelegate *delegate, std::vector<std::stri
 
     connect(fileNameCompleter, QOverload<const QString &>::of(&QCompleter::activated),
         [=](const QString &text) {
-        editorDelegate->openFile_l(text);
+        editorDelegate->openFile_l(text, 1);
         this->hide();
         fileNameLineEdit->clear();
     });

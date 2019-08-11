@@ -51,25 +51,25 @@ public:
 
         QScreen *screen = QGuiApplication::primaryScreen();
         QRect screenGeometry = screen->geometry();
-        int width = screenGeometry.width();
-        int height = screenGeometry.height();
+        int windowWidth = screenGeometry.width();
+        int windowHeight = screenGeometry.height();
 
         if (lastWidth > 0 && lastHeight > 0) {
-            width = lastWidth;
-            height = lastHeight;
+            windowWidth = lastWidth;
+            windowHeight = lastHeight;
         } else {
-            float factor = width >= 1920 ? 0.618f : 0.8f;
-            if (width <= 800) {
+            float factor = windowWidth >= 1920 ? 0.618f : 0.8f;
+            if (windowWidth <= 800) {
                 factor = 1.0f;
             }
-            width *= factor;
-            height *= factor;
-            DMSettings::setInt(KEY_LAST_WIN_WIDTH, width);
-            DMSettings::setInt(KEY_LAST_WIN_HEIGHT, height);
+            windowWidth *= factor;
+            windowHeight *= factor;
+            DMSettings::setInt(KEY_LAST_WIN_WIDTH, windowWidth);
+            DMSettings::setInt(KEY_LAST_WIN_HEIGHT, windowHeight);
         }
 
         // TODO: handle window size changed
-        mainWindow->resize(width, height);
+        mainWindow->resize(windowWidth, windowHeight);
 
         bodyLayout = new QHBoxLayout;
         splitter = new QSplitter;
@@ -109,7 +109,7 @@ public:
 
         menuBar = new QMenuBar(mainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 800, 22));
+        menuBar->setGeometry(QRect(0, 0, windowWidth, 22));
         mainWindow->setMenuBar(menuBar);
         statusBar = new QStatusBar(mainWindow);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
@@ -122,7 +122,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "DMEditor", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "SyncFolder", nullptr));
     } // retranslateUi
 
 };

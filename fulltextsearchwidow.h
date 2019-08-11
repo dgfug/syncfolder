@@ -64,13 +64,18 @@ class QTableWidget;
 class QTableWidgetItem;
 QT_END_NAMESPACE
 
+typedef struct {
+    QString file;
+    size_t lineNo;
+    QString context;
+} SearchResultItem;
 //! [0]
-class SearchWindow : public QWidget
+class FullTextSearchWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    SearchWindow(DMEditorDelegate *delegate, QWidget *parent = 0);
+    FullTextSearchWindow(DMEditorDelegate *delegate, QWidget *parent = 0);
 
 private slots:
     void browse();
@@ -80,12 +85,11 @@ private slots:
     void contextMenu(const QPoint &pos);
 
 private:
-    QStringList findFiles(const QStringList &files, const QString &text);
-    void showFiles(const QStringList &paths);
+    QList<SearchResultItem> findFiles(const QStringList &files, const QString &text);
+    void showFiles(const QList<SearchResultItem> &paths);
     QComboBox *createComboBox(const QString &text = QString());
     void createFilesTable();
 
-    QComboBox *fileComboBox;
     QComboBox *textComboBox;
     QComboBox *directoryComboBox;
     QLabel *filesFoundLabel;

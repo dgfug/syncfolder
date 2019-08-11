@@ -9,10 +9,10 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     QCoreApplication::setApplicationVersion(QT_VERSION_STR);
     QCoreApplication::setOrganizationName("faywong personal");
-    QCoreApplication::setOrganizationDomain("dmeditor.com");
-    QCoreApplication::setApplicationName("DMEditor");
+    QCoreApplication::setOrganizationDomain("syncfolder.com");
+    QCoreApplication::setApplicationName("SyncFolder");
     QCommandLineParser parser;
-    parser.setApplicationDescription("DMEditor");
+    parser.setApplicationDescription("SyncFolder");
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addPositionalArgument("directory", "The directory to start in.");
@@ -31,9 +31,8 @@ int main(int argc, char *argv[])
 
     QString lastEditedFile = DMSettings::getString(KEY_LAST_FILE);
     if (!lastEditedFile.isEmpty()) {
-        w.openFile_l(lastEditedFile);
+        w.openFile_l(lastEditedFile, 1);
     }
-
 
     w.show();
 

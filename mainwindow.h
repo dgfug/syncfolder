@@ -16,11 +16,11 @@ class MainWindow : public QMainWindow, public DMEditorDelegate
 
 public:
     explicit MainWindow(QWidget *parent = nullptr, QString* dirPath = nullptr);
-    ~MainWindow();
+    ~MainWindow() override;
 
     void setCurrentRootDirPath(const QString &value);
 
-    void openFile_l(const QString &) override;
+    void openFile_l(const QString &, size_t lineNo) override;
 
 public slots:
     void newFile();
@@ -37,7 +37,7 @@ private:
     QString currentFilePath;
     QString currentRootDirPath;
     std::vector<std::string> fileNamesDictionary;
-    SearchWindow *searchWindow;
+    FullTextSearchWindow *searchWindow;
     FindFileWindow *findFileWindow;
 };
 
