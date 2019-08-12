@@ -48,29 +48,12 @@ void HGMarkdownHighlighter::setStyles(QVector<HighlightingStyle> &styles)
     this->highlightingStyles = &styles;
 }
 
-
 #define STY(type, format) styles->append((HighlightingStyle){type, format})
 void HGMarkdownHighlighter::setDefaultStyles()
 {
     QVector<HighlightingStyle> *styles = new QVector<HighlightingStyle>();
 
-//    const char *base16_gui00 = "f4fbf4";
-//    const char *base16_gui01 = "cfe8cf";
-//    const char *base16_gui02 = "8ca68c";
-//    const char *base16_gui03 = "809980";
-//    const char *base16_gui04 = "687d68";
-//    const char *base16_gui05 = "5e6e5e";
-//    const char *base16_gui06 = "242924";
-//    const char *base16_gui07 = "131513";
-//    const char *base16_gui08 = "e6193c";
-//    const char *base16_gui09 = "87711d";
-//    const char *base16_gui0A = "98981b";
-//    const char *base16_gui0B = "29a329";
-//    const char *base16_gui0C = "1999b3";
-//    const char *base16_gui0D = "3d62f5";
-//    const char *base16_gui0E = "ad2bee";
-//    const char *base16_gui0F = "e619c3";
-
+    // base16-atelierseaside.light theme
     int defaultFontSize = 14;
     QTextCharFormat headers;
     headers.setForeground(QBrush(QColor("#3D62F5")));
@@ -101,10 +84,12 @@ void HGMarkdownHighlighter::setDefaultStyles()
     STY(pmh_AUTO_LINK_URL, link);
     STY(pmh_AUTO_LINK_EMAIL, link);
 
-    QTextCharFormat image; image.setForeground(QBrush(QColor("#E6193C")));
+    QTextCharFormat image;
+    image.setForeground(QBrush(QColor("#E6193C")));
     STY(pmh_IMAGE, image);
 
-    QTextCharFormat ref; ref.setForeground(QBrush(QColor("#87711D")));
+    QTextCharFormat ref;
+    ref.setForeground(QBrush(QColor("#87711D")));
     STY(pmh_REFERENCE, ref);
 
     QTextCharFormat code;
@@ -113,14 +98,16 @@ void HGMarkdownHighlighter::setDefaultStyles()
     STY(pmh_CODE, code);
     STY(pmh_VERBATIM, code);
 
-    QTextCharFormat emph; emph.setForeground(QBrush(QColor("#1999B3")));
+    /* Emphasis, aka italics, with *asterisks* or _underscores_. */
+    QTextCharFormat emph;
+    emph.setForeground(QBrush(QColor("#AD2BEE")));
     emph.setFontItalic(true);
-    emph.setBackground(QBrush(QColor("#80998054")));
     STY(pmh_EMPH, emph);
 
-    QTextCharFormat strong; strong.setForeground(QBrush(QColor("#1999B3")));
-    strong.setFontWeight(QFont::Bold);
-    strong.setBackground(QBrush(QColor("#80998054")));
+    /* Strong emphasis, aka bold, with **asterisks** or __underscores__. */
+    QTextCharFormat strong;
+    strong.setForeground(QBrush(QColor("#98981B")));
+    strong.setFontWeight(QFont::DemiBold);
     STY(pmh_STRONG, strong);
 
     QTextCharFormat comment; comment.setForeground(QBrush(QColor("#809980")));
@@ -130,6 +117,21 @@ void HGMarkdownHighlighter::setDefaultStyles()
     blockquote.setBackground(QBrush(QColor("#F0F0F0")));
     STY(pmh_BLOCKQUOTE, blockquote);
 
+    QTextCharFormat note;
+    note.setForeground(QBrush(QColor("#AD2BEE")));
+    note.setBackground(QBrush(QColor("#F0F0F0")));
+
+    STY(pmh_NOTE, note);
+
+    QTextCharFormat strike;
+    strike.setForeground(QBrush(QColor("#D55B7B")));
+    STY(pmh_STRIKE, strike);
+
+    QTextCharFormat htmlBlock;
+    htmlBlock.setForeground(QBrush(QColor("#E6193C")));
+    htmlBlock.setBackground(QBrush(QColor("#CFE8CF")));
+
+    STY(pmh_HTMLBLOCK, htmlBlock);
     this->setStyles(*styles);
 }
 
