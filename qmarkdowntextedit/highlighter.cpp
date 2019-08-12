@@ -21,7 +21,8 @@ void WorkerThread::run()
 {
     if (content == nullptr)
         return;
-    pmh_markdown_to_elements(content, pmh_EXT_NONE, &result);
+
+    pmh_markdown_to_elements(content, pmh_EXT_NOTES | pmh_EXT_STRIKE, &result);
 }
 
 HGMarkdownHighlighter::HGMarkdownHighlighter(QTextDocument *parent,
@@ -53,26 +54,26 @@ void HGMarkdownHighlighter::setDefaultStyles()
 {
     QVector<HighlightingStyle> *styles = new QVector<HighlightingStyle>();
 
-    const char *base16_gui00 = "f4fbf4";
-    const char *base16_gui01 = "cfe8cf";
-    const char *base16_gui02 = "8ca68c";
-    const char *base16_gui03 = "809980";
-    const char *base16_gui04 = "687d68";
-    const char *base16_gui05 = "5e6e5e";
-    const char *base16_gui06 = "242924";
-    const char *base16_gui07 = "131513";
-    const char *base16_gui08 = "e6193c";
-    const char *base16_gui09 = "87711d";
-    const char *base16_gui0A = "98981b";
-    const char *base16_gui0B = "29a329";
-    const char *base16_gui0C = "1999b3";
-    const char *base16_gui0D = "3d62f5";
-    const char *base16_gui0E = "ad2bee";
-    const char *base16_gui0F = "e619c3";
+//    const char *base16_gui00 = "f4fbf4";
+//    const char *base16_gui01 = "cfe8cf";
+//    const char *base16_gui02 = "8ca68c";
+//    const char *base16_gui03 = "809980";
+//    const char *base16_gui04 = "687d68";
+//    const char *base16_gui05 = "5e6e5e";
+//    const char *base16_gui06 = "242924";
+//    const char *base16_gui07 = "131513";
+//    const char *base16_gui08 = "e6193c";
+//    const char *base16_gui09 = "87711d";
+//    const char *base16_gui0A = "98981b";
+//    const char *base16_gui0B = "29a329";
+//    const char *base16_gui0C = "1999b3";
+//    const char *base16_gui0D = "3d62f5";
+//    const char *base16_gui0E = "ad2bee";
+//    const char *base16_gui0F = "e619c3";
 
     int defaultFontSize = 14;
     QTextCharFormat headers;
-    headers.setForeground(QBrush(QColor("#414143")));
+    headers.setForeground(QBrush(QColor("#3D62F5")));
     headers.setFontPointSize(defaultFontSize * 2.0);
     STY(pmh_H1, headers);
     headers.setFontPointSize(defaultFontSize * 1.5);
@@ -86,10 +87,10 @@ void HGMarkdownHighlighter::setDefaultStyles()
     headers.setFontPointSize(defaultFontSize * 0.67);
     STY(pmh_H6, headers);
 
-    QTextCharFormat hrule; hrule.setForeground(QBrush(QColor("#1999B3")));
+    QTextCharFormat hrule; hrule.setForeground(QBrush(QColor("#5E6E5E")));
     STY(pmh_HRULE, hrule);
 
-    QTextCharFormat list; list.setForeground(QBrush(Qt::magenta));
+    QTextCharFormat list; list.setForeground(QBrush(QColor("#E6193C")));
     STY(pmh_LIST_BULLET, list);
     STY(pmh_LIST_ENUMERATOR, list);
 
@@ -103,7 +104,7 @@ void HGMarkdownHighlighter::setDefaultStyles()
     QTextCharFormat image; image.setForeground(QBrush(QColor("#E6193C")));
     STY(pmh_IMAGE, image);
 
-    QTextCharFormat ref; ref.setForeground(QBrush(QColor(213,178,178)));
+    QTextCharFormat ref; ref.setForeground(QBrush(QColor("#87711D")));
     STY(pmh_REFERENCE, ref);
 
     QTextCharFormat code;
@@ -112,12 +113,14 @@ void HGMarkdownHighlighter::setDefaultStyles()
     STY(pmh_CODE, code);
     STY(pmh_VERBATIM, code);
 
-    QTextCharFormat emph; emph.setForeground(QBrush(QColor("#6A9FB5")));
+    QTextCharFormat emph; emph.setForeground(QBrush(QColor("#1999B3")));
     emph.setFontItalic(true);
+    emph.setBackground(QBrush(QColor("#80998054")));
     STY(pmh_EMPH, emph);
 
-    QTextCharFormat strong; strong.setForeground(QBrush(QColor("#6A9FB5")));
+    QTextCharFormat strong; strong.setForeground(QBrush(QColor("#1999B3")));
     strong.setFontWeight(QFont::Bold);
+    strong.setBackground(QBrush(QColor("#80998054")));
     STY(pmh_STRONG, strong);
 
     QTextCharFormat comment; comment.setForeground(QBrush(QColor("#809980")));
