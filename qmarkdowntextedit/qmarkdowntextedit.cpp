@@ -31,12 +31,11 @@
 #include <QClipboard>
 #include <utility>
 
-
 QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent, bool initHighlighter)
         : QPlainTextEdit(parent) {
     installEventFilter(this);
     viewport()->installEventFilter(this);
-    _autoTextOptions = AutoTextOption::None;
+    _autoTextOptions = AutoTextOption::BracketClosing;
     _openingCharacters = QStringList() << "(" << "[" << "{" << "<" << "*"
                                        << "\"" << "'" << "_" << "~";
     _closingCharacters = QStringList() << ")" << "]" << "}" << ">" << "*"
@@ -49,16 +48,17 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent, bool initHighlighter)
     }
 //    setHighlightingEnabled(true);
 
-    QFont font = this->font();
+    QFont font = QFont();
+    font.setPointSize(14);
+    font.setFamily("Source Code Variable");
+    this->setFont(font);
+
+    this->setStyleSheet("QWidget {background-color:#F0FFF0; color:#5E6E5E; selection-background-color: #8CA68C; }");
 
     // set the tab stop to the width of 4 spaces in the editor
     const int tabStop = 4;
     QFontMetrics metrics(font);
     setTabStopWidth(tabStop * metrics.width(' '));
-
-    // add shortcuts for duplicating text
-//    new QShortcut( QKeySequence( "Ctrl+D" ), this, SLOT( duplicateText() ) );
-//    new QShortcut( QKeySequence( "Ctrl+Alt+Down" ), this, SLOT( duplicateText() ) );
 
     // add a layout to the widget
     auto *layout = new QVBoxLayout(this);
@@ -245,9 +245,8 @@ bool QMarkdownTextEdit::eventFilter(QObject *obj, QEvent *event) {
                     setTextCursor(cursor);
                 }
             }
-        } else if ((keyEvent->key() == Qt::Key_Down) &&
-                 keyEvent->modifiers().testFlag(Qt::ControlModifier) &&
-                 keyEvent->modifiers().testFlag(Qt::AltModifier)) {
+        } else if ((keyEvent->key() == Qt::Key_D) &&
+                 keyEvent->modifiers().testFlag(Qt::ControlModifier)) {
             // duplicate text with `Ctrl + Alt + Down`
             duplicateText();
             return true;

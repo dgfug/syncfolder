@@ -10,6 +10,7 @@
 #include <QStandardPaths>
 #include <iostream>
 #include <string>
+#include <QTextBlock>
 
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     QMainWindow(parent),
@@ -37,8 +38,12 @@ void MainWindow::fileSelectionChanged(const QItemSelection& selected,const QItem
 void MainWindow::openFile_l(const QString &filePath, size_t lineNo) {
     currentFilePath = filePath;
     if (!filePath.isEmpty()) {
-        QFile file(filePath);
         QFileInfo fileInfo(filePath);
+        if (!fileInfo.exists()) {
+            return;
+        }
+        QFile file(filePath);
+
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream fileToRead(&file);
         ui->markdownEditor->setText(fileToRead.readAll());
@@ -46,7 +51,6 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo) {
         ui->markdownEditor->moveCursor(QTextCursor::End);
         ui->markdownEditor->setTextCursor(cursor);
         setWindowTitle(QCoreApplication::translate("MainWindow", fileInfo.fileName().toStdString().c_str(), nullptr));
-
         DMSettings::setString(KEY_LAST_FILE, filePath);
     }
 }

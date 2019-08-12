@@ -16,7 +16,6 @@
 
 #include <QPlainTextEdit>
 #include <QEvent>
-#include "markdownhighlighter.h"
 #include "qplaintexteditsearchwidget.h"
 #include "highlighter.h"
 

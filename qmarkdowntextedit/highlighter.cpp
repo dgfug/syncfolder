@@ -53,53 +53,78 @@ void HGMarkdownHighlighter::setDefaultStyles()
 {
     QVector<HighlightingStyle> *styles = new QVector<HighlightingStyle>();
 
-    QTextCharFormat headers; headers.setForeground(QBrush(Qt::darkBlue));
-    headers.setBackground(QBrush(QColor(230,230,240)));
+    const char *base16_gui00 = "f4fbf4";
+    const char *base16_gui01 = "cfe8cf";
+    const char *base16_gui02 = "8ca68c";
+    const char *base16_gui03 = "809980";
+    const char *base16_gui04 = "687d68";
+    const char *base16_gui05 = "5e6e5e";
+    const char *base16_gui06 = "242924";
+    const char *base16_gui07 = "131513";
+    const char *base16_gui08 = "e6193c";
+    const char *base16_gui09 = "87711d";
+    const char *base16_gui0A = "98981b";
+    const char *base16_gui0B = "29a329";
+    const char *base16_gui0C = "1999b3";
+    const char *base16_gui0D = "3d62f5";
+    const char *base16_gui0E = "ad2bee";
+    const char *base16_gui0F = "e619c3";
+
+    int defaultFontSize = 14;
+    QTextCharFormat headers;
+    headers.setForeground(QBrush(QColor("#414143")));
+    headers.setFontPointSize(defaultFontSize * 2.0);
     STY(pmh_H1, headers);
+    headers.setFontPointSize(defaultFontSize * 1.5);
     STY(pmh_H2, headers);
+    headers.setFontPointSize(defaultFontSize * 1.17);
     STY(pmh_H3, headers);
+    headers.setFontPointSize(defaultFontSize * 1.12);
     STY(pmh_H4, headers);
+    headers.setFontPointSize(defaultFontSize * 0.83);
     STY(pmh_H5, headers);
+    headers.setFontPointSize(defaultFontSize * 0.67);
     STY(pmh_H6, headers);
 
-    QTextCharFormat hrule; hrule.setForeground(QBrush(Qt::darkGray));
-    hrule.setBackground(QBrush(Qt::lightGray));
+    QTextCharFormat hrule; hrule.setForeground(QBrush(QColor("#1999B3")));
     STY(pmh_HRULE, hrule);
 
     QTextCharFormat list; list.setForeground(QBrush(Qt::magenta));
     STY(pmh_LIST_BULLET, list);
     STY(pmh_LIST_ENUMERATOR, list);
 
-    QTextCharFormat link; link.setForeground(QBrush(Qt::darkCyan));
-    link.setBackground(QBrush(QColor(205,240,240)));
+    QTextCharFormat link;
+    link.setForeground(QBrush(QColor("#FF6B6B")));
     STY(pmh_LINK, link);
+    link.setForeground(QBrush(QColor("#FFB84E")));
     STY(pmh_AUTO_LINK_URL, link);
     STY(pmh_AUTO_LINK_EMAIL, link);
 
-    QTextCharFormat image; image.setForeground(QBrush(Qt::darkCyan));
-    image.setBackground(QBrush(Qt::cyan));
+    QTextCharFormat image; image.setForeground(QBrush(QColor("#E6193C")));
     STY(pmh_IMAGE, image);
 
     QTextCharFormat ref; ref.setForeground(QBrush(QColor(213,178,178)));
     STY(pmh_REFERENCE, ref);
 
-    QTextCharFormat code; code.setForeground(QBrush(Qt::darkGreen));
-    code.setBackground(QBrush(QColor(217,231,217)));
+    QTextCharFormat code;
+    code.setForeground(QBrush(QColor("#5E6E5E")));
+    code.setBackground(QBrush(QColor("#CFE8CF")));
     STY(pmh_CODE, code);
     STY(pmh_VERBATIM, code);
 
-    QTextCharFormat emph; emph.setForeground(QBrush(Qt::darkYellow));
+    QTextCharFormat emph; emph.setForeground(QBrush(QColor("#6A9FB5")));
     emph.setFontItalic(true);
     STY(pmh_EMPH, emph);
 
-    QTextCharFormat strong; strong.setForeground(QBrush(Qt::magenta));
+    QTextCharFormat strong; strong.setForeground(QBrush(QColor("#6A9FB5")));
     strong.setFontWeight(QFont::Bold);
     STY(pmh_STRONG, strong);
 
-    QTextCharFormat comment; comment.setForeground(QBrush(Qt::gray));
+    QTextCharFormat comment; comment.setForeground(QBrush(QColor("#809980")));
     STY(pmh_COMMENT, comment);
 
-    QTextCharFormat blockquote; blockquote.setForeground(QBrush(Qt::darkRed));
+    QTextCharFormat blockquote; blockquote.setForeground(QBrush(QColor("#87711D")));
+    blockquote.setBackground(QBrush(QColor("#F0F0F0")));
     STY(pmh_BLOCKQUOTE, blockquote);
 
     this->setStyles(*styles);
