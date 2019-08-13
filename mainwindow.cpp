@@ -35,7 +35,7 @@ void MainWindow::fileSelectionChanged(const QItemSelection& selected,const QItem
     }
 }
 
-void MainWindow::openFile_l(const QString &filePath, size_t lineNo) {
+void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSelect) {
     currentFilePath = filePath;
     if (!filePath.isEmpty()) {
         QFileInfo fileInfo(filePath);
@@ -52,6 +52,9 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo) {
         ui->markdownEditor->setTextCursor(cursor);
         setWindowTitle(QCoreApplication::translate("MainWindow", fileInfo.fileName().toStdString().c_str(), nullptr));
         DMSettings::setString(KEY_LAST_FILE, filePath);
+        if (needSelect) {
+            selectInFolderView();
+        }
     }
 }
 
@@ -75,6 +78,37 @@ void MainWindow::setCurrentRootDirPath(const QString &folderPath)
         std::string utf8_text = dirName.toUtf8().constData();
         fileNamesDictionary.push_back(utf8_text);
     }
+}
+
+void MainWindow::contextMenu(const QPoint &pos) {
+//    const QTableWidgetItem *item = ui->fileTree->itemAt(pos);
+//    if (!item)
+//        return;
+//    QMenu menu;
+//#ifndef QT_NO_CLIPBOARD
+//    QAction *copyAction = menu.addAction("Copy Name");
+//#endif
+//    QAction *openAction = menu.addAction("Open");
+//    QAction *action = menu.exec(filesTable->mapToGlobal(pos));
+//    if (!action)
+//        return;
+//    const QString fileName = fileNameOfItem(item);
+//    if (action == openAction)
+//        openFile(fileName);
+//#ifndef QT_NO_CLIPBOARD
+//    else if (action == copyAction)
+//        QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(fileName));
+    //#endif
+}
+
+void MainWindow::processStdOutput()
+{
+    qDebug() << unisonProcess->readAllStandardOutput();  // read normal output
+}
+
+void MainWindow::processStdError()
+{
+    qDebug() << unisonProcess->readAllStandardError();  // read error channel
 }
 
 void MainWindow::openFile()
@@ -144,6 +178,8 @@ void MainWindow::syncFiles() {
         procedure.
      */
     connect(unisonProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(handleSyncFinished(int, QProcess::ExitStatus)));
+    connect(unisonProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStdOutput()));  // connect process signals with your code
+    connect(unisonProcess, SIGNAL(readyReadStandardError()), this, SLOT(processStdError()));  // same here
     QString command(QString("/Users/faywong/bin/unison %1 %2").arg("default", "-batch"));
     qDebug() << "About to invoke" << command;
     unisonProcess->start(command);
@@ -169,6 +205,9 @@ void MainWindow::setupFileMenu()
     fileMenu->addAction(tr("&Sync"), this, SLOT(syncFiles()),
                         QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_S));
 
+    fileMenu->addAction(tr("&Select in Folder View"), this, SLOT(selectInFolderView()),
+                        QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_J));
+
     fileMenu->addAction(tr("&Exit"), qApp, SLOT(quit()),
                         QKeySequence::Quit);
 
@@ -176,8 +215,6 @@ void MainWindow::setupFileMenu()
     launchSearchAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_F);
     connect(launchSearchAction, SIGNAL(triggered()), this, SLOT(launchSearchWindow()));
     this->addAction(launchSearchAction);
-
-
 
     QAction *launchFindFileAction = new QAction(this);
     launchFindFileAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_O);
@@ -202,6 +239,14 @@ void MainWindow::launchFindFileWindow() {
 void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
     qDebug()<<"exitCode: " << exitCode << ", exitStatus: " << exitStatus;
+}
+
+void MainWindow::selectInFolderView() {
+    if (!currentFilePath.isEmpty()) {
+        auto index = ui->fileTreeModel->index(currentFilePath, 0);
+        ui->fileTree->scrollTo(index);
+        ui->fileTree->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    }
 }
 
 MainWindow::~MainWindow()

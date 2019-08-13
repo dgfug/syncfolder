@@ -78,9 +78,8 @@ void HGMarkdownHighlighter::setDefaultStyles()
     STY(pmh_LIST_ENUMERATOR, list);
 
     QTextCharFormat link;
-    link.setForeground(QBrush(QColor("#FF6B6B")));
+    link.setForeground(QBrush(QColor("#3D62F5")));
     STY(pmh_LINK, link);
-    link.setForeground(QBrush(QColor("#FFB84E")));
     STY(pmh_AUTO_LINK_URL, link);
     STY(pmh_AUTO_LINK_EMAIL, link);
 
@@ -113,7 +112,8 @@ void HGMarkdownHighlighter::setDefaultStyles()
     QTextCharFormat comment; comment.setForeground(QBrush(QColor("#809980")));
     STY(pmh_COMMENT, comment);
 
-    QTextCharFormat blockquote; blockquote.setForeground(QBrush(QColor("#87711D")));
+    QTextCharFormat blockquote;
+    blockquote.setForeground(QBrush(QColor("#87711D")));
     blockquote.setBackground(QBrush(QColor("#F0F0F0")));
     STY(pmh_BLOCKQUOTE, blockquote);
 
@@ -125,6 +125,7 @@ void HGMarkdownHighlighter::setDefaultStyles()
 
     QTextCharFormat strike;
     strike.setForeground(QBrush(QColor("#D55B7B")));
+    strike.setFontStrikeOut(true);
     STY(pmh_STRIKE, strike);
 
     QTextCharFormat htmlBlock;

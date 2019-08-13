@@ -190,7 +190,9 @@ QList<SearchResultItem> FullTextSearchWindow::findFiles(const QStringList &files
 //! [7]
         const QString fileName = files.at(i);
         const QMimeType mimeType = mimeDatabase.mimeTypeForFile(fileName);
-        if (mimeType.isValid() && !mimeType.inherits(QStringLiteral("text/plain"))) {
+        if (mimeType.isValid() && !mimeType.inherits(QStringLiteral("text/plain"))
+                && !mimeType.inherits(QStringLiteral("text/markdown"))
+                && !mimeType.inherits(QStringLiteral("text/x-markdown"))) {
 //            qWarning() << "Not searching binary file " << QDir::toNativeSeparators(fileName);
             continue;
         }

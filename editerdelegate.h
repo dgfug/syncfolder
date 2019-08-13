@@ -5,7 +5,7 @@
 
 class DMEditorDelegate {
 public:
-    virtual void openFile_l(const QString &, size_t lineNo) = 0;
+    virtual void openFile_l(const QString &, size_t lineNo, bool needSelect = false) = 0;
 };
 
 #endif // EDITERDELEGATE_H

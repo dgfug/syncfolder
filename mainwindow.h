@@ -21,7 +21,7 @@ public:
 
     void setCurrentRootDirPath(const QString &value);
 
-    void openFile_l(const QString &, size_t lineNo) override;
+    void openFile_l(const QString &, size_t lineNo, bool needSelect = false) override;
 
 public slots:
     void syncFiles();
@@ -33,7 +33,10 @@ public slots:
     void launchSearchWindow();
     void launchFindFileWindow();
     void handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatus);
-
+    void selectInFolderView();
+    void contextMenu(const QPoint &pos);
+    void processStdOutput();
+    void processStdError();
 
 private:
     Ui::MainWindow *ui;

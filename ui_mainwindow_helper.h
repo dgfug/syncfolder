@@ -32,6 +32,7 @@ QT_BEGIN_NAMESPACE
 
 class Ui_MainWindow
 {
+
 public:
     QMarkdownTextEdit *markdownEditor;
     QMenuBar *menuBar;
@@ -40,7 +41,6 @@ public:
     QSplitter *splitter;
     QTreeView *fileTree;
     QFileSystemModel *fileTreeModel;
-
     void setupUi(QMainWindow *mainWindow)
     {
         if (mainWindow->objectName().isEmpty())
@@ -79,6 +79,7 @@ public:
 
         fileTreeModel = new QFileSystemModel(mainWindow);
         fileTreeModel->setIconProvider(new DMFileIconProvider);
+        fileTreeModel->setReadOnly(false);
 
         // Set filter
         fileTreeModel->setFilter(QDir::NoDotAndDotDot |
@@ -90,6 +91,9 @@ public:
         fileTree->setSelectionMode(QAbstractItemView::SingleSelection);
         fileTree->setModel(fileTreeModel);
         QObject::connect(fileTree->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), mainWindow, SLOT(fileSelectionChanged(const QItemSelection&,const QItemSelection&)));
+        fileTree->setContextMenuPolicy(Qt::CustomContextMenu);
+//        QObject::connect(fileTree, &QTreeView::customContextMenuRequested,
+//                mainWindow, SLOT(contextMenu(const QPoint &)));
 
         for (int i = 1; i < fileTreeModel->columnCount(); ++i)
             fileTree->hideColumn(i);

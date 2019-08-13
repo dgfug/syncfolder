@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 
     QString lastEditedFile = DMSettings::getString(KEY_LAST_FILE);
     if (!lastEditedFile.isEmpty()) {
-        w.openFile_l(lastEditedFile, 1);
+        w.openFile_l(lastEditedFile, 1, true);
     }
 
     w.show();
