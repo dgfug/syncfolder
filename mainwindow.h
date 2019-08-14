@@ -49,6 +49,8 @@ private:
     FindFileWindow *findFileWindow;
     QProcess *unisonProcess;
     QString syncLog;
+    QLabel *detailsLabel;
+    QPushButton *syncDetailsIcon;
 };
 
 #endif // MAINWINDOW_H

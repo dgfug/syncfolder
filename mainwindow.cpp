@@ -20,7 +20,9 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     currentFilePath(""),
     currentRootDirPath(""),
     searchWindow(nullptr),
-    findFileWindow(nullptr)
+    findFileWindow(nullptr),
+    detailsLabel(nullptr),
+    syncDetailsIcon(nullptr)
 {
     ui->setupUi(this);
     setupFileMenu();
@@ -261,16 +263,22 @@ void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatu
         break;
     }
 
-    QLabel *detailsLabel = new QLabel(QString("%1 Sync result: %2, exit: %3").arg(emoji).arg(status).arg(exitCode),
-                                      ui->statusBar);
-    ui->statusBar->addWidget(detailsLabel);
+    QString result = QString("%1 Sync result: %2, exit: %3").arg(emoji).arg(status).arg(exitCode);
+    if (detailsLabel == nullptr) {
+        detailsLabel = new QLabel(result,
+                                          ui->statusBar);
+        ui->statusBar->addWidget(detailsLabel);
+    } else {
+        detailsLabel->setText(result);
+    }
 
-    QPushButton *syncDetailsIcon = new QPushButton("", ui->statusBar);
-    syncDetailsIcon->setIcon(QIcon(":/icons/details.svg"));
-    syncDetailsIcon->setToolTip(tr("show details"));
-    ui->statusBar->addWidget(syncDetailsIcon);
 
-    void clicked(bool checked = false);
+    if (syncDetailsIcon == nullptr) {
+        syncDetailsIcon = new QPushButton("", ui->statusBar);
+        syncDetailsIcon->setIcon(QIcon(":/icons/details.svg"));
+        syncDetailsIcon->setToolTip(tr("show details"));
+        ui->statusBar->addWidget(syncDetailsIcon);
+    }
 
     connect(syncDetailsIcon, SIGNAL(clicked(bool)), this, SLOT(showSyncDetails(bool)));
 }
