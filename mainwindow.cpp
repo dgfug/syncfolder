@@ -179,7 +179,7 @@ void MainWindow::syncFiles() {
     connect(unisonProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStdOutput()));  // connect process signals with your code
     connect(unisonProcess, SIGNAL(readyReadStandardError()), this, SLOT(processStdError()));  // same here
     QString command(QString("/Users/faywong/bin/unison %1 %2").arg("default", "-batch"));
-    qDebug() << "About to invoke" << command;
+//    qDebug() << "About to invoke" << command;
     unisonProcess->start(command);
 }
 

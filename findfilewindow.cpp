@@ -30,13 +30,14 @@ FindFileWindow::FindFileWindow(DMEditorDelegate *delegate, std::vector<std::stri
     fileNameCompleter->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
 
     connect(fileNameLineEdit, SIGNAL(textEdited(const QString &)), this, SLOT(filenameSearchChanged(const QString &)));
+    connect(fileNameLineEdit, SIGNAL(returnPressed()), this, SLOT(openFirstFoundFile()));
 
-    QTreeView *treeView = new QTreeView;
-    fileNameCompleter->setPopup(treeView);
+    autoCompleteTreeView = new QTreeView;
+    fileNameCompleter->setPopup(autoCompleteTreeView);
     fileNameCompleter->setMaxVisibleItems(1024);
-    treeView->setRootIsDecorated(false);
-    treeView->header()->hide();
-    treeView->header()->setStretchLastSection(true);
+    autoCompleteTreeView->setRootIsDecorated(false);
+    autoCompleteTreeView->header()->hide();
+    autoCompleteTreeView->header()->setStretchLastSection(true);
 
     fileNameLineEdit->setCompleter(fileNameCompleter);
 
@@ -49,6 +50,12 @@ FindFileWindow::FindFileWindow(DMEditorDelegate *delegate, std::vector<std::stri
 
     connect(new QShortcut(QKeySequence(Qt::Key_Escape), this), &QShortcut::activated,
         this, &QWidget::hide);
+}
+
+void FindFileWindow::openFirstFoundFile() {
+    const QString path = fileNameCompleter->completionModel()->data(
+                fileNameCompleter->completionModel()->index(0,0)).toString();
+    editorDelegate->openFile_l(path, 1, true);
 }
 
 void FindFileWindow::filenameSearchChanged(const QString &text)

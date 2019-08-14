@@ -4,6 +4,7 @@
 #include <QAbstractItemModel>
 #include <QLineEdit>
 #include <QStringListModel>
+#include <QTreeView>
 #include <QWidget>
 #include "editerdelegate.h"
 
@@ -17,10 +18,12 @@ signals:
 
 public slots:
     void filenameSearchChanged(const QString &text);
+    void openFirstFoundFile();
 
 private:
     QLineEdit *fileNameLineEdit;
     QCompleter *fileNameCompleter;
+    QTreeView *autoCompleteTreeView;
     std::vector<std::string> &fileNamesDictionary;
     QStringListModel *matchingFileNamesModel;
     DMEditorDelegate *editorDelegate;

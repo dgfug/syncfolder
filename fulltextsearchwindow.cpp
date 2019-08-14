@@ -277,7 +277,7 @@ void FullTextSearchWindow::openFileOfItem(int row, int /* column */)
     const QTableWidgetItem *item = filesTable->item(row, 0);
     const QTableWidgetItem *lineNoItem = filesTable->item(row, 1);
 
-    editorDelegate->openFile_l(fileNameOfItem(item), (size_t)lineNoOfItem(lineNoItem));
+    editorDelegate->openFile_l(fileNameOfItem(item), (size_t)lineNoOfItem(lineNoItem), true);
 }
 
 //! [12]
@@ -300,7 +300,8 @@ void FullTextSearchWindow::contextMenu(const QPoint &pos)
     if (action == openAction)
         openFile(fileName);
 #ifndef QT_NO_CLIPBOARD
-    else if (action == copyAction)
+    else
+        if (action == copyAction)
         QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(fileName));
 #endif
 }
