@@ -477,7 +477,7 @@ bool QMarkdownTextEdit::bracketClosingCheck(const QString& openingCharacter,
 
     }
 
-    qDebug() << __func__ << " - 'currentChar': " << currentChar;
+//    qDebug() << __func__ << " - 'currentChar': " << currentChar;
 
 
     // if the current character is not the closing character we just want to
