@@ -6,5 +6,6 @@
      <file>icons/file_text.svg</file>
      <file>icons/file_markdown.svg</file>
      <file>icons/file_unknown.svg</file>
+     <file>icons/details.svg</file>
  </qresource>
 </RCC>

@@ -37,6 +37,7 @@ public slots:
     void contextMenu(const QPoint &pos);
     void processStdOutput();
     void processStdError();
+    void showSyncDetails(bool checked);
 
 private:
     Ui::MainWindow *ui;
@@ -47,6 +48,7 @@ private:
     FullTextSearchWindow *searchWindow;
     FindFileWindow *findFileWindow;
     QProcess *unisonProcess;
+    QString syncLog;
 };
 
 #endif // MAINWINDOW_H

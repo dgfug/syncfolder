@@ -6,6 +6,8 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QMessageBox>
+#include <QLabel>
+#include <QPushButton>
 #include "settings/settings_def.h"
 #include <QStandardPaths>
 #include <iostream>
@@ -103,12 +105,12 @@ void MainWindow::contextMenu(const QPoint &pos) {
 
 void MainWindow::processStdOutput()
 {
-    qDebug() << unisonProcess->readAllStandardOutput();  // read normal output
+    syncLog += unisonProcess->readAllStandardOutput();  // read error channel
 }
 
 void MainWindow::processStdError()
 {
-    qDebug() << unisonProcess->readAllStandardError();  // read error channel
+    syncLog += unisonProcess->readAllStandardError();  // read error channel
 }
 
 void MainWindow::openFile()
@@ -171,12 +173,8 @@ void MainWindow::saveFile()
 }
 
 void MainWindow::syncFiles() {
+    syncLog.clear();
     unisonProcess = new QProcess(this);
-    /*
-        The synchronisation is divided into two steps: one starts the synchronisation, another handles all the necessary things
-        after synchronisation is done. Two steps are asynchronous. This allows client to send keepAlive messages during the sync
-        procedure.
-     */
     connect(unisonProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(handleSyncFinished(int, QProcess::ExitStatus)));
     connect(unisonProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStdOutput()));  // connect process signals with your code
     connect(unisonProcess, SIGNAL(readyReadStandardError()), this, SLOT(processStdError()));  // same here
@@ -238,7 +236,52 @@ void MainWindow::launchFindFileWindow() {
 
 void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    qDebug()<<"exitCode: " << exitCode << ", exitStatus: " << exitStatus;
+    QString status;
+    QString emoji;
+    switch (exitCode) {
+    case 0:
+        status = "successful synchronization; everything is up-to-date now.";
+        emoji = "😀";
+        break;
+    case 1:
+        status = "some files were skipped, but all file transfers were successful.";
+        emoji = "😞";
+        break;
+    case 2:
+        status = "non-fatal failures occurred during file transfer.";
+        emoji = "😥";
+        break;
+    case 3:
+        status = "a fatal error occurred, or the execution was interrupted.";
+        emoji = "😭";
+        break;
+    default:
+        status = "unknown";
+        emoji = "💥";
+        break;
+    }
+
+    QLabel *detailsLabel = new QLabel(QString("%1 Sync result: %2, exit: %3").arg(emoji).arg(status).arg(exitCode),
+                                      ui->statusBar);
+    ui->statusBar->addWidget(detailsLabel);
+
+    QPushButton *syncDetailsIcon = new QPushButton("", ui->statusBar);
+    syncDetailsIcon->setIcon(QIcon(":/icons/details.svg"));
+    syncDetailsIcon->setToolTip(tr("show details"));
+    ui->statusBar->addWidget(syncDetailsIcon);
+
+    void clicked(bool checked = false);
+
+    connect(syncDetailsIcon, SIGNAL(clicked(bool)), this, SLOT(showSyncDetails(bool)));
+}
+
+void MainWindow::showSyncDetails(bool checked) {
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("QMessageBox Example");
+    msgBox.setText("details of file sync activity");
+    msgBox.setInformativeText(syncLog);
+    msgBox.exec();
+    // TODO: guide user to check settings
 }
 
 void MainWindow::selectInFolderView() {
