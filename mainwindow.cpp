@@ -51,7 +51,7 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream fileToRead(&file);
         ui->markdownEditor->setText(fileToRead.readAll());
-        QTextCursor cursor(ui->markdownEditor->document()->findBlockByLineNumber(lineNo-1));
+        QTextCursor cursor(ui->markdownEditor->document()->findBlockByLineNumber(lineNo - 1));
         ui->markdownEditor->moveCursor(QTextCursor::End);
         ui->markdownEditor->setTextCursor(cursor);
         setWindowTitle(QCoreApplication::translate("MainWindow", fileInfo.fileName().toStdString().c_str(), nullptr));
@@ -159,7 +159,15 @@ void MainWindow::openDirectory()
 
 void MainWindow::newFile()
 {
-    // TODO:
+    auto selectionIndex = ui->fileTree->selectionModel()->currentIndex();
+    auto selectedFile = ui->fileTreeModel->fileInfo(selectionIndex);
+
+    // TODO refine this
+    if (selectedFile.isDir()) {
+        ui->fileTreeModel->mkdir(selectionIndex, "untitled.md");
+    } else {
+        auto dirPath = selectedFile.filePath();
+    }
 }
 
 void MainWindow::saveFile()
@@ -290,6 +298,10 @@ void MainWindow::showSyncDetails(bool checked) {
     msgBox.setInformativeText(syncLog);
     msgBox.exec();
     // TODO: guide user to check settings
+}
+
+void MainWindow::handleFileRenamed(const QString &path, const QString &oldName, const QString &newName) {
+    setWindowTitle(QCoreApplication::translate("MainWindow", newName.toStdString().c_str(), nullptr));
 }
 
 void MainWindow::selectInFolderView() {

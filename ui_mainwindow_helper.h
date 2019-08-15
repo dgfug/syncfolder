@@ -80,6 +80,9 @@ public:
         fileTreeModel = new QFileSystemModel(mainWindow);
         fileTreeModel->setIconProvider(new DMFileIconProvider);
         fileTreeModel->setReadOnly(false);
+        QObject::connect(fileTreeModel, SIGNAL(fileRenamed(const QString &, const QString &, const QString &)),
+                         mainWindow,
+                         SLOT(handleFileRenamed(const QString &, const QString &, const QString &)));
 
         // Set filter
         fileTreeModel->setFilter(QDir::NoDotAndDotDot |
@@ -92,6 +95,7 @@ public:
         fileTree->setModel(fileTreeModel);
         QObject::connect(fileTree->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), mainWindow, SLOT(fileSelectionChanged(const QItemSelection&,const QItemSelection&)));
         fileTree->setContextMenuPolicy(Qt::CustomContextMenu);
+
 //        QObject::connect(fileTree, &QTreeView::customContextMenuRequested,
 //                mainWindow, SLOT(contextMenu(const QPoint &)));
 

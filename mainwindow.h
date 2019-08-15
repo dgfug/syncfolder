@@ -38,6 +38,7 @@ public slots:
     void processStdOutput();
     void processStdError();
     void showSyncDetails(bool checked);
+    void handleFileRenamed(const QString &path, const QString &oldName, const QString &newName);
 
 private:
     Ui::MainWindow *ui;
