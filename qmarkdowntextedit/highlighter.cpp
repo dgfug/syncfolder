@@ -53,10 +53,12 @@ void HGMarkdownHighlighter::setDefaultStyles()
 {
     QVector<HighlightingStyle> *styles = new QVector<HighlightingStyle>();
 
+    // TODO: support theme
     // base16-atelierseaside.light theme
     int defaultFontSize = 14;
     QTextCharFormat headers;
     headers.setForeground(QBrush(QColor("#5a745d")));
+    // 遵循 css 默认 size
     headers.setFontPointSize(defaultFontSize * 2.0);
     STY(pmh_H1, headers);
     headers.setFontPointSize(defaultFontSize * 1.5);

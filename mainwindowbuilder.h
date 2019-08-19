@@ -9,7 +9,7 @@
 #ifndef UI_MAINWINDOW_H
 #define UI_MAINWINDOW_H
 
-#include "dmfileiconprovider.h"
+#include "FileIconProvider.h"
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
@@ -88,6 +88,11 @@ public:
         fileTreeModel->setFilter(QDir::NoDotAndDotDot |
                                 QDir::AllDirs | QDir::Files);
 
+        fileTree->setDragEnabled(true);
+        fileTree->viewport()->setAcceptDrops(true);
+        fileTree->setDropIndicatorShown(true);
+        fileTree->setDragDropMode(QAbstractItemView::InternalMove);
+
         fileTree->setSortingEnabled(true);
         fileTree->sortByColumn(0, Qt::AscendingOrder);
         fileTree->setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -96,8 +101,8 @@ public:
         QObject::connect(fileTree->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), mainWindow, SLOT(fileSelectionChanged(const QItemSelection&,const QItemSelection&)));
         fileTree->setContextMenuPolicy(Qt::CustomContextMenu);
 
-//        QObject::connect(fileTree, &QTreeView::customContextMenuRequested,
-//                mainWindow, SLOT(contextMenu(const QPoint &)));
+        QObject::connect(fileTree, SIGNAL(customContextMenuRequested(const QPoint &)),
+                mainWindow, SLOT(contextMenu(const QPoint &)));
 
         for (int i = 1; i < fileTreeModel->columnCount(); ++i)
             fileTree->hideColumn(i);
@@ -132,7 +137,6 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "SyncFolder", nullptr));
     } // retranslateUi
-
 };
 
 namespace Ui {

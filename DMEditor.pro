@@ -25,26 +25,26 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++17
 
 SOURCES += \
-        dmfileiconprovider.cpp \
-        findfilewindow.cpp \
-        fulltextsearchwindow.cpp \
+        FileIconProvider.cpp \
+        FileLocatorWindow.cpp \
+        FullTextSearchWindow.cpp \
         main.cpp \
         mainwindow.cpp \
 
 INCLUDEPATH += . \
 
 HEADERS += \
-        dmfileiconprovider.h \
-        editerdelegate.h \
-        findfilewindow.h \
-        fulltextsearchwidow.h \
+        EditorDelegate.h \
+        FileIconProvider.h \
+        FileLocatorWindow.h \
+        FullTextSearchWindow.h \
         mainwindow.h \
+        mainwindowbuilder.h \
         qmarkdowntextedit/highlighter.h \
         qmarkdowntextedit/pmh_definitions.h \
         qmarkdowntextedit/pmh_parser.h \
         qmarkdowntextedit/pmh_styleparser.h \
-        settings/settings_def.h \
-        ui_mainwindow_helper.h
+        settings/settings_def.h
 
 FORMS +=
 

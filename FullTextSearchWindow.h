@@ -54,7 +54,7 @@
 #include <QWidget>
 #include <QDir>
 
-#include "editerdelegate.h"
+#include "EditorDelegate.h"
 
 QT_BEGIN_NAMESPACE
 class QComboBox;

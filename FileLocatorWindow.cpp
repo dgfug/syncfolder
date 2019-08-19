@@ -1,4 +1,4 @@
-#include "findfilewindow.h"
+#include "FileLocatorWindow.h"
 
 #include <QCompleter>
 #include <QGridLayout>

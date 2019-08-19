@@ -4,8 +4,8 @@
 #include <QItemSelection>
 #include <QMainWindow>
 #include <QProcess>
-#include "fulltextsearchwidow.h"
-#include "findfilewindow.h"
+#include "FullTextSearchWindow.h"
+#include "FileLocatorWindow.h"
 
 namespace Ui {
 class MainWindow;
@@ -40,9 +40,19 @@ public slots:
     void showSyncDetails(bool checked);
     void handleFileRenamed(const QString &path, const QString &oldName, const QString &newName);
 
+protected:
+    void setupFileMenu();
+    QFileInfo selectedFile();
+    /**
+       * this event is called when the drop operation is initiated at the widget
+       */
+    void dropEvent(QDropEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent* event) override;
+    void dragMoveEvent(QDragMoveEvent* event) override;
+    void dragLeaveEvent(QDragLeaveEvent* event) override;
+
 private:
     Ui::MainWindow *ui;
-    void setupFileMenu();
     QString currentFilePath;
     QString currentRootDirPath;
     std::vector<std::string> fileNamesDictionary;

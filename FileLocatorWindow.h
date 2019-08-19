@@ -6,7 +6,7 @@
 #include <QStringListModel>
 #include <QTreeView>
 #include <QWidget>
-#include "editerdelegate.h"
+#include "EditorDelegate.h"
 
 class FindFileWindow : public QWidget
 {

@@ -1,4 +1,4 @@
-#include "dmfileiconprovider.h"
+#include "FileIconProvider.h"
 
 DMFileIconProvider::DMFileIconProvider() : QFileIconProvider ()
 {

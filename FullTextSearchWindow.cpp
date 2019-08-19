@@ -50,7 +50,7 @@
 
 #include <QtWidgets>
 
-#include "fulltextsearchwidow.h"
+#include "FullTextSearchWindow.h"
 
 #include "settings/settings_def.h"
 

@@ -44,7 +44,6 @@ public:
     QString getMarkdownUrlAtPosition(const QString& text, int position);
     void initSearchFrame(QWidget *searchFrame, bool darkMode = false);
     void setAutoTextOptions(AutoTextOptions options);
-    void setHighlightingEnabled(bool enabled);
     static bool isValidUrl(const QString& urlString);
     void resetMouseCursor() const;
     void setReadOnly(bool ro);

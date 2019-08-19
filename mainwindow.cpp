@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "ui_mainwindow_helper.h"
+#include "mainwindowbuilder.h"
 #include "qmarkdowntextedit.h"
 
 #include <QDirIterator>
@@ -13,6 +13,10 @@
 #include <iostream>
 #include <string>
 #include <QTextBlock>
+#include <QFile>
+#include <QGuiApplication>
+#include <QClipboard>
+#include <QMimeData>
 
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     QMainWindow(parent),
@@ -85,24 +89,24 @@ void MainWindow::setCurrentRootDirPath(const QString &folderPath)
 }
 
 void MainWindow::contextMenu(const QPoint &pos) {
-//    const QTableWidgetItem *item = ui->fileTree->itemAt(pos);
-//    if (!item)
-//        return;
-//    QMenu menu;
-//#ifndef QT_NO_CLIPBOARD
-//    QAction *copyAction = menu.addAction("Copy Name");
-//#endif
-//    QAction *openAction = menu.addAction("Open");
-//    QAction *action = menu.exec(filesTable->mapToGlobal(pos));
-//    if (!action)
-//        return;
-//    const QString fileName = fileNameOfItem(item);
-//    if (action == openAction)
-//        openFile(fileName);
-//#ifndef QT_NO_CLIPBOARD
-//    else if (action == copyAction)
-//        QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(fileName));
-    //#endif
+    const QModelIndex index = ui->fileTree->indexAt(pos);
+    const QString path = ui->fileTreeModel->filePath(index);
+    QMenu menu;
+#ifndef QT_NO_CLIPBOARD
+    QAction *copyAction = menu.addAction("copy path");
+#endif
+    QAction *removeAction = menu.addAction("remove");
+    QAction *action = menu.exec(ui->fileTree->mapToGlobal(pos));
+    if (!action)
+        return;
+    if (action == removeAction) {
+        ui->fileTreeModel->remove(index);
+    }
+#ifndef QT_NO_CLIPBOARD
+    else if (action == copyAction) {
+        QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(path));
+    }
+#endif
 }
 
 void MainWindow::processStdOutput()
@@ -157,16 +161,65 @@ void MainWindow::openDirectory()
     }
 }
 
+void MainWindow::dragEnterEvent(QDragEnterEvent* event)
+{
+  // if some actions should not be usable, like move, this code must be adopted
+  event->acceptProposedAction();
+}
+
+void MainWindow::dragMoveEvent(QDragMoveEvent* event)
+{
+  // if some actions should not be usable, like move, this code must be adopted
+  event->acceptProposedAction();
+}
+
+void MainWindow::dragLeaveEvent(QDragLeaveEvent* event)
+{
+  event->accept();
+}
+
+void MainWindow::dropEvent(QDropEvent *event) {
+    const QMimeData* mimeData = event->mimeData();
+
+       if (mimeData->hasUrls())
+       {
+         QStringList pathList;
+         QList<QUrl> urlList = mimeData->urls();
+
+         for (int i = 0; i < urlList.size() && i < 32;+i)
+         {
+             this->setCurrentRootDirPath(urlList.at(i).toLocalFile());
+             event->acceptProposedAction();
+             break;
+//           pathList.append(urlList.at(i).toLocalFile());
+         }
+       }
+}
+
+QFileInfo MainWindow::selectedFile() {
+    auto selectionIndex = ui->fileTree->selectionModel()->currentIndex();
+    return ui->fileTreeModel->fileInfo(selectionIndex);
+}
+
 void MainWindow::newFile()
 {
     auto selectionIndex = ui->fileTree->selectionModel()->currentIndex();
     auto selectedFile = ui->fileTreeModel->fileInfo(selectionIndex);
 
-    // TODO refine this
-    if (selectedFile.isDir()) {
-        ui->fileTreeModel->mkdir(selectionIndex, "untitled.md");
-    } else {
-        auto dirPath = selectedFile.filePath();
+    QString dir = selectedFile.isDir() ? selectedFile.absoluteFilePath() : selectedFile.absolutePath();
+    int i= 0;
+
+    while (true) {
+        QString name = i == 0 ? QString("untitled.md") : QString("untitled_%1.md").arg(i);
+        QFileInfo newFile = QFileInfo(dir, name);
+        if (!newFile.exists()) {
+            QString filePath = newFile.absoluteFilePath();
+            QFile n = QFile(filePath);
+            n.open(QIODevice::WriteOnly | QIODevice::Append);
+            openFile_l(filePath, 1, true);
+            break;
+        }
+        i++;
     }
 }
 
@@ -280,7 +333,6 @@ void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatu
         detailsLabel->setText(result);
     }
 
-
     if (syncDetailsIcon == nullptr) {
         syncDetailsIcon = new QPushButton("", ui->statusBar);
         syncDetailsIcon->setIcon(QIcon(":/icons/details.svg"));
@@ -302,6 +354,8 @@ void MainWindow::showSyncDetails(bool checked) {
 
 void MainWindow::handleFileRenamed(const QString &path, const QString &oldName, const QString &newName) {
     setWindowTitle(QCoreApplication::translate("MainWindow", newName.toStdString().c_str(), nullptr));
+    QFileInfo fileInfo(path, newName);
+    openFile_l(fileInfo.filePath(), 1, true);
 }
 
 void MainWindow::selectInFolderView() {
