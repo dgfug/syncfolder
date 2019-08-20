@@ -4,6 +4,7 @@
 #include <QItemSelection>
 #include <QMainWindow>
 #include <QProcess>
+#include <QProgressBar>
 #include "FullTextSearchWindow.h"
 #include "FileLocatorWindow.h"
 
@@ -53,13 +54,18 @@ private:
     Ui::MainWindow *ui;
     QString currentFilePath;
     QString currentRootDirPath;
+
+    // search related
     std::vector<std::string> fileNamesDictionary;
     FullTextSearchWindow *searchWindow;
     FindFileWindow *findFileWindow;
+
+    // sync related
     QProcess *unisonProcess;
     QString syncLog;
     QLabel *detailsLabel;
     QPushButton *syncDetailsIcon;
+    QProgressBar *syncProgressBar;
 };
 
 #endif // MAINWINDOW_H

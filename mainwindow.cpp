@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QLabel>
 #include <QPushButton>
+#include <QProgressBar>
 #include "settings/settings_def.h"
 #include <QStandardPaths>
 #include <iostream>
@@ -114,11 +115,13 @@ void MainWindow::contextMenu(const QPoint &pos) {
 
 void MainWindow::processStdOutput()
 {
+    syncProgressBar->setValue(syncProgressBar->value() + 4);
     syncLog += unisonProcess->readAllStandardOutput();  // read error channel
 }
 
 void MainWindow::processStdError()
 {
+    syncProgressBar->setValue(1);
     syncLog += unisonProcess->readAllStandardError();  // read error channel
 }
 
@@ -175,7 +178,7 @@ void MainWindow::dropEvent(QDropEvent *event) {
     if (event->mimeData()->hasUrls()) {
         QMimeDatabase mimeDatabase;
         foreach (QUrl url, event->mimeData()->urls()) {
-            qDebug()<<"drop url: " << url;
+//            qDebug()<<"drop url: " << url;
             auto filePath = url.toLocalFile();
             QFileInfo fileInfo(filePath);
             if (fileInfo.isFile()) {
@@ -231,6 +234,26 @@ void MainWindow::saveFile()
 
 void MainWindow::syncFiles() {
     syncLog.clear();
+
+    if (detailsLabel) {
+        detailsLabel->setVisible(false);
+    }
+
+    if (syncDetailsIcon) {
+        syncDetailsIcon->setVisible(false);
+    }
+
+    if (syncProgressBar == nullptr) {
+        syncProgressBar = new QProgressBar();
+        syncProgressBar->setRange(0, 100);
+        syncProgressBar->setValue(10);
+        syncProgressBar->setTextVisible(true);
+        syncProgressBar->setFormat("Sync ongoing...");
+    }
+
+    syncProgressBar->setVisible(true);
+    statusBar()->addWidget(syncProgressBar);
+
     unisonProcess = new QProcess(this);
     connect(unisonProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(handleSyncFinished(int, QProcess::ExitStatus)));
     connect(unisonProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStdOutput()));  // connect process signals with your code
@@ -295,6 +318,7 @@ void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatu
     QString emoji;
     switch (exitCode) {
     case 0:
+        syncProgressBar->setValue(100);
         status = "successful synchronization; everything is up-to-date now.";
         emoji = "😀";
         break;
@@ -316,12 +340,13 @@ void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatu
         break;
     }
 
-    QString result = QString("%1 Sync result: %2, exit: %3").arg(emoji).arg(status).arg(exitCode);
+    QString result = QString("%1 Sync result: %2, status: %3").arg(emoji).arg(status).arg(exitCode);
+
     if (detailsLabel == nullptr) {
-        detailsLabel = new QLabel(result,
-                                          ui->statusBar);
+        detailsLabel = new QLabel(result, ui->statusBar);
         ui->statusBar->addWidget(detailsLabel);
     } else {
+        detailsLabel->setVisible(true);
         detailsLabel->setText(result);
     }
 
@@ -331,6 +356,8 @@ void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatu
         syncDetailsIcon->setToolTip(tr("show details"));
         ui->statusBar->addWidget(syncDetailsIcon);
     }
+    syncProgressBar->setVisible(false);
+    syncDetailsIcon->setVisible(true);
 
     connect(syncDetailsIcon, SIGNAL(clicked(bool)), this, SLOT(showSyncDetails(bool)));
 }
