@@ -17,6 +17,8 @@
 #include <QGuiApplication>
 #include <QClipboard>
 #include <QMimeData>
+#include <fileformat.h>
+#include <QMimeDatabase>
 
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     QMainWindow(parent),
@@ -30,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
 {
     ui->setupUi(this);
     setupFileMenu();
+    setAcceptDrops(true);
 }
 
 void MainWindow::fileSelectionChanged(const QItemSelection& selected,const QItemSelection& deselected) {
@@ -44,12 +47,12 @@ void MainWindow::fileSelectionChanged(const QItemSelection& selected,const QItem
 }
 
 void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSelect) {
-    currentFilePath = filePath;
     if (!filePath.isEmpty()) {
         QFileInfo fileInfo(filePath);
-        if (!fileInfo.exists()) {
+        if (!fileInfo.exists() || !fileInfo.isFile()) {
             return;
         }
+        currentFilePath = filePath;
         QFile file(filePath);
 
         file.open(QFile::ReadOnly | QFile::Text);
@@ -163,37 +166,28 @@ void MainWindow::openDirectory()
 
 void MainWindow::dragEnterEvent(QDragEnterEvent* event)
 {
+    if (event->mimeData()->hasUrls())
+           event->acceptProposedAction();
   // if some actions should not be usable, like move, this code must be adopted
-  event->acceptProposedAction();
-}
-
-void MainWindow::dragMoveEvent(QDragMoveEvent* event)
-{
-  // if some actions should not be usable, like move, this code must be adopted
-  event->acceptProposedAction();
-}
-
-void MainWindow::dragLeaveEvent(QDragLeaveEvent* event)
-{
-  event->accept();
 }
 
 void MainWindow::dropEvent(QDropEvent *event) {
-    const QMimeData* mimeData = event->mimeData();
-
-       if (mimeData->hasUrls())
-       {
-         QStringList pathList;
-         QList<QUrl> urlList = mimeData->urls();
-
-         for (int i = 0; i < urlList.size() && i < 32;+i)
-         {
-             this->setCurrentRootDirPath(urlList.at(i).toLocalFile());
-             event->acceptProposedAction();
-             break;
-//           pathList.append(urlList.at(i).toLocalFile());
-         }
-       }
+    if (event->mimeData()->hasUrls()) {
+        QMimeDatabase mimeDatabase;
+        foreach (QUrl url, event->mimeData()->urls()) {
+            qDebug()<<"drop url: " << url;
+            auto filePath = url.toLocalFile();
+            QFileInfo fileInfo(filePath);
+            if (fileInfo.isFile()) {
+                const QMimeType mimeType = mimeDatabase.mimeTypeForFile(filePath);
+                if (FileFormat::getType(mimeType) == FileFormat::FMT::MarkDown) {
+                    openFile_l(filePath, 1);
+                }
+            } else if (fileInfo.isDir()) {
+                setCurrentRootDirPath(filePath);
+            }
+        }
+    }
 }
 
 QFileInfo MainWindow::selectedFile() {
@@ -254,11 +248,9 @@ void MainWindow::setupFileMenu()
     fileMenu->addAction(tr("&New"), this, SLOT(newFile()),
                         QKeySequence::New);
 
-    fileMenu->addAction(tr("&Open..."), this, SLOT(openFile()),
-                        QKeySequence::Open);
+    fileMenu->addAction(tr("&Open..."), this, SLOT(openFile()));
 
-    fileMenu->addAction(tr("&Open dir..."), this, SLOT(openDirectory()),
-                        QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_N));
+    fileMenu->addAction(tr("&Open dir..."), this, SLOT(openDirectory()));
 
     fileMenu->addAction(tr("&Save..."), this, SLOT(saveFile()),
                         QKeySequence::Save);

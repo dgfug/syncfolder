@@ -48,8 +48,6 @@ protected:
        */
     void dropEvent(QDropEvent *event) override;
     void dragEnterEvent(QDragEnterEvent* event) override;
-    void dragMoveEvent(QDragMoveEvent* event) override;
-    void dragLeaveEvent(QDragLeaveEvent* event) override;
 
 private:
     Ui::MainWindow *ui;

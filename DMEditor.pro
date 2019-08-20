@@ -28,6 +28,7 @@ SOURCES += \
         FileIconProvider.cpp \
         FileLocatorWindow.cpp \
         FullTextSearchWindow.cpp \
+    fileformat.cpp \
         main.cpp \
         mainwindow.cpp \
 
@@ -38,6 +39,7 @@ HEADERS += \
         FileIconProvider.h \
         FileLocatorWindow.h \
         FullTextSearchWindow.h \
+        fileformat.h \
         mainwindow.h \
         mainwindowbuilder.h \
         qmarkdowntextedit/highlighter.h \
@@ -52,6 +54,11 @@ include(qmarkdowntextedit/qmarkdowntextedit.pri)
 
 RESOURCES += \
     resources.qrc
+
+# TODO: icons
+#ICON = syncfolder.icns
+
+#RC_ICONS = syncfolder.ico
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

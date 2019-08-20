@@ -2,11 +2,21 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <qsettings.h>
+#include <QDebug>
+#include <QStyleFactory>
 #include "settings/settings_def.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+#ifdef __APPLE__
+    if (QStyleFactory::keys().contains("macintosh")) {
+//        qDebug() << QStyleFactory::keys();
+        a.setStyle(QStyleFactory::create("macintosh"));
+    }
+#endif
+
     QCoreApplication::setApplicationVersion(QT_VERSION_STR);
     QCoreApplication::setOrganizationName("faywong personal");
     QCoreApplication::setOrganizationDomain("syncfolder.com");

@@ -88,8 +88,9 @@ public:
         fileTreeModel->setFilter(QDir::NoDotAndDotDot |
                                 QDir::AllDirs | QDir::Files);
 
+        // drag & drop
         fileTree->setDragEnabled(true);
-        fileTree->viewport()->setAcceptDrops(true);
+//        fileTree->viewport()->setAcceptDrops(true);
         fileTree->setDropIndicatorShown(true);
         fileTree->setDragDropMode(QAbstractItemView::InternalMove);
 
@@ -112,6 +113,9 @@ public:
         splitter->addWidget(markdownEditor);
         splitter->setStretchFactor(0, 1);
         splitter->setStretchFactor(1, 3);
+
+        // we handle drag & drop globally in MainWindow, so disable it here
+        markdownEditor->viewport()->setAcceptDrops(false);
 
         // create center widget
         QWidget *centerWidget = new QWidget();

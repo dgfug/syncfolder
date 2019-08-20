@@ -53,7 +53,7 @@
 #include "FullTextSearchWindow.h"
 
 #include "settings/settings_def.h"
-
+#include "fileformat.h"
 //! [17]
 enum { absoluteFileNameRole = Qt::UserRole + 1 };
 enum { lineNoRole = Qt::UserRole + 2 };
@@ -190,9 +190,8 @@ QList<SearchResultItem> FullTextSearchWindow::findFiles(const QStringList &files
 //! [7]
         const QString fileName = files.at(i);
         const QMimeType mimeType = mimeDatabase.mimeTypeForFile(fileName);
-        if (mimeType.isValid() && !mimeType.inherits(QStringLiteral("text/plain"))
-                && !mimeType.inherits(QStringLiteral("text/markdown"))
-                && !mimeType.inherits(QStringLiteral("text/x-markdown"))) {
+
+        if (FileFormat::FMT::MarkDown != FileFormat::getType(mimeType)) {
 //            qWarning() << "Not searching binary file " << QDir::toNativeSeparators(fileName);
             continue;
         }

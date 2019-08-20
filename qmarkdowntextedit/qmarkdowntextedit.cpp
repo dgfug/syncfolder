@@ -58,7 +58,7 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent, bool initHighlighter)
     // set the tab stop to the width of 4 spaces in the editor
     const int tabStop = 4;
     QFontMetrics metrics(font);
-    setTabStopWidth(tabStop * metrics.width(' '));
+    setTabStopDistance(tabStop * metrics.horizontalAdvance(' '));
 
     // add a layout to the widget
     auto *layout = new QVBoxLayout(this);
@@ -679,8 +679,8 @@ bool QMarkdownTextEdit::openLinkAtCursorPosition() {
     QUrl url = QUrl(urlString);
     bool isRelativeFileUrl = urlString.startsWith("file://..");
 
-    qDebug() << __func__ << " - 'emit urlClicked( urlString )': "
-             << urlString;
+//    qDebug() << __func__ << " - 'emit urlClicked( urlString )': "
+//             << urlString;
 
     emit urlClicked(urlString);
 
@@ -720,8 +720,8 @@ bool QMarkdownTextEdit::isValidUrl(const QString& urlString) {
  *  handler
  */
 void QMarkdownTextEdit::openUrl(QString urlString) {
-    qDebug() << "QMarkdownTextEdit " << __func__ << " - 'urlString': "
-        << urlString;
+//    qDebug() << "QMarkdownTextEdit " << __func__ << " - 'urlString': "
+//        << urlString;
 
     QDesktopServices::openUrl(QUrl(urlString));
 }
