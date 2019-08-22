@@ -4,16 +4,23 @@
 #include <qsettings.h>
 #include <QDebug>
 #include <QStyleFactory>
+#include <QtGlobal>
 #include "settings/settings_def.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-#ifdef __APPLE__
+//    qDebug() << QStyleFactory::keys();
+
+#if defined (Q_OS_MAC) || defined (Q_OS_MACOS)
     if (QStyleFactory::keys().contains("macintosh")) {
-//        qDebug() << QStyleFactory::keys();
         a.setStyle(QStyleFactory::create("macintosh"));
+    }
+#elif defined (Q_OS_LINUX)
+    if (QStyleFactory::keys().contains("kvantum")) {
+        a.setStyle(QStyleFactory::create("kvantum"));
+        qDebug() <<"kvantum";
     }
 #endif
 
