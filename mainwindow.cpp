@@ -65,7 +65,7 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
         setWindowTitle(QCoreApplication::translate("MainWindow", fileInfo.fileName().toStdString().c_str(), nullptr));
         DMSettings::setString(KEY_LAST_FILE, filePath);
         if (needSelect) {
-            selectInFolderView();
+            revealInFolderView();
         }
     }
 }
@@ -96,10 +96,11 @@ void MainWindow::contextMenu(const QPoint &pos) {
     const QModelIndex index = ui->fileTree->indexAt(pos);
     const QString path = ui->fileTreeModel->filePath(index);
     QMenu menu;
+    QAction *createFolderUnderRoot = menu.addAction("create folder under root");
 #ifndef QT_NO_CLIPBOARD
-    QAction *copyAction = menu.addAction("copy path");
+    QAction *copyAction = menu.addAction("copy path to clipboard");
 #endif
-    QAction *removeAction = menu.addAction("remove");
+    QAction *removeAction = menu.addAction("delete");
     QAction *action = menu.exec(ui->fileTree->mapToGlobal(pos));
     if (!action)
         return;
@@ -111,6 +112,22 @@ void MainWindow::contextMenu(const QPoint &pos) {
         QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(path));
     }
 #endif
+    else if (action == createFolderUnderRoot) {
+        auto index = ui->fileTreeModel->index(currentRootDirPath, 0);
+        int i= 0;
+
+        while (true) {
+            QString name = (i == 0) ? QString("untitled") : QString("untitled_%1").arg(i);
+            QFileInfo newFile = QFileInfo(currentRootDirPath, name);
+            if (!newFile.exists()) {
+                auto i = ui->fileTreeModel->mkdir(index, name);
+                ui->fileTree->scrollTo(i);
+                ui->fileTree->selectionModel()->select(i, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+                break;
+            }
+            i++;
+        }
+    }
 }
 
 void MainWindow::processStdOutput()
@@ -281,7 +298,7 @@ void MainWindow::setupFileMenu()
     fileMenu->addAction(tr("&Sync"), this, SLOT(syncFiles()),
                         QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_S));
 
-    fileMenu->addAction(tr("&Select in Folder View"), this, SLOT(selectInFolderView()),
+    fileMenu->addAction(tr("&Reveal in Folder View"), this, SLOT(revealInFolderView()),
                         QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_J));
 
     fileMenu->addAction(tr("&Exit"), qApp, SLOT(quit()),
@@ -377,9 +394,13 @@ void MainWindow::handleFileRenamed(const QString &path, const QString &oldName, 
     openFile_l(fileInfo.filePath(), 1, true);
 }
 
-void MainWindow::selectInFolderView() {
-    if (!currentFilePath.isEmpty()) {
-        auto index = ui->fileTreeModel->index(currentFilePath, 0);
+void MainWindow::revealInFolderView() {
+    revealInFolderView_l(currentFilePath);
+}
+
+void MainWindow::revealInFolderView_l(const QString &path) {
+    if (!path.isEmpty()) {
+        auto index = ui->fileTreeModel->index(path, 0);
         ui->fileTree->scrollTo(index);
         ui->fileTree->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
     }

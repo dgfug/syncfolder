@@ -34,7 +34,7 @@ public slots:
     void launchSearchWindow();
     void launchFindFileWindow();
     void handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatus);
-    void selectInFolderView();
+    void revealInFolderView();
     void contextMenu(const QPoint &pos);
     void processStdOutput();
     void processStdError();
@@ -44,6 +44,8 @@ public slots:
 protected:
     void setupFileMenu();
     QFileInfo selectedFile();
+    void revealInFolderView_l(const QString &path);
+
     /**
        * this event is called when the drop operation is initiated at the widget
        */
