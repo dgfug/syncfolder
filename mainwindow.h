@@ -24,6 +24,7 @@ public:
 
     void openFile_l(const QString &, size_t lineNo, bool needSelect = false) override;
 
+    QString getSyncConfigDir();
 public slots:
     void syncFiles();
     void newFile();

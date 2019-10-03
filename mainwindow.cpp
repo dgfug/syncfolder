@@ -132,12 +132,14 @@ void MainWindow::contextMenu(const QPoint &pos) {
 
 void MainWindow::processStdOutput()
 {
+//    qDebug()<< unisonProcess->readAllStandardOutput();
     syncProgressBar->setValue(syncProgressBar->value() + 4);
     syncLog += unisonProcess->readAllStandardOutput();  // read error channel
 }
 
 void MainWindow::processStdError()
 {
+//    qDebug()<< unisonProcess->readAllStandardError();
     syncProgressBar->setValue(1);
     syncLog += unisonProcess->readAllStandardError();  // read error channel
 }
@@ -231,6 +233,7 @@ void MainWindow::newFile()
             QFile n = QFile(filePath);
             n.open(QIODevice::WriteOnly | QIODevice::Append);
             openFile_l(filePath, 1, true);
+            ui->fileTree->edit(ui->fileTreeModel->index(filePath));
             break;
         }
         i++;
@@ -272,12 +275,26 @@ void MainWindow::syncFiles() {
     statusBar()->addWidget(syncProgressBar);
 
     unisonProcess = new QProcess(this);
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+
+    QString syncConfigDirPath = getSyncConfigDir();
+    env.insert("UNISON", syncConfigDirPath); // Add an environment variable
+    unisonProcess->setProcessEnvironment(env);
     connect(unisonProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(handleSyncFinished(int, QProcess::ExitStatus)));
     connect(unisonProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStdOutput()));  // connect process signals with your code
     connect(unisonProcess, SIGNAL(readyReadStandardError()), this, SLOT(processStdError()));  // same here
     QString command(QString("/Users/faywong/bin/unison %1 %2").arg("default", "-batch"));
-//    qDebug() << "About to invoke" << command;
     unisonProcess->start(command);
+}
+
+QString MainWindow::getSyncConfigDir() {
+    const QString configDirName = ".sync";
+    QDir currentRootDir(currentRootDirPath);
+    if (!currentRootDir.exists(configDirName)) {
+        currentRootDir.mkdir(configDirName);
+    }
+
+    return currentRootDir.filePath(configDirName);
 }
 
 void MainWindow::setupFileMenu()
@@ -374,18 +391,20 @@ void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatu
         ui->statusBar->addWidget(syncDetailsIcon);
     }
     syncProgressBar->setVisible(false);
-    syncDetailsIcon->setVisible(true);
+    syncDetailsIcon->setVisible(exitCode != 0);
 
     connect(syncDetailsIcon, SIGNAL(clicked(bool)), this, SLOT(showSyncDetails(bool)));
 }
 
 void MainWindow::showSyncDetails(bool checked) {
     QMessageBox msgBox;
-    msgBox.setWindowTitle("QMessageBox Example");
-    msgBox.setText("details of file sync activity");
-    msgBox.setInformativeText(syncLog);
+    msgBox.setWindowTitle("Sync details");
+    msgBox.setText("sync failed, please check your sync settings");
+    QRegularExpression re("^Unison.*SSH");
+    re.setPatternOptions(QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption);
+    syncLog = syncLog.replace(re, "SSH");
+    msgBox.setDetailedText(syncLog);
     msgBox.exec();
-    // TODO: guide user to check settings
 }
 
 void MainWindow::handleFileRenamed(const QString &path, const QString &oldName, const QString &newName) {
