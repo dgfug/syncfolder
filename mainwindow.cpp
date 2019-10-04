@@ -51,7 +51,7 @@ void MainWindow::handleOrgCaptured(const QString &url)
     QString body = urlQuery.queryItemValue("body");
     QString now = QDateTime::currentDateTime().toString("hh:mm:ss_yyyy-MM-dd");
     body = body.replace("%0A", "");
-    newFileWithTitleContent(QString("%1_%2").arg(now).arg(title), body);
+    newFileWithTitleContent(QString("%1_%2").arg(title).arg(now), body);
 }
 
 void MainWindow::fileSelectionChanged(const QItemSelection& selected,const QItemSelection& deselected) {

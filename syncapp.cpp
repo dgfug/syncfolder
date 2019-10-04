@@ -15,11 +15,6 @@ bool SyncApp::event(QEvent *event) {
         {
             auto url = openEvent->url().toString();
             emit urlOpened(url);
-            QMessageBox msgBox;
-            msgBox.setText("org protocol");
-            msgBox.setInformativeText(url);
-            msgBox.setDefaultButton(QMessageBox::Ok);
-            msgBox.exec();
             return true;
         }
     }
