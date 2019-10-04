@@ -20,6 +20,11 @@
 #include <QMimeData>
 #include <fileformat.h>
 #include <QMimeDatabase>
+#include <QInputDialog>
+#include <QUrlQuery>
+#include <QUrl>
+#include "syncapp.h"
+#include <QDateTime>
 
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     QMainWindow(parent),
@@ -34,6 +39,19 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     ui->setupUi(this);
     setupFileMenu();
     setAcceptDrops(true);
+}
+
+void MainWindow::handleOrgCaptured(const QString &url)
+{
+    QUrl note = QUrl::fromEncoded(url.toUtf8().constData());
+    note.setQuery(note.query(QUrl::FullyDecoded), QUrl::DecodedMode);
+    QUrlQuery urlQuery(note);
+    QString u = urlQuery.queryItemValue("url");
+    QString title = urlQuery.queryItemValue("title");
+    QString body = urlQuery.queryItemValue("body");
+    QString now = QDateTime::currentDateTime().toString("hh:mm:ss_yyyy-MM-dd");
+    body = body.replace("%0A", "");
+    newFileWithTitleContent(QString("%1_%2").arg(now).arg(title), body);
 }
 
 void MainWindow::fileSelectionChanged(const QItemSelection& selected,const QItemSelection& deselected) {
@@ -96,11 +114,11 @@ void MainWindow::contextMenu(const QPoint &pos) {
     const QModelIndex index = ui->fileTree->indexAt(pos);
     const QString path = ui->fileTreeModel->filePath(index);
     QMenu menu;
+    QAction *removeAction = menu.addAction("delete");
     QAction *createFolderUnderRoot = menu.addAction("create folder under root");
 #ifndef QT_NO_CLIPBOARD
     QAction *copyAction = menu.addAction("copy path to clipboard");
 #endif
-    QAction *removeAction = menu.addAction("delete");
     QAction *action = menu.exec(ui->fileTree->mapToGlobal(pos));
     if (!action)
         return;
@@ -217,8 +235,7 @@ QFileInfo MainWindow::selectedFile() {
     return ui->fileTreeModel->fileInfo(selectionIndex);
 }
 
-void MainWindow::newFile()
-{
+void MainWindow::newFileWithTitleContent(const QString &title, const QString &content) {
     auto selectionIndex = ui->fileTree->selectionModel()->currentIndex();
     auto selectedFile = ui->fileTreeModel->fileInfo(selectionIndex);
 
@@ -226,12 +243,16 @@ void MainWindow::newFile()
     int i= 0;
 
     while (true) {
-        QString name = i == 0 ? QString("untitled.md") : QString("untitled_%1.md").arg(i);
+        QString name = i == 0 ? QString("%1.md").arg(title) : QString("%1%2.md").arg(title).arg(i);
         QFileInfo newFile = QFileInfo(dir, name);
         if (!newFile.exists()) {
             QString filePath = newFile.absoluteFilePath();
             QFile n = QFile(filePath);
             n.open(QIODevice::WriteOnly | QIODevice::Append);
+            if (!content.isEmpty()) {
+                currentFilePath = filePath;
+                saveFileFromText(content);
+            }
             openFile_l(filePath, 1, true);
             ui->fileTree->edit(ui->fileTreeModel->index(filePath));
             break;
@@ -240,16 +261,26 @@ void MainWindow::newFile()
     }
 }
 
-void MainWindow::saveFile()
+void MainWindow::newFile()
 {
+    newFileWithTitleContent("untitled", "");
+}
+
+void MainWindow::saveFileFromText(const QString &text) {
     if (!currentFilePath.isEmpty()) {
         QFile file(currentFilePath);
         file.open(QFile::WriteOnly | QFile::Text);
         QTextStream fileToWrite(&file);
-        fileToWrite << ui->markdownEditor->toPlainText();
+        fileToWrite << text;
         file.flush();
         file.close();
     }
+}
+
+
+void MainWindow::saveFile()
+{
+    saveFileFromText(ui->markdownEditor->toPlainText());
 }
 
 void MainWindow::syncFiles() {
@@ -402,7 +433,7 @@ void MainWindow::showSyncDetails(bool checked) {
     msgBox.setText("sync failed, please check your sync settings");
     QRegularExpression re("^Unison.*SSH");
     re.setPatternOptions(QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption);
-    syncLog = syncLog.replace(re, "SSH");
+    syncLog = syncLog.replace(re, "OpenSSH");
     msgBox.setDetailedText(syncLog);
     msgBox.exec();
 }

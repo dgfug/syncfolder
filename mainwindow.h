@@ -7,6 +7,7 @@
 #include <QProgressBar>
 #include "FullTextSearchWindow.h"
 #include "FileLocatorWindow.h"
+#include <iostream>
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +26,9 @@ public:
     void openFile_l(const QString &, size_t lineNo, bool needSelect = false) override;
 
     QString getSyncConfigDir();
+
+    void saveFileFromText(const QString &text);
+    void newFileWithTitleContent(const QString &title, const QString &content);
 public slots:
     void syncFiles();
     void newFile();
@@ -40,7 +44,10 @@ public slots:
     void processStdOutput();
     void processStdError();
     void showSyncDetails(bool checked);
-    void handleFileRenamed(const QString &path, const QString &oldName, const QString &newName);
+    void handleFileRenamed(const QString &path,
+                           const QString &oldName,
+                           const QString &newName);
+    void handleOrgCaptured(const QString &);
 
 protected:
     void setupFileMenu();

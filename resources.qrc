@@ -1,11 +1,10 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
- <qresource>
-     <file>icons/folder.svg</file>
-     <file>icons/file.svg</file>
-     <file>icons/file_text.svg</file>
-     <file>icons/file_markdown.svg</file>
-     <file>icons/file_unknown.svg</file>
-     <file>icons/details.svg</file>
- </qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>icons/folder.svg</file>
+        <file>icons/file.svg</file>
+        <file>icons/file_text.svg</file>
+        <file>icons/file_markdown.svg</file>
+        <file>icons/file_unknown.svg</file>
+        <file>icons/details.svg</file>
+    </qresource>
 </RCC>

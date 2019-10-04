@@ -25,12 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++17
 
 SOURCES += \
-        FileIconProvider.cpp \
-        FileLocatorWindow.cpp \
-        FullTextSearchWindow.cpp \
+    FileIconProvider.cpp \
+    FileLocatorWindow.cpp \
+    FullTextSearchWindow.cpp \
     fileformat.cpp \
-        main.cpp \
-        mainwindow.cpp \
+    main.cpp \
+    mainwindow.cpp \
+    syncapp.cpp \
 
 INCLUDEPATH += . \
 
@@ -46,7 +47,9 @@ HEADERS += \
         qmarkdowntextedit/pmh_definitions.h \
         qmarkdowntextedit/pmh_parser.h \
         qmarkdowntextedit/pmh_styleparser.h \
-        settings/settings_def.h
+        quickjspp/quickjspp.hpp \
+        settings/settings_def.h \
+        syncapp.h \
 
 FORMS +=
 
@@ -64,3 +67,8 @@ RESOURCES += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    bin/unison
+
+QMAKE_INFO_PLIST = config/Info.plist

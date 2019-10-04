@@ -6,10 +6,11 @@
 #include <QStyleFactory>
 #include <QtGlobal>
 #include "settings/settings_def.h"
+#include "syncapp.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    SyncApp a(argc, argv);
 
 //    qDebug() << QStyleFactory::keys();
 
@@ -24,7 +25,7 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    QCoreApplication::setApplicationVersion(QT_VERSION_STR);
+    QCoreApplication::setApplicationVersion(SYNC_FOLDER_VER);
     QCoreApplication::setOrganizationName("faywong personal");
     QCoreApplication::setOrganizationDomain("syncfolder.com");
     QCoreApplication::setApplicationName("SyncFolder");
@@ -38,6 +39,7 @@ int main(int argc, char *argv[])
         ? QString() : parser.positionalArguments().first();
 
     MainWindow w;
+
     if (rootPath.isEmpty()) {
         rootPath = DMSettings::getString(KEY_LAST_FOLDER);
     }
@@ -50,6 +52,8 @@ int main(int argc, char *argv[])
     if (!lastEditedFile.isEmpty()) {
         w.openFile_l(lastEditedFile, 1, true);
     }
+
+    QObject::connect(&a, SIGNAL(urlOpened(const QString &)), &w, SLOT(handleOrgCaptured(const QString &)));
 
     w.show();
 
