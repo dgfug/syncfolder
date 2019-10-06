@@ -4,10 +4,11 @@
 #include <QItemSelection>
 #include <QMainWindow>
 #include <QProcess>
-#include <QProgressBar>
+
+#include <iostream>
 #include "FullTextSearchWindow.h"
 #include "FileLocatorWindow.h"
-#include <iostream>
+#include "CircleProgressBar.h"
 
 namespace Ui {
 class MainWindow;
@@ -75,7 +76,7 @@ private:
     QString syncLog;
     QLabel *detailsLabel;
     QPushButton *syncDetailsIcon;
-    QProgressBar *syncProgressBar;
+    CircleProgressBar *syncProgressBar;
 };
 
 #endif // MAINWINDOW_H

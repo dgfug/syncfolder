@@ -32,8 +32,10 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     syncapp.cpp \
+    uiwidgets/ProgressCircle.cpp
 
 INCLUDEPATH += . \
+            uiwidgets \
 
 HEADERS += \
         EditorDelegate.h \
@@ -50,6 +52,8 @@ HEADERS += \
         quickjspp/quickjspp.hpp \
         settings/settings_def.h \
         syncapp.h \
+        uiwidgets/CircleProgressBar.h \
+        uiwidgets/ProgressCircle.h
 
 FORMS +=
 
