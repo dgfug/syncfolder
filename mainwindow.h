@@ -32,6 +32,7 @@ public:
     void newFileWithTitleContent(const QString &title, const QString &content);
 public slots:
     void syncFiles();
+    void launchSyncSettings();
     void newFile();
     void openFile();
     void openDirectory();
@@ -40,7 +41,8 @@ public slots:
     void launchSearchWindow();
     void launchFindFileWindow();
     void handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatus);
-    void revealInFolderView();
+    void revealInTreeView();
+    void about();
     void contextMenu(const QPoint &pos);
     void processStdOutput();
     void processStdError();
@@ -51,9 +53,9 @@ public slots:
     void handleOrgCaptured(const QString &);
 
 protected:
-    void setupFileMenu();
+    void setupMenus();
     QFileInfo selectedFile();
-    void revealInFolderView_l(const QString &path);
+    void revealInTreeView_l(const QString &path);
 
     /**
        * this event is called when the drop operation is initiated at the widget

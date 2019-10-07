@@ -49,7 +49,6 @@ HEADERS += \
         qmarkdowntextedit/pmh_definitions.h \
         qmarkdowntextedit/pmh_parser.h \
         qmarkdowntextedit/pmh_styleparser.h \
-        quickjspp/quickjspp.hpp \
         settings/settings_def.h \
         syncapp.h \
         uiwidgets/CircleProgressBar.h \
@@ -76,3 +75,5 @@ DISTFILES += \
     bin/unison
 
 QMAKE_INFO_PLIST = config/Info.plist
+TRANSLATIONS = translations/syncfolder_zh_CN.ts
+

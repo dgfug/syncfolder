@@ -26,6 +26,8 @@
 #include <QSplitter>
 #include <QScreen>
 #include <QMetaObject>
+#include <QLabel>
+#include <QScrollArea>
 #include "settings/settings_def.h"
 
 QT_BEGIN_NAMESPACE
@@ -41,6 +43,9 @@ public:
     QSplitter *splitter;
     QTreeView *fileTree;
     QFileSystemModel *fileTreeModel;
+    // image viewer part
+    QLabel *imageLabel;
+    QScrollArea *imageScrollArea;
     void setupUi(QMainWindow *mainWindow)
     {
         if (mainWindow->objectName().isEmpty())
@@ -76,6 +81,7 @@ public:
         fileTree = new QTreeView;
         bodyLayout->addWidget(splitter);
         splitter->addWidget(fileTree);
+        splitter->setStretchFactor(0, 1);
 
         fileTreeModel = new QFileSystemModel(mainWindow);
         fileTreeModel->setIconProvider(new DMFileIconProvider);
@@ -111,11 +117,23 @@ public:
         // create markdown editor
         markdownEditor = new QMarkdownTextEdit(mainWindow);
         splitter->addWidget(markdownEditor);
-        splitter->setStretchFactor(0, 1);
         splitter->setStretchFactor(1, 3);
 
         // we handle drag & drop globally in MainWindow, so disable it here
         markdownEditor->viewport()->setAcceptDrops(false);
+
+        imageLabel = new QLabel;
+        imageLabel->setBackgroundRole(QPalette::Base);
+        imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+        imageLabel->setScaledContents(true);
+
+        imageScrollArea = new QScrollArea;
+        imageScrollArea->setBackgroundRole(QPalette::Dark);
+        imageScrollArea->setWidget(imageLabel);
+        imageScrollArea->setWidgetResizable(true);
+        imageScrollArea->setVisible(false);
+        splitter->addWidget(imageScrollArea);
+        splitter->setStretchFactor(2, 3);
 
         // create center widget
         QWidget *centerWidget = new QWidget();

@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QProgressBar>
+#include <QImageReader>
 #include "settings/settings_def.h"
 #include <QStandardPaths>
 #include <iostream>
@@ -37,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     syncDetailsIcon(nullptr)
 {
     ui->setupUi(this);
-    setupFileMenu();
+    setupMenus();
     setAcceptDrops(true);
 }
 
@@ -66,7 +67,30 @@ void MainWindow::fileSelectionChanged(const QItemSelection& selected,const QItem
 }
 
 void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSelect) {
-    if (!filePath.isEmpty()) {
+    const QByteArrayList supportedMimeTypes = QImageReader::supportedMimeTypes();
+    QMimeDatabase mimeDatabase;
+    QFileInfo fileInfo(filePath);
+    const QMimeType mimeType = mimeDatabase.mimeTypeForFile(fileInfo);
+
+    bool isImage = false;
+    for (const QByteArray &mimeTypeName : supportedMimeTypes) {
+        if (mimeType.inherits(mimeTypeName)) {
+            isImage = true;
+            break;
+        }
+    }
+
+    if (isImage) { // image for read
+        QImageReader reader(filePath);
+        reader.setAutoTransform(true);
+        const QImage newImage = reader.read();
+        if (!newImage.isNull()) {
+            ui->markdownEditor->setVisible(false);
+            ui->imageScrollArea->setVisible(true);
+            ui->splitter->setStretchFactor(0, 0);
+            ui->imageLabel->setPixmap(QPixmap::fromImage(newImage));
+        }
+    } else if (!filePath.isEmpty()) {
         QFileInfo fileInfo(filePath);
         if (!fileInfo.exists() || !fileInfo.isFile()) {
             return;
@@ -76,6 +100,10 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
 
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream fileToRead(&file);
+        ui->markdownEditor->setVisible(true);
+        ui->imageScrollArea->setVisible(false);
+        ui->splitter->setStretchFactor(0, 1);
+        ui->splitter->setStretchFactor(1, 3);
         ui->markdownEditor->setText(fileToRead.readAll());
         QTextCursor cursor(ui->markdownEditor->document()->findBlockByLineNumber(lineNo - 1));
         ui->markdownEditor->moveCursor(QTextCursor::End);
@@ -83,7 +111,7 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
         setWindowTitle(QCoreApplication::translate("MainWindow", fileInfo.fileName().toStdString().c_str(), nullptr));
         DMSettings::setString(KEY_LAST_FILE, filePath);
         if (needSelect) {
-            revealInFolderView();
+            revealInTreeView();
         }
     }
 }
@@ -113,12 +141,18 @@ void MainWindow::setCurrentRootDirPath(const QString &folderPath)
 void MainWindow::contextMenu(const QPoint &pos) {
     const QModelIndex index = ui->fileTree->indexAt(pos);
     const QString path = ui->fileTreeModel->filePath(index);
+    const QFileInfo info(path);
     QMenu menu;
-    QAction *removeAction = menu.addAction("delete");
-    QAction *createFolderUnderRoot = menu.addAction("create folder under root");
+    QAction *removeAction = menu.addAction(tr("delete"));
+    QAction *createFolderUnderRoot = menu.addAction(tr("create folder under root"));
 #ifndef QT_NO_CLIPBOARD
-    QAction *copyAction = menu.addAction("copy path to clipboard");
+    QAction *copyAction = menu.addAction(tr("copy path to clipboard"));
 #endif
+
+    QAction *setAsNewRoot = nullptr;
+    if (info.isDir()) {
+        setAsNewRoot = menu.addAction(tr("set as new root"));
+    }
     QAction *action = menu.exec(ui->fileTree->mapToGlobal(pos));
     if (!action)
         return;
@@ -135,7 +169,7 @@ void MainWindow::contextMenu(const QPoint &pos) {
         int i= 0;
 
         while (true) {
-            QString name = (i == 0) ? QString("untitled") : QString("untitled_%1").arg(i);
+            QString name = (i == 0) ? QString(tr("untitled")) : QString(tr("untitled_%1")).arg(i);
             QFileInfo newFile = QFileInfo(currentRootDirPath, name);
             if (!newFile.exists()) {
                 auto i = ui->fileTreeModel->mkdir(index, name);
@@ -145,6 +179,8 @@ void MainWindow::contextMenu(const QPoint &pos) {
             }
             i++;
         }
+    } else if (action == setAsNewRoot) {
+        setCurrentRootDirPath(path);
     }
 }
 
@@ -173,7 +209,7 @@ void MainWindow::openFile()
             openFile_l(filePath, 1);
         } else {
             QMessageBox msgBox;
-            msgBox.setText("Error");
+            msgBox.setText(tr("Error"));
             msgBox.setInformativeText("file at path: " + filePath + " is not able to be edited!");
             msgBox.setDefaultButton(QMessageBox::Ok);
             msgBox.exec();
@@ -194,7 +230,7 @@ void MainWindow::openDirectory()
             setCurrentRootDirPath(dirPath);
         } else {
             QMessageBox msgBox;
-            msgBox.setText("Error");
+            msgBox.setText(tr("Error"));
             msgBox.setInformativeText("file at path: " + dirPath + " is not able to be edited!");
             msgBox.setDefaultButton(QMessageBox::Ok);
             msgBox.exec();
@@ -204,8 +240,9 @@ void MainWindow::openDirectory()
 
 void MainWindow::dragEnterEvent(QDragEnterEvent* event)
 {
-    if (event->mimeData()->hasUrls())
-           event->acceptProposedAction();
+    if (event->mimeData()->hasUrls()) {
+       event->acceptProposedAction();
+    }
   // if some actions should not be usable, like move, this code must be adopted
 }
 
@@ -213,7 +250,6 @@ void MainWindow::dropEvent(QDropEvent *event) {
     if (event->mimeData()->hasUrls()) {
         QMimeDatabase mimeDatabase;
         foreach (QUrl url, event->mimeData()->urls()) {
-//            qDebug()<<"drop url: " << url;
             auto filePath = url.toLocalFile();
             QFileInfo fileInfo(filePath);
             if (fileInfo.isFile()) {
@@ -261,7 +297,7 @@ void MainWindow::newFileWithTitleContent(const QString &title, const QString &co
 
 void MainWindow::newFile()
 {
-    newFileWithTitleContent("untitled", "");
+    newFileWithTitleContent(tr("untitled"), "");
 }
 
 void MainWindow::saveFileFromText(const QString &text) {
@@ -281,6 +317,10 @@ void MainWindow::saveFile()
     saveFileFromText(ui->markdownEditor->toPlainText());
 }
 
+void MainWindow::launchSyncSettings() {
+    // TODO: implement
+}
+
 void MainWindow::syncFiles() {
     syncLog.clear();
 
@@ -293,14 +333,14 @@ void MainWindow::syncFiles() {
     }
 
     if (syncProgressBar == nullptr) {
-        syncProgressBar = new CircleProgressBar("Sync is on-going");
+        syncProgressBar = new CircleProgressBar(tr("Sync is on-going"));
     }
 
     syncProgressBar->setVisible(true);
     statusBar()->addWidget(syncProgressBar);
 
     if (syncDetailsIcon == nullptr) {
-        syncDetailsIcon = new QPushButton("details", ui->statusBar);
+        syncDetailsIcon = new QPushButton(tr("details"), ui->statusBar);
         syncDetailsIcon->setToolTip(tr("sync details"));
         statusBar()->addWidget(syncDetailsIcon);
         connect(syncDetailsIcon, SIGNAL(clicked(bool)), this, SLOT(showSyncDetails(bool)));
@@ -329,7 +369,7 @@ QString MainWindow::getSyncConfigDir() {
     return currentRootDir.filePath(configDirName);
 }
 
-void MainWindow::setupFileMenu()
+void MainWindow::setupMenus()
 {
     QMenu *fileMenu = new QMenu(tr("&File"), this);
     menuBar()->addMenu(fileMenu);
@@ -344,12 +384,6 @@ void MainWindow::setupFileMenu()
     fileMenu->addAction(tr("&Save..."), this, SLOT(saveFile()),
                         QKeySequence::Save);
 
-    fileMenu->addAction(tr("&Sync"), this, SLOT(syncFiles()),
-                        QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_S));
-
-    fileMenu->addAction(tr("&Reveal in Folder View"), this, SLOT(revealInFolderView()),
-                        QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_J));
-
     fileMenu->addAction(tr("&Exit"), qApp, SLOT(quit()),
                         QKeySequence::Quit);
 
@@ -362,6 +396,28 @@ void MainWindow::setupFileMenu()
     launchFindFileAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_O);
     connect(launchFindFileAction, SIGNAL(triggered()), this, SLOT(launchFindFileWindow()));
     this->addAction(launchFindFileAction);
+
+    // sync menu
+    QMenu *syncMenu = new QMenu(tr("&Sync"), this);
+    menuBar()->addMenu(syncMenu);
+    syncMenu->addAction(tr("&Sync"), this, SLOT(syncFiles()),
+                        QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_S));
+    syncMenu->addAction(tr("&Settings"), this, SLOT(launchSyncSettings()),
+                        QKeySequence(Qt::Key_F5));
+
+    // tidy menu
+    QMenu *tidyMenu = new QMenu(tr("&tidy"), this);
+    menuBar()->addMenu(tidyMenu);
+
+    tidyMenu->addAction(tr("&Reveal in Tree View"), this, SLOT(revealInTreeView()),
+                        QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_J));
+
+    // about menu
+    QMenu *aboutMenu = new QMenu(tr("&about"), this);
+    menuBar()->addMenu(aboutMenu);
+
+    aboutMenu->addAction(tr("&about"), this, SLOT(about()),
+                        QKeySequence(Qt::Key_F1));
 }
 
 void MainWindow::launchSearchWindow() {
@@ -385,28 +441,28 @@ void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatu
     syncProgressBar->finish(exitCode == 0);
     switch (exitCode) {
     case 0:
-        status = "successful synchronization; everything is up-to-date now.";
+        status = tr("successful synchronization; everything is up-to-date now.");
         emoji = "😀";
         break;
     case 1:
-        status = "some files were skipped, but all file transfers were successful.";
+        status = tr("some files were skipped, but all file transfers were successful.");
         emoji = "😞";
         break;
     case 2:
-        status = "non-fatal failures occurred during file transfer.";
+        status = tr("non-fatal failures occurred during file transfer.");
         emoji = "😥";
         break;
     case 3:
-        status = "a fatal error occurred, or the execution was interrupted.";
+        status = tr("a fatal error occurred, or the execution was interrupted.");
         emoji = "😭";
         break;
     default:
-        status = "unknown";
+        status = tr("unknown");
         emoji = "💥";
         break;
     }
 
-    QString result = QString("%1 Sync result: %2, status: %3").arg(emoji).arg(status).arg(exitCode);
+    QString result = QString(tr("%1 Sync result: %2, status: %3")).arg(emoji).arg(status).arg(exitCode);
 
     if (detailsLabel == nullptr) {
         detailsLabel = new QLabel(result, ui->statusBar);
@@ -422,8 +478,8 @@ void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatu
 
 void MainWindow::showSyncDetails(bool checked) {
     QMessageBox msgBox;
-    msgBox.setWindowTitle("Sync details");
-    msgBox.setText("sync failed, please check your sync settings");
+    msgBox.setWindowTitle(tr("Sync details"));
+    msgBox.setText(tr("sync failed, please check your sync settings"));
     QRegularExpression re("^Unison.*SSH");
     re.setPatternOptions(QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption);
     syncLog = syncLog.replace(re, "OpenSSH");
@@ -437,11 +493,20 @@ void MainWindow::handleFileRenamed(const QString &path, const QString &oldName, 
     openFile_l(fileInfo.filePath(), 1, true);
 }
 
-void MainWindow::revealInFolderView() {
-    revealInFolderView_l(currentFilePath);
+void MainWindow::revealInTreeView() {
+    revealInTreeView_l(currentFilePath);
 }
 
-void MainWindow::revealInFolderView_l(const QString &path) {
+void MainWindow::about() {
+    QMessageBox::about(this, tr("SyncFolder"),
+              tr("<p><b>作者</b>：<a href=\"mailto://philip584521@gmail.com\">philip584521@gmail.com</a>"
+                 "<p><b>反馈</b>：<a href=\"https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html\">官方论坛</a>"
+                 "<p><b>版本</b>：v0.1.0"
+                 ));
+}
+
+
+void MainWindow::revealInTreeView_l(const QString &path) {
     if (!path.isEmpty()) {
         auto index = ui->fileTreeModel->index(path, 0);
         ui->fileTree->scrollTo(index);

@@ -5,12 +5,16 @@
 #include <QDebug>
 #include <QStyleFactory>
 #include <QtGlobal>
+#include <QTranslator>
 #include "settings/settings_def.h"
 #include "syncapp.h"
 
 int main(int argc, char *argv[])
 {
     SyncApp a(argc, argv);
+    QTranslator translator;
+    translator.load(":/translations/syncfolder_zh_CN.qm");
+    a.installTranslator(&translator);
 
 //    qDebug() << QStyleFactory::keys();
 
