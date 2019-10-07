@@ -28,9 +28,11 @@ SOURCES += \
     FileIconProvider.cpp \
     FileLocatorWindow.cpp \
     FullTextSearchWindow.cpp \
+    configurationpage.cpp \
     fileformat.cpp \
     main.cpp \
     mainwindow.cpp \
+    settingdialog.cpp \
     syncapp.cpp \
     uiwidgets/ProgressCircle.cpp
 
@@ -42,6 +44,7 @@ HEADERS += \
         FileIconProvider.h \
         FileLocatorWindow.h \
         FullTextSearchWindow.h \
+        configurationpage.h \
         fileformat.h \
         mainwindow.h \
         mainwindowbuilder.h \
@@ -49,6 +52,7 @@ HEADERS += \
         qmarkdowntextedit/pmh_definitions.h \
         qmarkdowntextedit/pmh_parser.h \
         qmarkdowntextedit/pmh_styleparser.h \
+        settingdialog.h \
         settings/settings_def.h \
         syncapp.h \
         uiwidgets/CircleProgressBar.h \

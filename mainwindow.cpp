@@ -26,6 +26,7 @@
 #include <QUrl>
 #include "syncapp.h"
 #include <QDateTime>
+#include "settingdialog.h"
 
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     QMainWindow(parent),
@@ -318,7 +319,8 @@ void MainWindow::saveFile()
 }
 
 void MainWindow::launchSyncSettings() {
-    // TODO: implement
+    SettingDialog dialog;
+    dialog.exec();
 }
 
 void MainWindow::syncFiles() {
