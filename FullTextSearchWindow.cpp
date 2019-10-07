@@ -223,7 +223,7 @@ void FullTextSearchWindow::showFiles(const QList<SearchResultItem> &paths)
         fileNameItem->setData(absoluteFileNameRole, QVariant(fileItem.file));
         fileNameItem->setToolTip(toolTip);
         fileNameItem->setFlags(fileNameItem->flags() ^ Qt::ItemIsEditable);
-        QTableWidgetItem *lineNoItem = new QTableWidgetItem(QLocale().toString(fileItem.lineNo));
+        QTableWidgetItem *lineNoItem = new QTableWidgetItem(QString("") + fileItem.lineNo);
         lineNoItem->setData(lineNoRole, (int)(fileItem.lineNo));
         lineNoItem->setToolTip(toolTip);
         lineNoItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
