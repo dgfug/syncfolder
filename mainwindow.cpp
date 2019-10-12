@@ -158,7 +158,15 @@ void MainWindow::contextMenu(const QPoint &pos) {
     if (!action)
         return;
     if (action == removeAction) {
-        ui->fileTreeModel->remove(index);
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, tr("Deletion confirm"), tr("Safe to delete?"),
+                                      QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            ui->fileTreeModel->remove(index);
+            qDebug() << "File delete was clicked";
+        } else {
+            qDebug() << "File delete was *not* clicked";
+        }
     }
 #ifndef QT_NO_CLIPBOARD
     else if (action == copyAction) {

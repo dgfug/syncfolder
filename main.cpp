@@ -13,10 +13,11 @@ int main(int argc, char *argv[])
 {
     SyncApp a(argc, argv);
     QTranslator translator;
-    translator.load(":/translations/syncfolder_zh_CN.qm");
+    QString locale = QLocale::system().name();
+    if (locale == "zh_CN") {
+        translator.load(":/translations/syncfolder_zh_CN.qm");
+    }
     a.installTranslator(&translator);
-
-//    qDebug() << QStyleFactory::keys();
 
 #if defined (Q_OS_MAC) || defined (Q_OS_MACOS)
     if (QStyleFactory::keys().contains("macintosh")) {
