@@ -32,7 +32,7 @@ public:
     void newFileWithTitleContent(const QString &title, const QString &content);
 public slots:
     void syncFiles();
-    void launchSyncSettings();
+    void launchSettings();
     void newFile();
     void openFile();
     void openDirectory();

@@ -5,22 +5,27 @@
 ConfigurationPage::ConfigurationPage(QWidget *parent)
     : QWidget(parent)
 {
-    QGroupBox *configGroup = new QGroupBox(tr("Server configuration"));
+    QGroupBox *configGroup = new QGroupBox(tr("Remote configuration"));
 
-    QLabel *serverLabel = new QLabel(tr("Server:"));
-    QComboBox *serverCombo = new QComboBox;
-    serverCombo->addItem(tr("Qt (Australia)"));
-    serverCombo->addItem(tr("Qt (Germany)"));
-    serverCombo->addItem(tr("Qt (Norway)"));
-    serverCombo->addItem(tr("Qt (People's Republic of China)"));
-    serverCombo->addItem(tr("Qt (USA)"));
+    QComboBox *syncServiceTypeCombo = new QComboBox;
+    syncServiceTypeCombo->addItem(tr("syncfolder cloud"));
+    syncServiceTypeCombo->addItem(tr("Self-built server"));
 
-    QHBoxLayout *serverLayout = new QHBoxLayout;
-    serverLayout->addWidget(serverLabel);
-    serverLayout->addWidget(serverCombo);
+    QHBoxLayout *serviceTypeLayout = new QHBoxLayout;
+    QLabel *serverLabel = new QLabel(tr("Sync service type:"));
+    serviceTypeLayout->addWidget(serverLabel);
+    serviceTypeLayout->addWidget(syncServiceTypeCombo);
+
+    QHBoxLayout *serviceUriLayout = new QHBoxLayout;
+    QLabel *remoteUriLabel = new QLabel(tr("uri:"));
+    serviceUriLayout->addWidget(remoteUriLabel);
+    QLineEdit *remoteUriLineEdit = new QLineEdit();
+    serviceUriLayout->addWidget(remoteUriLineEdit);
 
     QVBoxLayout *configLayout = new QVBoxLayout;
-    configLayout->addLayout(serverLayout);
+    configLayout->addLayout(serviceTypeLayout);
+    configLayout->addLayout(serviceUriLayout);
+
     configGroup->setLayout(configLayout);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;

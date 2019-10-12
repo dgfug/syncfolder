@@ -326,7 +326,7 @@ void MainWindow::saveFile()
     saveFileFromText(ui->markdownEditor->toPlainText());
 }
 
-void MainWindow::launchSyncSettings() {
+void MainWindow::launchSettings() {
     SettingDialog dialog;
     dialog.exec();
 }
@@ -384,6 +384,9 @@ void MainWindow::setupMenus()
     QMenu *fileMenu = new QMenu(tr("&File"), this);
     menuBar()->addMenu(fileMenu);
 
+    fileMenu->addAction(tr("&Settings"), this, SLOT(launchSettings()),
+                        QKeySequence(Qt::Key_F5));
+
     fileMenu->addAction(tr("&New"), this, SLOT(newFile()),
                         QKeySequence::New);
 
@@ -393,6 +396,12 @@ void MainWindow::setupMenus()
 
     fileMenu->addAction(tr("&Save..."), this, SLOT(saveFile()),
                         QKeySequence::Save);
+
+    fileMenu->addAction(tr("&Reveal in Tree View"), this, SLOT(revealInTreeView()),
+                        QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_J));
+
+    fileMenu->addAction(tr("&Sync"), this, SLOT(syncFiles()),
+                        QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_S));
 
     fileMenu->addAction(tr("&Exit"), qApp, SLOT(quit()),
                         QKeySequence::Quit);
@@ -407,25 +416,15 @@ void MainWindow::setupMenus()
     connect(launchFindFileAction, SIGNAL(triggered()), this, SLOT(launchFindFileWindow()));
     this->addAction(launchFindFileAction);
 
-    // sync menu
-    QMenu *syncMenu = new QMenu(tr("&Sync"), this);
-    menuBar()->addMenu(syncMenu);
-    syncMenu->addAction(tr("&Sync"), this, SLOT(syncFiles()),
-                        QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_S));
-    syncMenu->addAction(tr("&Settings"), this, SLOT(launchSyncSettings()),
-                        QKeySequence(Qt::Key_F5));
-
     // tidy menu
     QMenu *tidyMenu = new QMenu(tr("&tidy"), this);
     menuBar()->addMenu(tidyMenu);
-
-    tidyMenu->addAction(tr("&Reveal in Tree View"), this, SLOT(revealInTreeView()),
-                        QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_J));
 
     // about menu
     QMenu *aboutMenu = new QMenu(tr("&about"), this);
     menuBar()->addMenu(aboutMenu);
 
+    // TODO: check update
     aboutMenu->addAction(tr("&about"), this, SLOT(about()),
                         QKeySequence(Qt::Key_F1));
 }

@@ -47,7 +47,7 @@ void SettingDialog::createIcons()
 {
     QListWidgetItem *configButton = new QListWidgetItem(contentsWidget);
     configButton->setIcon(QIcon(":/icons/config.png"));
-    configButton->setText(tr("Configuration"));
+    configButton->setText(tr("Sync"));
     configButton->setTextAlignment(Qt::AlignHCenter);
     configButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
