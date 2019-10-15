@@ -43,10 +43,10 @@ public slots:
     void handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void revealInTreeView();
     void about();
+    void checkIfUpdateAvailable();
     void contextMenu(const QPoint &pos);
     void processStdOutput();
     void processStdError();
-    void showSyncDetails(bool checked);
     void handleFileRenamed(const QString &path,
                            const QString &oldName,
                            const QString &newName);
@@ -76,8 +76,6 @@ private:
     // sync related
     QProcess *unisonProcess;
     QString syncLog;
-    QLabel *detailsLabel;
-    QPushButton *syncDetailsIcon;
     CircleProgressBar *syncProgressBar;
 };
 

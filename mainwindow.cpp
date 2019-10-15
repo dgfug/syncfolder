@@ -34,9 +34,7 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     currentFilePath(""),
     currentRootDirPath(""),
     searchWindow(nullptr),
-    findFileWindow(nullptr),
-    detailsLabel(nullptr),
-    syncDetailsIcon(nullptr)
+    findFileWindow(nullptr)
 {
     ui->setupUi(this);
     setupMenus();
@@ -334,27 +332,12 @@ void MainWindow::launchSettings() {
 void MainWindow::syncFiles() {
     syncLog.clear();
 
-    if (detailsLabel) {
-        detailsLabel->setVisible(false);
-    }
-
-    if (syncDetailsIcon) {
-        syncDetailsIcon->setVisible(false);
-    }
-
     if (syncProgressBar == nullptr) {
         syncProgressBar = new CircleProgressBar(tr("Sync is on-going"));
+        statusBar()->addWidget(syncProgressBar);
     }
 
     syncProgressBar->setVisible(true);
-    statusBar()->addWidget(syncProgressBar);
-
-    if (syncDetailsIcon == nullptr) {
-        syncDetailsIcon = new QPushButton(tr("details"), ui->statusBar);
-        syncDetailsIcon->setToolTip(tr("sync details"));
-        statusBar()->addWidget(syncDetailsIcon);
-        connect(syncDetailsIcon, SIGNAL(clicked(bool)), this, SLOT(showSyncDetails(bool)));
-    }
 
     unisonProcess = new QProcess(this);
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -387,6 +370,8 @@ void MainWindow::setupMenus()
     fileMenu->addAction(tr("&Settings"), this, SLOT(launchSettings()),
                         QKeySequence(Qt::Key_F5));
 
+    fileMenu->addSeparator();
+
     fileMenu->addAction(tr("&New"), this, SLOT(newFile()),
                         QKeySequence::New);
 
@@ -397,11 +382,15 @@ void MainWindow::setupMenus()
     fileMenu->addAction(tr("&Save..."), this, SLOT(saveFile()),
                         QKeySequence::Save);
 
+    fileMenu->addSeparator();
+
     fileMenu->addAction(tr("&Reveal in Tree View"), this, SLOT(revealInTreeView()),
                         QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_J));
 
     fileMenu->addAction(tr("&Sync"), this, SLOT(syncFiles()),
                         QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_S));
+
+    fileMenu->addSeparator();
 
     fileMenu->addAction(tr("&Exit"), qApp, SLOT(quit()),
                         QKeySequence::Quit);
@@ -424,9 +413,12 @@ void MainWindow::setupMenus()
     QMenu *aboutMenu = new QMenu(tr("&about"), this);
     menuBar()->addMenu(aboutMenu);
 
-    // TODO: check update
     aboutMenu->addAction(tr("&about"), this, SLOT(about()),
                         QKeySequence(Qt::Key_F1));
+
+    // TODO: check update
+    aboutMenu->addAction(tr("&check update"), this, SLOT(checkIfUpdateAvailable()),
+                        QKeySequence(Qt::Key_F2));
 }
 
 void MainWindow::launchSearchWindow() {
@@ -447,7 +439,6 @@ void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatu
 {
     QString status;
     QString emoji;
-    syncProgressBar->finish(exitCode == 0);
     switch (exitCode) {
     case 0:
         status = tr("successful synchronization; everything is up-to-date now.");
@@ -472,28 +463,8 @@ void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatu
     }
 
     QString result = QString(tr("%1 Sync result: %2, status: %3")).arg(emoji).arg(status).arg(exitCode);
-
-    if (detailsLabel == nullptr) {
-        detailsLabel = new QLabel(result, ui->statusBar);
-        ui->statusBar->addWidget(detailsLabel);
-    } else {
-        detailsLabel->setVisible(true);
-        detailsLabel->setText(result);
-    }
-
-    syncProgressBar->setVisible(false);
-    syncDetailsIcon->setVisible(exitCode != 0);
-}
-
-void MainWindow::showSyncDetails(bool checked) {
-    QMessageBox msgBox;
-    msgBox.setWindowTitle(tr("Sync details"));
-    msgBox.setText(tr("sync failed, please check your sync settings"));
-    QRegularExpression re("^Unison.*SSH");
-    re.setPatternOptions(QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption);
-    syncLog = syncLog.replace(re, "OpenSSH");
-    msgBox.setDetailedText(syncLog);
-    msgBox.exec();
+    syncProgressBar->finish(exitCode == 0, result);
+    syncProgressBar->setVisible(true);
 }
 
 void MainWindow::handleFileRenamed(const QString &path, const QString &oldName, const QString &newName) {
@@ -514,6 +485,9 @@ void MainWindow::about() {
                  ));
 }
 
+void MainWindow::checkIfUpdateAvailable() {
+    // TODO: implement it
+}
 
 void MainWindow::revealInTreeView_l(const QString &path) {
     if (!path.isEmpty()) {
