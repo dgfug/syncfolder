@@ -35,7 +35,7 @@ public:
         }
     }
 
-    void finish(bool success, QString result)
+    void finish(QString result)
     {
 //        QPropertyAnimation * animation = new QPropertyAnimation(progressCircle, "outerRadius", progressCircle);
 //        animation->setDuration(1500);

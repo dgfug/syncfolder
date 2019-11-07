@@ -463,7 +463,7 @@ void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatu
     }
 
     QString result = QString(tr("%1 Sync result: %2, status: %3")).arg(emoji).arg(status).arg(exitCode);
-    syncProgressBar->finish(exitCode == 0, result);
+    syncProgressBar->finish(result);
     syncProgressBar->setVisible(true);
 }
 

@@ -2,6 +2,36 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
+    <name>CircleProgressBar</name>
+    <message>
+        <source>close</source>
+        <translation>关闭搜索</translation>
+    </message>
+</context>
+<context>
+    <name>ConfigurationPage</name>
+    <message>
+        <source>Remote configuration</source>
+        <translation>备份服务器</translation>
+    </message>
+    <message>
+        <source>syncfolder cloud</source>
+        <translation>SyncFolder云存储</translation>
+    </message>
+    <message>
+        <source>Self-built server</source>
+        <translation>自建服务器</translation>
+    </message>
+    <message>
+        <source>Sync service type:</source>
+        <translation>同步类型</translation>
+    </message>
+    <message>
+        <source>uri:</source>
+        <translation>统一资源标识（URI）</translation>
+    </message>
+</context>
+<context>
     <name>FindFileWindow</name>
     <message>
         <source>文件查找</source>
@@ -71,7 +101,7 @@
     </message>
     <message>
         <source>sync details</source>
-        <translation>同步详情</translation>
+        <translation type="vanished">同步详情</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -143,7 +173,7 @@
     </message>
     <message>
         <source>details</source>
-        <translation>详情</translation>
+        <translation type="vanished">详情</translation>
     </message>
     <message>
         <source>successful synchronization; everything is up-to-date now.</source>
@@ -171,11 +201,11 @@
     </message>
     <message>
         <source>Sync details</source>
-        <translation>同步详情</translation>
+        <translation type="vanished">同步详情</translation>
     </message>
     <message>
         <source>sync failed, please check your sync settings</source>
-        <translation>同步失败，请检查同步设置</translation>
+        <translation type="vanished">同步失败，请检查同步设置</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
@@ -192,6 +222,18 @@
     <message>
         <source>&lt;p&gt;&lt;b&gt;作者&lt;/b&gt;：&lt;a href=&quot;mailto://philip584521@gmail.com&quot;&gt;philip584521@gmail.com&lt;/a&gt;&lt;p&gt;&lt;b&gt;反馈&lt;/b&gt;：&lt;a href=&quot;https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html&quot;&gt;官方论坛&lt;/a&gt;&lt;p&gt;&lt;b&gt;版本&lt;/b&gt;：v0.1.0</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Deletion confirm</source>
+        <translation>确认删除</translation>
+    </message>
+    <message>
+        <source>Safe to delete?</source>
+        <translation>能安全地删除？</translation>
+    </message>
+    <message>
+        <source>&amp;check update</source>
+        <translation>检查更新</translation>
     </message>
 </context>
 <context>
@@ -255,6 +297,107 @@
     <message>
         <source>Match case sensitive</source>
         <translation>匹配大小写</translation>
+    </message>
+</context>
+<context>
+    <name>QueryPage</name>
+    <message>
+        <source>Look for packages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Released after:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Releases</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upgrades</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Return up to </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Return only the first result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start query</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SettingDialog</name>
+    <message>
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <source>Config Dialog</source>
+        <translation>配置对话框</translation>
+    </message>
+    <message>
+        <source>Sync</source>
+        <translation>同步</translation>
+    </message>
+    <message>
+        <source>Update</source>
+        <translation>更新</translation>
+    </message>
+    <message>
+        <source>Query</source>
+        <translation>查询</translation>
+    </message>
+</context>
+<context>
+    <name>UpdatePage</name>
+    <message>
+        <source>Package selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update system</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update applications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update documentation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Existing packages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Qt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QSA</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Teambuilder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start update</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
