@@ -114,6 +114,8 @@ public:
         for (int i = 1; i < fileTreeModel->columnCount(); ++i)
             fileTree->hideColumn(i);
 
+        fileTree->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#DAEFD0; selection-color:#1CA96B; }");
+
         // create markdown editor
         markdownEditor = new QMarkdownTextEdit(mainWindow);
         splitter->addWidget(markdownEditor);

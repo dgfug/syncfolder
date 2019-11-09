@@ -49,11 +49,11 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent, bool initHighlighter)
 //    setHighlightingEnabled(true);
 
     QFont font = QFont();
-    font.setPointSize(14);
+    font.setPointSize(18);
     font.setFamily("Source Code Variable");
     this->setFont(font);
 
-    this->setStyleSheet("QWidget {background-color:#F0FFF0; color:#252525; selection-background-color: #8CA68C; }");
+    this->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#B5D788; }");
 
     // set the tab stop to the width of 4 spaces in the editor
     const int tabStop = 4;
