@@ -111,9 +111,15 @@ public:
         QObject::connect(fileTree, SIGNAL(customContextMenuRequested(const QPoint &)),
                 mainWindow, SLOT(contextMenu(const QPoint &)));
 
-        for (int i = 1; i < fileTreeModel->columnCount(); ++i)
+        fileTree->setHeaderHidden(true);
+        for (int i = 1; i < fileTreeModel->columnCount(); ++i) {
             fileTree->hideColumn(i);
+        }
 
+        QFont font = QFont();
+        font.setPointSize(18);
+        font.setFamily("Source Code Variable");
+        fileTree->setFont(font);
         fileTree->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#DAEFD0; selection-color:#1CA96B; }");
 
         // create markdown editor
