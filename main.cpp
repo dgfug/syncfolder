@@ -8,20 +8,10 @@
 #include <QTranslator>
 #include "settings/settings_def.h"
 #include "syncapp.h"
-#include <QtAutoUpdaterCore/Updater>
-#include <QtAutoUpdaterWidgets/UpdateController>
-
 
 int main(int argc, char *argv[])
 {
     SyncApp a(argc, argv);
-    auto updater = QtAutoUpdater::Updater::create("qtifw", {
-            {"path", "/Users/faywong/tools/Qt/MaintenanceTool.app"} //.exe or .app is automatically added on the platform
-    }, &a);
-
-    auto controller = QtAutoUpdater::UpdateController{updater, &a};
-    //start the update check -> AskLevel to give the user maximum control
-    controller.start(QtAutoUpdater::UpdateController::DisplayLevel::Ask);
     QTranslator translator;
     QString locale = QLocale::system().name();
     if (locale == "zh_CN") {

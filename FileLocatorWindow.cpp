@@ -50,6 +50,12 @@ FindFileWindow::FindFileWindow(DMEditorDelegate *delegate, std::vector<std::stri
 
     connect(new QShortcut(QKeySequence(Qt::Key_Escape), this), &QShortcut::activated,
         this, &QWidget::hide);
+
+    QFont font = QFont();
+    font.setPointSize(18);
+    font.setFamily("Source Code Variable");
+    this->setFont(font);
+    this->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#B5D788;}");
 }
 
 void FindFileWindow::openFirstFoundFile() {

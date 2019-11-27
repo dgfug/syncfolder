@@ -229,7 +229,7 @@
     </message>
     <message>
         <source>Safe to delete?</source>
-        <translation>能安全地删除？</translation>
+        <translation>确认删除?</translation>
     </message>
     <message>
         <source>&amp;check update</source>

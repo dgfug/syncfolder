@@ -27,6 +27,8 @@
 #include "syncapp.h"
 #include <QDateTime>
 #include "settingdialog.h"
+#include <QtAutoUpdaterCore/Updater>
+#include <QtAutoUpdaterWidgets/UpdateController>
 
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     QMainWindow(parent),
@@ -250,7 +252,7 @@ void MainWindow::dragEnterEvent(QDragEnterEvent* event)
     if (event->mimeData()->hasUrls()) {
        event->acceptProposedAction();
     }
-  // if some actions should not be usable, like move, this code must be adopted
+    // if some actions should not be usable, like move, this code must be adopted
 }
 
 void MainWindow::dropEvent(QDropEvent *event) {
@@ -317,7 +319,6 @@ void MainWindow::saveFileFromText(const QString &text) {
         file.close();
     }
 }
-
 
 void MainWindow::saveFile()
 {
@@ -416,7 +417,7 @@ void MainWindow::setupMenus()
     aboutMenu->addAction(tr("&about"), this, SLOT(about()),
                         QKeySequence(Qt::Key_F1));
 
-    // TODO: check update
+    // check update menu
     aboutMenu->addAction(tr("&check update"), this, SLOT(checkIfUpdateAvailable()),
                         QKeySequence(Qt::Key_F2));
 }
@@ -486,7 +487,14 @@ void MainWindow::about() {
 }
 
 void MainWindow::checkIfUpdateAvailable() {
-    // TODO: implement it
+    QApplication *a = static_cast<QApplication*>(QApplication::instance());
+    auto updater = QtAutoUpdater::Updater::create("qtifw", {
+            {"path", "/Users/faywong/tools/Qt/MaintenanceTool.app"} //.exe or .app is automatically added on the platform
+    }, a);
+
+    auto controller = QtAutoUpdater::UpdateController{updater, a};
+    //start the update check -> AskLevel to give the user maximum control
+    controller.start(QtAutoUpdater::UpdateController::DisplayLevel::Ask);
 }
 
 void MainWindow::revealInTreeView_l(const QString &path) {

@@ -57,25 +57,33 @@ void HGMarkdownHighlighter::setDefaultStyles()
     // base16-atelierseaside.light theme
     int defaultFontSize = 14;
     QTextCharFormat headers;
-    headers.setForeground(QBrush(QColor("#5a745d")));
+    headers.setForeground(QBrush(QColor("#242A2D")));
     // 遵循 css 默认 size
+    headers.setFontWeight(QFont::Black);
     headers.setFontPointSize(defaultFontSize * 2.0);
     STY(pmh_H1, headers);
-    headers.setFontPointSize(defaultFontSize * 1.5);
+    headers.setFontWeight(QFont::ExtraBold);
+    headers.setFontPointSize(defaultFontSize * 1.8);
     STY(pmh_H2, headers);
-    headers.setFontPointSize(defaultFontSize * 1.17);
+    headers.setFontWeight(QFont::Bold);
+    headers.setFontPointSize(defaultFontSize * 1.6);
     STY(pmh_H3, headers);
-    headers.setFontPointSize(defaultFontSize * 1.12);
+    headers.setFontWeight(QFont::DemiBold);
+    headers.setFontPointSize(defaultFontSize * 1.4);
     STY(pmh_H4, headers);
-    headers.setFontPointSize(defaultFontSize * 0.83);
+    headers.setFontWeight(QFont::Medium);
+    headers.setFontPointSize(defaultFontSize * 1.3);
     STY(pmh_H5, headers);
-    headers.setFontPointSize(defaultFontSize * 0.67);
+    headers.setFontWeight(QFont::Normal);
+    headers.setFontPointSize(defaultFontSize * 1.2);
     STY(pmh_H6, headers);
 
-    QTextCharFormat hrule; hrule.setForeground(QBrush(QColor("#5E6E5E")));
+    QTextCharFormat hrule;
+    hrule.setForeground(QBrush(QColor("#5E6E5E")));
     STY(pmh_HRULE, hrule);
 
-    QTextCharFormat list; list.setForeground(QBrush(QColor("#E6193C")));
+    QTextCharFormat list;
+    list.setForeground(QBrush(QColor("#E6193C")));
     STY(pmh_LIST_BULLET, list);
     STY(pmh_LIST_ENUMERATOR, list);
 
@@ -94,8 +102,8 @@ void HGMarkdownHighlighter::setDefaultStyles()
     STY(pmh_REFERENCE, ref);
 
     QTextCharFormat code;
-    code.setForeground(QBrush(QColor("#5E6E5E")));
-    code.setBackground(QBrush(QColor("#CFE8CF")));
+    code.setBackground(QBrush(QColor("#66AAAAAA")));
+    // `abc` ```javascript ... 这种
     STY(pmh_CODE, code);
     STY(pmh_VERBATIM, code);
 
@@ -226,6 +234,7 @@ void HGMarkdownHighlighter::parse()
     if (workerThread != nullptr)
         delete workerThread;
     workerThread = new WorkerThread();
+
     workerThread->content = content_cstring;
     connect(workerThread, SIGNAL(finished()), this, SLOT(threadFinished()));
     parsePending = false;

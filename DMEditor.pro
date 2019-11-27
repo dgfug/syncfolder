@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui autoupdaterwidgets
+QT       += core gui concurrent autoupdaterwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -80,4 +80,6 @@ DISTFILES += \
 
 QMAKE_INFO_PLIST = config/Info.plist
 TRANSLATIONS = translations/syncfolder_zh_CN.ts
+
+DEFINES += "pmh_DEBUG_OUTPUT=1"
 
