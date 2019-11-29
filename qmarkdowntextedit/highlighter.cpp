@@ -8,35 +8,20 @@
  */
 
 #include <QtGui>
+#include <QtConcurrent>
 #include "highlighter.h"
 
-
-WorkerThread::~WorkerThread()
-{
-    if (result != NULL)
-        pmh_free_elements(result);
-    free(content);
-}
-void WorkerThread::run()
-{
-    if (content == nullptr)
-        return;
-
-    pmh_markdown_to_elements(content, pmh_EXT_NOTES | pmh_EXT_STRIKE, &result);
-}
-
 HGMarkdownHighlighter::HGMarkdownHighlighter(QTextDocument *parent,
-                                             int aWaitInterval) : QObject(parent)
+                                             int aWaitInterval) : QObject(parent),
+    document(parent),
+    highlightingStyles(nullptr),
+    waitInterval(aWaitInterval)
 {
-    highlightingStyles = NULL;
-    workerThread = NULL;
-    cached_elements = NULL;
-    waitInterval = aWaitInterval;
+
     timer = new QTimer(this);
     timer->setSingleShot(true);
     timer->setInterval(aWaitInterval);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerTimeout()));
-    document = parent;
     connect(document, SIGNAL(contentsChange(int,int,int)),
             this, SLOT(handleContentsChange(int,int,int)));
 
@@ -155,14 +140,14 @@ void HGMarkdownHighlighter::clearFormatting()
     }
 }
 
-void HGMarkdownHighlighter::highlight()
+void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
 {
-    if (cached_elements == NULL) {
+    if (parsedElement == nullptr) {
         qDebug() << "cached_elements is NULL";
         return;
     }
 
-    if (highlightingStyles == NULL)
+    if (highlightingStyles == nullptr)
         this->setDefaultStyles();
 
     this->clearFormatting();
@@ -170,7 +155,7 @@ void HGMarkdownHighlighter::highlight()
     for (int i = 0; i < highlightingStyles->size(); i++)
     {
         HighlightingStyle style = highlightingStyles->at(i);
-        pmh_element *elem_cursor = cached_elements[style.type];
+        pmh_element *elem_cursor = parsedElement[style.type];
         while (elem_cursor != NULL)
         {
             if (elem_cursor->end <= elem_cursor->pos) {
@@ -222,38 +207,20 @@ void HGMarkdownHighlighter::highlight()
 
 void HGMarkdownHighlighter::parse()
 {
-    if (workerThread != NULL && workerThread->isRunning()) {
-        parsePending = true;
+    if (parseTaskFuture.isRunning()) {
         return;
     }
-
     QString content = document->toPlainText();
-    QByteArray ba = content.toUtf8();
-    char *content_cstring = strdup((char *)ba.data());
-
-    if (workerThread != nullptr)
-        delete workerThread;
-    workerThread = new WorkerThread();
-
-    workerThread->content = content_cstring;
-    connect(workerThread, SIGNAL(finished()), this, SLOT(threadFinished()));
-    parsePending = false;
-    workerThread->start();
-}
-
-void HGMarkdownHighlighter::threadFinished()
-{
-    if (parsePending) {
-        this->parse();
-        return;
+    if (content.length() > 1) {
+        parseTaskFuture = QtConcurrent::run([=]() {
+            QByteArray ba = content.toUtf8();
+            char *contentCstring = (char *)ba.data();
+            pmh_element **result;
+            pmh_markdown_to_elements(contentCstring, pmh_EXT_NOTES | pmh_EXT_STRIKE, &result);
+            this->highlight(result);
+            pmh_free_elements(result);
+        });
     }
-
-    if (cached_elements != NULL)
-        pmh_free_elements(cached_elements);
-    cached_elements = workerThread->result;
-    workerThread->result = NULL;
-
-    this->highlight();
 }
 
 void HGMarkdownHighlighter::handleContentsChange(int position, int charsRemoved,

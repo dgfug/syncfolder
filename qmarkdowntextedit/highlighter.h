@@ -12,6 +12,7 @@
 
 #include <QTextCharFormat>
 #include <QThread>
+#include <QFuture>
 
 extern "C" {
 #include "pmh_parser.h"
@@ -20,15 +21,6 @@ extern "C" {
 QT_BEGIN_NAMESPACE
 class QTextDocument;
 QT_END_NAMESPACE
-
-class WorkerThread : public QThread
-{
-public:
-    ~WorkerThread();
-    void run();
-    char *content;
-    pmh_element **result;
-};
 
 struct HighlightingStyle
 {
@@ -50,19 +42,16 @@ protected:
 
 private slots:
     void handleContentsChange(int position, int charsRemoved, int charsAdded);
-    void threadFinished();
     void timerTimeout();
 
 private:
     QTimer *timer;
     QTextDocument *document;
-    WorkerThread *workerThread;
-    bool parsePending;
-    pmh_element **cached_elements;
+    QFuture<void> parseTaskFuture;
     QVector<HighlightingStyle> *highlightingStyles;
 
     void clearFormatting();
-    void highlight();
+    void highlight(pmh_element **result);
     void parse();
     void setDefaultStyles();
 };
