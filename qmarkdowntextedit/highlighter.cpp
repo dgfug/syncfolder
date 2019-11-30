@@ -47,22 +47,22 @@ void HGMarkdownHighlighter::setDefaultStyles()
     headers.setForeground(QBrush(QColor("#242A2D")));
     // 遵循 css 默认 size
     headers.setFontWeight(QFont::Black);
-    headers.setFontPointSize(defaultFontSize * 2.0);
+    headers.setFontPointSize(defaultFontSize * 1.6);
     STY(pmh_H1, headers);
     headers.setFontWeight(QFont::ExtraBold);
-    headers.setFontPointSize(defaultFontSize * 1.8);
+    headers.setFontPointSize(defaultFontSize * 1.5);
     STY(pmh_H2, headers);
     headers.setFontWeight(QFont::Bold);
-    headers.setFontPointSize(defaultFontSize * 1.6);
+    headers.setFontPointSize(defaultFontSize * 1.4);
     STY(pmh_H3, headers);
     headers.setFontWeight(QFont::DemiBold);
-    headers.setFontPointSize(defaultFontSize * 1.4);
+    headers.setFontPointSize(defaultFontSize * 1.3);
     STY(pmh_H4, headers);
     headers.setFontWeight(QFont::Medium);
-    headers.setFontPointSize(defaultFontSize * 1.3);
+    headers.setFontPointSize(defaultFontSize * 1.2);
     STY(pmh_H5, headers);
     headers.setFontWeight(QFont::Normal);
-    headers.setFontPointSize(defaultFontSize * 1.2);
+    headers.setFontPointSize(defaultFontSize * 1.1);
     STY(pmh_H6, headers);
 
     QTextCharFormat hrule;
@@ -236,9 +236,19 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
 
     for (auto &t : tocs) {
         QString keyword = textContent.mid(t.pos, t.len);
-        QRegularExpression re("^(\s|#)+");
-        keyword.replace(re, "");
-        QStandardItem *item = new QStandardItem(keyword);
+        QRegularExpression prefixRe("^(\\s|#|-|=)+");
+        QRegularExpression postfixRe("(-|=|)+");
+
+        keyword.replace(prefixRe, "");
+        keyword.replace(postfixRe, "");
+
+        qDebug()<<"keyword: " << keyword;
+        QString prefix = "";
+        for (int i = 0; i < (t.type - pmh_H1); i++) {
+            prefix.append("  ");
+        }
+        prefix.append("·");
+        QStandardItem *item = new QStandardItem(prefix + keyword);
         const int posRole = Qt::UserRole + 1;
         const int typeRole = Qt::UserRole + 2;
         item->setData((qulonglong)t.pos, posRole);
