@@ -28,6 +28,7 @@
 #include <QMetaObject>
 #include <QLabel>
 #include <QScrollArea>
+#include <QStandardItemModel>
 #include "settings/settings_def.h"
 
 QT_BEGIN_NAMESPACE
@@ -42,6 +43,8 @@ public:
     QHBoxLayout *bodyLayout;
     QSplitter *splitter;
     QTreeView *fileTree;
+    QTreeView *tocTree;
+    QStandardItemModel *tocModel;
     QFileSystemModel *fileTreeModel;
     // image viewer part
     QLabel *imageLabel;
@@ -77,10 +80,31 @@ public:
         mainWindow->resize(windowWidth, windowHeight);
 
         bodyLayout = new QHBoxLayout;
+        // 横向 flex 布局
         splitter = new QSplitter;
         fileTree = new QTreeView;
+        tocTree = new QTreeView;
+        tocModel = new QStandardItemModel(mainWindow);
+
+        // 竖向 flex 布局
+        auto leftPanelSplitter = new QSplitter(Qt::Vertical);
+        leftPanelSplitter->addWidget(fileTree);
+        leftPanelSplitter->setStretchFactor(0, 3);
+        leftPanelSplitter->addWidget(tocTree);
+        leftPanelSplitter->setStretchFactor(1, 2);
+
+        QStringList headers;
+        headers << mainWindow->tr("table of contents");
+
+        tocModel->setHorizontalHeaderLabels(headers);
+
+        //register the model
+        tocTree->setModel(tocModel);
+        tocTree->expandAll();
+        QObject::connect(tocTree->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), mainWindow, SLOT(handleTocClicked(const QItemSelection&,const QItemSelection&)));
+
         bodyLayout->addWidget(splitter);
-        splitter->addWidget(fileTree);
+        splitter->addWidget(leftPanelSplitter);
         splitter->setStretchFactor(0, 1);
 
         fileTreeModel = new QFileSystemModel(mainWindow);
@@ -117,10 +141,12 @@ public:
         }
 
         QFont font = QFont();
-        font.setPointSize(18);
+        font.setPointSize(15);
         font.setFamily("Source Code Variable");
         fileTree->setFont(font);
         fileTree->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#DAEFD0; selection-color:#1CA96B; }");
+        tocTree->setFont(font);
+        tocTree->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#DAEFD0; selection-color:#1CA96B; }");
 
         // create markdown editor
         markdownEditor = new QMarkdownTextEdit(mainWindow);

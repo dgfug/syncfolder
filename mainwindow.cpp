@@ -56,6 +56,16 @@ void MainWindow::handleOrgCaptured(const QString &url)
     newFileWithTitleContent(QString("%1_%2").arg(title).arg(now), body);
 }
 
+void MainWindow::handleTocClicked(const QItemSelection& selected,const QItemSelection& deselected) {
+    QModelIndexList selectedList = selected.indexes();
+    if (!selectedList.empty()) {
+        auto modelIndex = selectedList[0];
+        qlonglong pos = ui->tocModel->data(modelIndex, Qt::UserRole + 1).toLongLong();
+        qDebug()<<"pos: "  + pos;
+        ui->markdownEditor->jumpTo(pos);
+    }
+}
+
 void MainWindow::fileSelectionChanged(const QItemSelection& selected,const QItemSelection& deselected) {
     QModelIndexList selectedList = selected.indexes();
     if (!selectedList.empty()) {
@@ -502,6 +512,15 @@ void MainWindow::revealInTreeView_l(const QString &path) {
         auto index = ui->fileTreeModel->index(path, 0);
         ui->fileTree->scrollTo(index);
         ui->fileTree->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    }
+}
+
+void MainWindow::updateToc(const QVector<QStandardItem*> &nodes) {
+    ui->tocModel->removeRows(0, ui->tocModel->rowCount());
+    QStandardItem *rootNode = ui->tocModel->invisibleRootItem();
+
+    for(auto &node : nodes) {
+       rootNode->appendRow(node);
     }
 }
 

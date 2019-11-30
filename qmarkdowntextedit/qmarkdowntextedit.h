@@ -49,6 +49,7 @@ public:
     void setReadOnly(bool ro);
     void doSearch(QString &searchText,
                   QPlainTextEditSearchWidget::SearchMode searchMode = QPlainTextEditSearchWidget::SearchMode::PlainTextMode);
+    void jumpTo(qlonglong pos);
 
 public slots:
     void duplicateText();

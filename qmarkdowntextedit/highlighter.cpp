@@ -12,8 +12,10 @@
 #include "highlighter.h"
 
 HGMarkdownHighlighter::HGMarkdownHighlighter(QTextDocument *parent,
+                                             DMEditorDelegate *mainWindow,
                                              int aWaitInterval) : QObject(parent),
     document(parent),
+    mainWin(mainWindow),
     highlightingStyles(nullptr),
     waitInterval(aWaitInterval)
 {
@@ -140,27 +142,54 @@ void HGMarkdownHighlighter::clearFormatting()
     }
 }
 
+class tok {
+public:
+    tok(pmh_element_type t, unsigned long p, int l) : type(t), pos(p), len(l) {}
+    pmh_element_type type;    /**< \brief Type of element */
+    unsigned long pos;
+    int len;
+};
+
+bool operator<(const tok & lhs, const tok & rhs)
+{
+    return lhs.pos < rhs.pos;
+}
+
+#include <algorithm>
+
 void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
 {
     if (parsedElement == nullptr) {
-        qDebug() << "cached_elements is NULL";
+        qDebug() << "parsedElement is NULL";
         return;
     }
 
-    if (highlightingStyles == nullptr)
+    if (highlightingStyles == nullptr) {
         this->setDefaultStyles();
+    }
 
     this->clearFormatting();
+
+    QString textContent = document->toRawText();
+    std::vector<tok> tocs;
 
     for (int i = 0; i < highlightingStyles->size(); i++)
     {
         HighlightingStyle style = highlightingStyles->at(i);
         pmh_element *elem_cursor = parsedElement[style.type];
+
+        bool isTocElement = (style.type >= pmh_H1 && style.type <= pmh_H6);
+
         while (elem_cursor != NULL)
         {
             if (elem_cursor->end <= elem_cursor->pos) {
                 elem_cursor = elem_cursor->next;
                 continue;
+            }
+
+            if (isTocElement) {
+                tok t(elem_cursor->type, elem_cursor->pos, (int)(elem_cursor->end - elem_cursor->pos));
+                tocs.push_back(t);
             }
 
             // "The QTextLayout object can only be modified from the
@@ -202,6 +231,22 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
         }
     }
 
+    std::stable_sort(tocs.begin(), tocs.end());
+    QVector<QStandardItem*> tocItems;
+
+    for (auto &t : tocs) {
+        QString keyword = textContent.mid(t.pos, t.len);
+        QRegularExpression re("^(\s|#)+");
+        keyword.replace(re, "");
+        QStandardItem *item = new QStandardItem(keyword);
+        const int posRole = Qt::UserRole + 1;
+        const int typeRole = Qt::UserRole + 2;
+        item->setData((qulonglong)t.pos, posRole);
+        item->setData((qint32)t.type, typeRole);
+        tocItems.push_back(item);
+    }
+
+    mainWin->updateToc(tocItems);
     document->markContentsDirty(0, document->characterCount());
 }
 

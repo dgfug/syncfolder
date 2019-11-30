@@ -44,12 +44,12 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent, bool initHighlighter)
     // markdown highlighting is enabled by default
     _highlightingEnabled = true;
     if (initHighlighter) {
-        _highlighter = new HGMarkdownHighlighter(document());
+        _highlighter = new HGMarkdownHighlighter(document(), dynamic_cast<DMEditorDelegate *>(parent->window()));
     }
 //    setHighlightingEnabled(true);
 
     QFont font = QFont();
-    font.setPointSize(18);
+    font.setPointSize(16);
     font.setFamily("Source Code Variable");
     this->setFont(font);
 
@@ -1109,4 +1109,10 @@ void QMarkdownTextEdit::doSearch(
     _searchWidget->setSearchText(searchText);
     _searchWidget->setSearchMode(searchMode);
     _searchWidget->activate(false);
+}
+
+void QMarkdownTextEdit::jumpTo(qlonglong pos)
+{
+    QTextCursor cursor(document()->findBlock(pos));
+    this->setTextCursor(cursor);
 }

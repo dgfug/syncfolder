@@ -52,7 +52,7 @@ FindFileWindow::FindFileWindow(DMEditorDelegate *delegate, std::vector<std::stri
         this, &QWidget::hide);
 
     QFont font = QFont();
-    font.setPointSize(18);
+    font.setPointSize(16);
     font.setFamily("Source Code Variable");
     this->setFont(font);
     this->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#B5D788;}");

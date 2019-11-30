@@ -6,6 +6,7 @@
 #include <QProcess>
 
 #include <iostream>
+#include <QStandardItem>
 #include "FullTextSearchWindow.h"
 #include "FileLocatorWindow.h"
 #include "CircleProgressBar.h"
@@ -51,6 +52,8 @@ public slots:
                            const QString &oldName,
                            const QString &newName);
     void handleOrgCaptured(const QString &);
+    void handleTocClicked(const QItemSelection&,const QItemSelection&);
+    void updateToc(const QVector<QStandardItem*> &nodes) override;
 
 protected:
     void setupMenus();

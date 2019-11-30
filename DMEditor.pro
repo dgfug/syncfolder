@@ -81,5 +81,5 @@ DISTFILES += \
 QMAKE_INFO_PLIST = config/Info.plist
 TRANSLATIONS = translations/syncfolder_zh_CN.ts
 
-DEFINES += "pmh_DEBUG_OUTPUT=1"
+#DEFINES += "pmh_DEBUG_OUTPUT=1"
 

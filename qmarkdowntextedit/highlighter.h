@@ -13,6 +13,7 @@
 #include <QTextCharFormat>
 #include <QThread>
 #include <QFuture>
+#include "EditorDelegate.h"
 
 extern "C" {
 #include "pmh_parser.h"
@@ -34,7 +35,7 @@ class HGMarkdownHighlighter : public QObject
     Q_OBJECT
 
 public:
-    HGMarkdownHighlighter(QTextDocument *parent = nullptr, int aWaitInterval = 10);
+    HGMarkdownHighlighter(QTextDocument *parent, DMEditorDelegate *mainWindow, int aWaitInterval = 10);
     void setStyles(QVector<HighlightingStyle> &styles);
     int waitInterval;
 
@@ -46,6 +47,7 @@ private slots:
 
 private:
     QTimer *timer;
+    DMEditorDelegate *mainWin;
     QTextDocument *document;
     QFuture<void> parseTaskFuture;
     QVector<HighlightingStyle> *highlightingStyles;
