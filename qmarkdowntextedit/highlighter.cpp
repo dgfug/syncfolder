@@ -233,27 +233,34 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
 
     std::stable_sort(tocs.begin(), tocs.end());
     QVector<QStandardItem*> tocItems;
+    QVector<QStandardItem*> flatTocItems;
 
-    for (auto &t : tocs) {
+    for (std::vector<tok>::size_type i = 0; i < tocs.size(); i++) {
+        tok t = tocs[i];
+        int j = i;
         QString keyword = textContent.mid(t.pos, t.len);
-        QRegularExpression prefixRe("^(\\s|#|-|=)+");
-        QRegularExpression postfixRe("(-|=|)+");
-
-        keyword.replace(prefixRe, "");
-        keyword.replace(postfixRe, "");
-
-        qDebug()<<"keyword: " << keyword;
-        QString prefix = "";
-        for (int i = 0; i < (t.type - pmh_H1); i++) {
-            prefix.append("  ");
-        }
-        prefix.append("·");
-        QStandardItem *item = new QStandardItem(prefix + keyword);
+        QRegularExpression prefixRe("^(\"|\\s|#|-|=)+");
+        keyword = keyword.replace(prefixRe, "");
+        QRegularExpression postfixRe("(\"|\\n|\\r|#|-|=|\")*");
+        keyword = keyword.replace(postfixRe, "");
+        QStandardItem *item = new QStandardItem(keyword);
         const int posRole = Qt::UserRole + 1;
         const int typeRole = Qt::UserRole + 2;
         item->setData((qulonglong)t.pos, posRole);
         item->setData((qint32)t.type, typeRole);
-        tocItems.push_back(item);
+
+        bool parentFound = false;
+        while (--j >= 0) {
+            if (tocs[j].type < t.type) { // 有更高级别的标题
+                flatTocItems[j]->appendRow(item);
+                parentFound = true;
+                break;
+            }
+        }
+        if (!parentFound) {
+            tocItems.push_back(item);
+        }
+        flatTocItems.push_back(item);
     }
 
     mainWin->updateToc(tocItems);

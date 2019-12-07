@@ -142,7 +142,7 @@ public:
 
         QFont font = QFont();
         font.setPointSize(15);
-        font.setFamily("Source Code Variable");
+//        font.setFamily("Source Code Variable");
         fileTree->setFont(font);
         fileTree->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#DAEFD0; selection-color:#1CA96B; }");
         tocTree->setFont(font);
