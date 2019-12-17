@@ -1,14 +1,13 @@
 /* PEG Markdown Highlight
- * Copyright 2011-2016 Ali Rantakari -- http://hasseg.org
- * Licensed under the GPL2+ and MIT licenses (see LICENSE for more info).
- * 
+ *
  * highlighter.cpp
- * 
- * Qt 4.7 example for highlighting a rich text widget.
+ *
+ * refined by sid
  */
 
 #include <QtGui>
 #include <QtConcurrent>
+#include <algorithm>
 #include "highlighter.h"
 
 HGMarkdownHighlighter::HGMarkdownHighlighter(QTextDocument *parent,
@@ -154,8 +153,6 @@ bool operator<(const tok & lhs, const tok & rhs)
 {
     return lhs.pos < rhs.pos;
 }
-
-#include <algorithm>
 
 void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
 {
