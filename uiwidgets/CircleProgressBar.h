@@ -13,8 +13,7 @@ public:
     explicit CircleProgressBar(QString text, QWidget * parent = 0) :
         QWidget(parent)
     {
-        setStyleSheet(".QWidget{border-bottom: 1px solid lightgrey; padding: 0px;}");
-        QHBoxLayout * layout = new QHBoxLayout(this);
+        QHBoxLayout *layout = new QHBoxLayout(this);
         layout->setSpacing(12);
         syncAnimation = new QMovie(":/animations/sync.apng", "apng");
         syncAnimation->setScaledSize(QSize(24, 24));
@@ -23,7 +22,9 @@ public:
         label->setMovie(syncAnimation);
         layout->addWidget(label, 0);
         QPushButton * closeButton = new QPushButton(tr("Got it"));
-        connect(closeButton, &QPushButton::clicked, this, &QObject::deleteLater);
+        connect(closeButton, &QPushButton::clicked, this, [&]() {
+            this->setVisible(false);
+        });
         layout->addWidget(closeButton);
     }
 
