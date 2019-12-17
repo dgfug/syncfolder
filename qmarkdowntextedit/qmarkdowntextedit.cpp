@@ -45,6 +45,7 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent, bool initHighlighter)
     _highlightingEnabled = true;
     if (initHighlighter) {
         _highlighter = new HGMarkdownHighlighter(document(), dynamic_cast<DMEditorDelegate *>(parent->window()));
+        connect(_highlighter, SIGNAL(parseFinished(pmh_element **)), this, SLOT(highlightRichText(pmh_element **)), Qt::QueuedConnection);
     }
 //    setHighlightingEnabled(true);
 
@@ -1115,4 +1116,8 @@ void QMarkdownTextEdit::jumpTo(qlonglong pos)
 {
     QTextCursor cursor(document()->findBlock(pos));
     this->setTextCursor(cursor);
+}
+
+void QMarkdownTextEdit::highlightRichText(pmh_element **result) {
+    _highlighter->highlight(result);
 }

@@ -6,6 +6,9 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(Qt5_DIR "~/tools/Qt/5.13.1/clang_64/lib/cmake/Qt5")
+set(Qt5AutoUpdaterCore_DIR "~/tools/Qt/5.13.1/clang_64/lib/cmake/Qt5AutoUpdaterCore")
+set(Qt5AutoUpdaterWidgets_DIR "~/tools/Qt/5.13.1/clang_64/lib/cmake/Qt5AutoUpdaterWidgets")
 
 if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -56,4 +59,4 @@ set_target_properties(SyncFolder PROPERTIES
         CXX_EXTENSIONS NO
         )
 
-target_link_libraries(SyncFolder Qt5::Widgets Qt5::Concurrent Qt5AutoUpdaterCore Qt5AutoUpdaterWidgets)
+target_link_libraries(SyncFolder Qt5::Widgets Qt5::Concurrent Qt5::AutoUpdaterCore Qt5::AutoUpdaterWidgets)

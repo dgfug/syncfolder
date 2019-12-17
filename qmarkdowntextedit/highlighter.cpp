@@ -14,8 +14,8 @@
 HGMarkdownHighlighter::HGMarkdownHighlighter(QTextDocument *parent,
                                              DMEditorDelegate *mainWindow,
                                              int aWaitInterval) : QObject(parent),
-    document(parent),
     mainWin(mainWindow),
+    document(parent),
     highlightingStyles(nullptr),
     waitInterval(aWaitInterval)
 {
@@ -172,7 +172,6 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
 
     QString textContent = document->toRawText();
     std::vector<tok> tocs;
-
     for (int i = 0; i < highlightingStyles->size(); i++)
     {
         HighlightingStyle style = highlightingStyles->at(i);
@@ -265,6 +264,7 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
 
     mainWin->updateToc(tocItems);
     document->markContentsDirty(0, document->characterCount());
+    pmh_free_elements(parsedElement);
 }
 
 void HGMarkdownHighlighter::parse()
@@ -279,8 +279,7 @@ void HGMarkdownHighlighter::parse()
             char *contentCstring = (char *)ba.data();
             pmh_element **result;
             pmh_markdown_to_elements(contentCstring, pmh_EXT_NOTES | pmh_EXT_STRIKE, &result);
-            this->highlight(result);
-            pmh_free_elements(result);
+            emit parseFinished(result);
         });
     }
 }

@@ -37,23 +37,24 @@ class HGMarkdownHighlighter : public QObject
 public:
     HGMarkdownHighlighter(QTextDocument *parent, DMEditorDelegate *mainWindow, int aWaitInterval = 10);
     void setStyles(QVector<HighlightingStyle> &styles);
-    int waitInterval;
+    void highlight(pmh_element **result);
 
-protected:
+signals:
+    void parseFinished(pmh_element **result);
 
 private slots:
     void handleContentsChange(int position, int charsRemoved, int charsAdded);
     void timerTimeout();
 
 private:
-    QTimer *timer;
     DMEditorDelegate *mainWin;
     QTextDocument *document;
     QFuture<void> parseTaskFuture;
     QVector<HighlightingStyle> *highlightingStyles;
+    int waitInterval;
+    QTimer *timer;
 
     void clearFormatting();
-    void highlight(pmh_element **result);
     void parse();
     void setDefaultStyles();
 };

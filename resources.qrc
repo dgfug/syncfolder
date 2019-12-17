@@ -8,6 +8,7 @@
         <file>icons/config.png</file>
         <file>icons/update.png</file>
         <file>icons/query.png</file>
+        <file>animations/sync.apng</file>
         <file>translations/syncfolder_zh_CN.qm</file>
     </qresource>
 </RCC>

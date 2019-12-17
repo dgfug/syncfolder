@@ -59,6 +59,7 @@ public slots:
     void hide();
     bool openLinkAtCursorPosition();
     bool handleBracketRemoval();
+    void highlightRichText(pmh_element **result);
 
 protected:
     HGMarkdownHighlighter *_highlighter;
