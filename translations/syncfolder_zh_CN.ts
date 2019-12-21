@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="zh_CN">
+<TS version="2.0" language="zh_CN">
 <context>
     <name>CircleProgressBar</name>
     <message>
         <source>close</source>
         <translation>关闭搜索</translation>
+    </message>
+    <message>
+        <source>Got it</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -101,7 +105,7 @@
     </message>
     <message>
         <source>sync details</source>
-        <translation type="vanished">同步详情</translation>
+        <translation>同步详情</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -145,7 +149,7 @@
     </message>
     <message>
         <source>create folder under root</source>
-        <translation>在顶层目录下创建目录</translation>
+        <translation>创建目录（在顶层目录下）</translation>
     </message>
     <message>
         <source>copy path to clipboard</source>
@@ -173,7 +177,7 @@
     </message>
     <message>
         <source>details</source>
-        <translation type="vanished">详情</translation>
+        <translation>详情</translation>
     </message>
     <message>
         <source>successful synchronization; everything is up-to-date now.</source>
@@ -201,11 +205,11 @@
     </message>
     <message>
         <source>Sync details</source>
-        <translation type="vanished">同步详情</translation>
+        <translation>同步详情</translation>
     </message>
     <message>
         <source>sync failed, please check your sync settings</source>
-        <translation type="vanished">同步失败，请检查同步设置</translation>
+        <translation>同步失败，请检查同步设置</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
@@ -234,6 +238,21 @@
     <message>
         <source>&amp;check update</source>
         <translation>检查更新</translation>
+    </message>
+    <message>
+        <source>create folder under selected folder</source>
+        <translation>创建目录（在选中目录下）</translation>
+    </message>
+    <message>
+        <source>create folder under top folder</source>
+        <translation type="unfinished">创建目录（在顶层目录下）</translation>
+    </message>
+</context>
+<context>
+    <name>QMainWindow</name>
+    <message>
+        <source>table of contents</source>
+        <translation>大纲</translation>
     </message>
 </context>
 <context>
@@ -359,6 +378,13 @@
     <message>
         <source>Query</source>
         <translation>查询</translation>
+    </message>
+</context>
+<context>
+    <name>Ui_MainWindow</name>
+    <message>
+        <source>table of contents</source>
+        <translation>大纲</translation>
     </message>
 </context>
 <context>

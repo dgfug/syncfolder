@@ -150,20 +150,22 @@ void MainWindow::setCurrentRootDirPath(const QString &folderPath)
 }
 
 void MainWindow::contextMenu(const QPoint &pos) {
-    const QModelIndex index = ui->fileTree->indexAt(pos);
-    const QString path = ui->fileTreeModel->filePath(index);
+    const QModelIndex curSelectedIndex = ui->fileTree->indexAt(pos);
+    const QString path = ui->fileTreeModel->filePath(curSelectedIndex);
     const QFileInfo info(path);
     QMenu menu;
     QAction *removeAction = menu.addAction(tr("delete"));
-    QAction *createFolderUnderRoot = menu.addAction(tr("create folder under root"));
 #ifndef QT_NO_CLIPBOARD
     QAction *copyAction = menu.addAction(tr("copy path to clipboard"));
 #endif
 
     QAction *setAsNewRoot = nullptr;
+    QAction *createFolderUnderSelectedFolder = nullptr;
     if (info.isDir()) {
         setAsNewRoot = menu.addAction(tr("set as new root"));
+        createFolderUnderSelectedFolder = menu.addAction(tr("create folder under selected folder"));
     }
+    QAction *createFolderUnderTopFolder = menu.addAction(tr("create folder under top folder"));
     QAction *action = menu.exec(ui->fileTree->mapToGlobal(pos));
     if (!action)
         return;
@@ -172,10 +174,7 @@ void MainWindow::contextMenu(const QPoint &pos) {
         reply = QMessageBox::question(this, tr("Deletion confirm"), tr("Safe to delete?"),
                                       QMessageBox::Yes|QMessageBox::No);
         if (reply == QMessageBox::Yes) {
-            ui->fileTreeModel->remove(index);
-            qDebug() << "File delete was clicked";
-        } else {
-            qDebug() << "File delete was *not* clicked";
+            ui->fileTreeModel->remove(curSelectedIndex);
         }
     }
 #ifndef QT_NO_CLIPBOARD
@@ -183,10 +182,9 @@ void MainWindow::contextMenu(const QPoint &pos) {
         QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(path));
     }
 #endif
-    else if (action == createFolderUnderRoot) {
-        auto index = ui->fileTreeModel->index(currentRootDirPath, 0);
+    else if (action == createFolderUnderTopFolder || action == createFolderUnderSelectedFolder) {
+        auto index = (action == createFolderUnderTopFolder) ? ui->fileTreeModel->index(currentRootDirPath, 0) : curSelectedIndex;
         int i= 0;
-
         while (true) {
             QString name = (i == 0) ? QString(tr("untitled")) : QString(tr("untitled_%1")).arg(i);
             QFileInfo newFile = QFileInfo(currentRootDirPath, name);

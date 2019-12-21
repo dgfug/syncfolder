@@ -94,7 +94,7 @@ public:
         leftPanelSplitter->setStretchFactor(1, 2);
 
         QStringList headers;
-        headers << mainWindow->tr("table of contents");
+        headers << QMainWindow::tr("table of contents");
 
         tocModel->setHorizontalHeaderLabels(headers);
 

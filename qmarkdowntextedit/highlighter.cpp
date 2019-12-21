@@ -238,6 +238,7 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
         QRegularExpression prefixRe("^(\"|\\s|#|-|=)+");
         keyword = keyword.replace(prefixRe, "");
         QRegularExpression postfixRe("(\"|\\n|\\r|#|-|=|\")*");
+//        qDebug()<<"keyword: " <<keyword;
         keyword = keyword.replace(postfixRe, "");
         QStandardItem *item = new QStandardItem(keyword);
         const int posRole = Qt::UserRole + 1;
