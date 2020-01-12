@@ -80,6 +80,8 @@ private:
     QProcess *unisonProcess;
     QString syncLog;
     CircleProgressBar *syncProgressBar;
+    // 文件操作队列
+    QSet<QString> fileOperationQueue;
 };
 
 #endif // MAINWINDOW_H

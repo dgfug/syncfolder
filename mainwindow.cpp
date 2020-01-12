@@ -29,6 +29,8 @@
 #include "settingdialog.h"
 #include <QtAutoUpdaterCore/Updater>
 #include <QtAutoUpdaterWidgets/UpdateController>
+#include <QtWidgets/QWidgetAction>
+#include <QtWidgets/QSpinBox>
 
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     QMainWindow(parent),
@@ -149,10 +151,36 @@ void MainWindow::setCurrentRootDirPath(const QString &folderPath)
     }
 }
 
+// non-interactive/display only action
+class DisplayQueuedFilesAction : public QWidgetAction {
+public:
+    DisplayQueuedFilesAction (const QSet<QString> &queuedFiles) :
+            QWidgetAction (NULL) {
+        QWidget* pWidget = new QWidget (NULL);
+        QVBoxLayout* vBoxLayout = new QVBoxLayout();
+        QLabel *label = new QLabel(tr("queued files"));
+        vBoxLayout->addWidget(label);
+        QListWidget* pListWidget = new QListWidget(pWidget);
+        int row = 0;
+        for (auto &file: queuedFiles) {
+            QFileInfo fileInfo(file);
+            QListWidgetItem *newItem = new QListWidgetItem;
+            newItem->setText(fileInfo.fileName());
+            pListWidget->insertItem(row++, newItem);
+        }
+        vBoxLayout->addWidget (pListWidget);
+        pWidget->setLayout (vBoxLayout);
+        setDefaultWidget(pWidget);
+    }
+};
+/**
+ * 左边文件浏览器的上下文菜单
+ * @param pos
+ */
 void MainWindow::contextMenu(const QPoint &pos) {
     const QModelIndex curSelectedIndex = ui->fileTree->indexAt(pos);
     const QString path = ui->fileTreeModel->filePath(curSelectedIndex);
-    const QFileInfo info(path);
+    const QFileInfo currentSelectedFileInfo(path);
     QMenu menu;
     QAction *removeAction = menu.addAction(tr("delete"));
 #ifndef QT_NO_CLIPBOARD
@@ -161,11 +189,22 @@ void MainWindow::contextMenu(const QPoint &pos) {
 
     QAction *setAsNewRoot = nullptr;
     QAction *createFolderUnderSelectedFolder = nullptr;
-    if (info.isDir()) {
+    QAction *addToFileQueue = nullptr;
+    QAction *moveAllQueuedFilesHere = nullptr;
+    QAction *clearQueuedFiles = nullptr;
+    QAction *createFolderUnderTopFolder = menu.addAction(tr("create folder under top folder"));
+    if (currentSelectedFileInfo.isDir()) {
         setAsNewRoot = menu.addAction(tr("set as new root"));
         createFolderUnderSelectedFolder = menu.addAction(tr("create folder under selected folder"));
+        moveAllQueuedFilesHere = menu.addAction(tr("move all queued files here"));
+    } else if (currentSelectedFileInfo.isFile()) {
+        addToFileQueue = menu.addAction(tr("add to file queue"));
     }
-    QAction *createFolderUnderTopFolder = menu.addAction(tr("create folder under top folder"));
+    if (!fileOperationQueue.isEmpty()) {
+        DisplayQueuedFilesAction *displayQueuedFiles = new DisplayQueuedFilesAction(fileOperationQueue);
+        menu.addAction(displayQueuedFiles);
+        clearQueuedFiles = menu.addAction(tr("clear all queued files"));
+    }
     QAction *action = menu.exec(ui->fileTree->mapToGlobal(pos));
     if (!action)
         return;
@@ -198,6 +237,21 @@ void MainWindow::contextMenu(const QPoint &pos) {
         }
     } else if (action == setAsNewRoot) {
         setCurrentRootDirPath(path);
+    } else if (action == addToFileQueue) {
+        fileOperationQueue<<path;
+    } else if (action == moveAllQueuedFilesHere && currentSelectedFileInfo.isDir()) {
+        for (auto &filePath : fileOperationQueue) {
+            QFileInfo qFileInfo(filePath);
+            QFileInfo newFileInfo(path, qFileInfo.fileName());
+            QFile file(filePath);
+            auto newFilePath = newFileInfo.absoluteFilePath();
+            if (filePath != newFilePath) {
+                file.rename(newFilePath);
+            }
+        }
+        fileOperationQueue.clear();
+    } else if (action == clearQueuedFiles) {
+        fileOperationQueue.clear();
     }
 }
 
@@ -347,7 +401,6 @@ void MainWindow::syncFiles() {
     }
 
     syncProgressBar->setVisible(true);
-
     unisonProcess = new QProcess(this);
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 
@@ -516,7 +569,6 @@ void MainWindow::revealInTreeView_l(const QString &path) {
 void MainWindow::updateToc(const QVector<QStandardItem*> &nodes) {
     ui->tocModel->removeRows(0, ui->tocModel->rowCount());
     QStandardItem *rootNode = ui->tocModel->invisibleRootItem();
-
     for(auto &node : nodes) {
        rootNode->appendRow(node);
     }

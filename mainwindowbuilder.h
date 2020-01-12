@@ -80,7 +80,23 @@ public:
         mainWindow->resize(windowWidth, windowHeight);
 
         bodyLayout = new QHBoxLayout;
-        // 横向 flex 布局
+//        +----------------------------------------------------------+
+//        |                 splitter                                 |
+//        |    +---------------------+    +------------------------+ |
+//        |    |leftPanelSplitter    |    |     markdownEditor     | |
+//        |    | +-----------------+ |    |                        | |
+//        |    | | fileTree        | |    |                        | |
+//        |    | |                 | |    |                        | |
+//        |    | +-----------------+ |    |                        | |
+//        |    | +-----------------+ |    |                        | |
+//        |    | | tocTree         | |    |                        | |
+//        |    | |                 | |    |                        | |
+//        |    | +-----------------+ |    |                        | |
+//        |    |                     |    |                        | |
+//        |    +---------------------+    +------------------------+ |
+//        |                                                          |
+//        +----------------------------------------------------------+
+        // 横向 flex 布局，最顶层的 splitter
         splitter = new QSplitter;
         fileTree = new QTreeView;
         tocTree = new QTreeView;
@@ -97,8 +113,7 @@ public:
         headers << QMainWindow::tr("table of contents");
 
         tocModel->setHorizontalHeaderLabels(headers);
-
-        //register the model
+        // register the model
         tocTree->setModel(tocModel);
         tocTree->expandAll();
         QObject::connect(tocTree->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), mainWindow, SLOT(handleTocClicked(const QItemSelection&,const QItemSelection&)));
@@ -123,7 +138,7 @@ public:
 //        fileTree->viewport()->setAcceptDrops(true);
         fileTree->setDropIndicatorShown(true);
         fileTree->setDragDropMode(QAbstractItemView::InternalMove);
-
+        fileTree->setSelectionMode(QAbstractItemView::MultiSelection);
         fileTree->setSortingEnabled(true);
         fileTree->sortByColumn(0, Qt::AscendingOrder);
         fileTree->setSelectionBehavior(QAbstractItemView::SelectItems);

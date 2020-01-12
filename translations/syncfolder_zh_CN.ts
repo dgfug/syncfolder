@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="zh_CN">
+<TS version="2.1" language="zh_CN">
 <context>
     <name>CircleProgressBar</name>
     <message>
         <source>close</source>
-        <translation>关闭搜索</translation>
+        <translation type="vanished">关闭搜索</translation>
     </message>
     <message>
         <source>Got it</source>
-        <translation type="unfinished"></translation>
+        <translation>知道了</translation>
     </message>
 </context>
 <context>
@@ -33,6 +33,13 @@
     <message>
         <source>uri:</source>
         <translation>统一资源标识（URI）</translation>
+    </message>
+</context>
+<context>
+    <name>DisplayQueuedFilesAction</name>
+    <message>
+        <source>queued files</source>
+        <translation>文件队列</translation>
     </message>
 </context>
 <context>
@@ -105,7 +112,7 @@
     </message>
     <message>
         <source>sync details</source>
-        <translation>同步详情</translation>
+        <translation type="vanished">同步详情</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -149,7 +156,7 @@
     </message>
     <message>
         <source>create folder under root</source>
-        <translation>创建目录（在顶层目录下）</translation>
+        <translation type="vanished">创建目录（在顶层目录下）</translation>
     </message>
     <message>
         <source>copy path to clipboard</source>
@@ -177,7 +184,7 @@
     </message>
     <message>
         <source>details</source>
-        <translation>详情</translation>
+        <translation type="vanished">详情</translation>
     </message>
     <message>
         <source>successful synchronization; everything is up-to-date now.</source>
@@ -205,11 +212,11 @@
     </message>
     <message>
         <source>Sync details</source>
-        <translation>同步详情</translation>
+        <translation type="vanished">同步详情</translation>
     </message>
     <message>
         <source>sync failed, please check your sync settings</source>
-        <translation>同步失败，请检查同步设置</translation>
+        <translation type="vanished">同步失败，请检查同步设置</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
@@ -245,7 +252,19 @@
     </message>
     <message>
         <source>create folder under top folder</source>
-        <translation type="unfinished">创建目录（在顶层目录下）</translation>
+        <translation>创建目录（在顶层目录下）</translation>
+    </message>
+    <message>
+        <source>move all queued files here</source>
+        <translation>将队列里的文件移动到这里</translation>
+    </message>
+    <message>
+        <source>add to file queue</source>
+        <translation>添加到队列</translation>
+    </message>
+    <message>
+        <source>clear all queued files</source>
+        <translation>清除文件队列</translation>
     </message>
 </context>
 <context>
@@ -322,39 +341,39 @@
     <name>QueryPage</name>
     <message>
         <source>Look for packages</source>
-        <translation type="unfinished"></translation>
+        <translation>正寻找安装包</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>姓名：</translation>
     </message>
     <message>
         <source>Released after:</source>
-        <translation type="unfinished"></translation>
+        <translation>发布于</translation>
     </message>
     <message>
         <source>Releases</source>
-        <translation type="unfinished"></translation>
+        <translation>发布</translation>
     </message>
     <message>
         <source>Upgrades</source>
-        <translation type="unfinished"></translation>
+        <translation>更新</translation>
     </message>
     <message>
         <source>Return up to </source>
-        <translation type="unfinished"></translation>
+        <translation>返回高于</translation>
     </message>
     <message>
         <source> results</source>
-        <translation type="unfinished"></translation>
+        <translation>所有结果</translation>
     </message>
     <message>
         <source>Return only the first result</source>
-        <translation type="unfinished"></translation>
+        <translation>只返回第一个结果</translation>
     </message>
     <message>
         <source>Start query</source>
-        <translation type="unfinished"></translation>
+        <translation>开始查询</translation>
     </message>
 </context>
 <context>
@@ -384,46 +403,46 @@
     <name>Ui_MainWindow</name>
     <message>
         <source>table of contents</source>
-        <translation>大纲</translation>
+        <translation type="vanished">大纲</translation>
     </message>
 </context>
 <context>
     <name>UpdatePage</name>
     <message>
         <source>Package selection</source>
-        <translation type="unfinished"></translation>
+        <translation>安装包选择</translation>
     </message>
     <message>
         <source>Update system</source>
-        <translation type="unfinished"></translation>
+        <translation>更新系统</translation>
     </message>
     <message>
         <source>Update applications</source>
-        <translation type="unfinished"></translation>
+        <translation>更新应用</translation>
     </message>
     <message>
         <source>Update documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>更新文档</translation>
     </message>
     <message>
         <source>Existing packages</source>
-        <translation type="unfinished"></translation>
+        <translation>已存在的安装包</translation>
     </message>
     <message>
         <source>Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt</translation>
     </message>
     <message>
         <source>QSA</source>
-        <translation type="unfinished"></translation>
+        <translation>QSA</translation>
     </message>
     <message>
         <source>Teambuilder</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Start update</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>
