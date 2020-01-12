@@ -1,4 +1,4 @@
-#include "displayqueuedfilesaction.h"
+#include "DisplayQueuedFilesAction.h"
 
 #include <QBoxLayout>
 #include <QFileInfo>

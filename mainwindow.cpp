@@ -31,7 +31,7 @@
 #include <QtAutoUpdaterWidgets/UpdateController>
 #include <QtWidgets/QWidgetAction>
 #include <QtWidgets/QSpinBox>
-#include "displayqueuedfilesaction.h"
+#include "DisplayQueuedFilesAction.h"
 
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     QMainWindow(parent),
