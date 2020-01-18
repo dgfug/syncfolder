@@ -158,31 +158,44 @@ void MainWindow::setCurrentRootDirPath(const QString &folderPath)
  */
 void MainWindow::contextMenu(const QPoint &pos) {
     const QModelIndex curSelectedIndex = ui->fileTree->indexAt(pos);
-    const QString path = ui->fileTreeModel->filePath(curSelectedIndex);
-    const QFileInfo currentSelectedFileInfo(path);
+    const QString currentSelectedFilePath = ui->fileTreeModel->filePath(curSelectedIndex);
+    const QFileInfo currentSelectedFileInfo(currentSelectedFilePath);
     QMenu menu;
     QAction *removeAction = menu.addAction(tr("delete"));
 #ifndef QT_NO_CLIPBOARD
     QAction *copyAction = menu.addAction(tr("copy path to clipboard"));
 #endif
-
     QAction *setAsNewRoot = nullptr;
     QAction *createFolderUnderSelectedFolder = nullptr;
     QAction *addToFileQueue = nullptr;
+    QAction *removeFromFileQueue = nullptr;
     QAction *moveAllQueuedFilesHere = nullptr;
     QAction *clearQueuedFiles = nullptr;
     QAction *createFolderUnderTopFolder = menu.addAction(tr("create folder under top folder"));
+    bool hasAddFileQueueSeparator = false;
     if (currentSelectedFileInfo.isDir()) {
         setAsNewRoot = menu.addAction(tr("set as new root"));
         createFolderUnderSelectedFolder = menu.addAction(tr("create folder under selected folder"));
         moveAllQueuedFilesHere = menu.addAction(tr("move all queued files here"));
     } else if (currentSelectedFileInfo.isFile()) {
-        addToFileQueue = menu.addAction(tr("add to file queue"));
+        if (fileOperationQueue.contains(currentSelectedFilePath)) {
+            if (!hasAddFileQueueSeparator) {
+                menu.addSeparator();
+                hasAddFileQueueSeparator = true;
+            }
+            removeFromFileQueue = menu.addAction(tr("remove from file queue"));
+        } else {
+            addToFileQueue = menu.addAction(tr("add to file queue"));
+        }
     }
     if (!fileOperationQueue.isEmpty()) {
+        if (!hasAddFileQueueSeparator) {
+            menu.addSeparator();
+            hasAddFileQueueSeparator = true;
+        }
+        clearQueuedFiles = menu.addAction(tr("clear all queued files"));
         DisplayQueuedFilesAction *displayQueuedFiles = new DisplayQueuedFilesAction(fileOperationQueue);
         menu.addAction(displayQueuedFiles);
-        clearQueuedFiles = menu.addAction(tr("clear all queued files"));
     }
     QAction *action = menu.exec(ui->fileTree->mapToGlobal(pos));
     if (!action)
@@ -197,7 +210,7 @@ void MainWindow::contextMenu(const QPoint &pos) {
     }
 #ifndef QT_NO_CLIPBOARD
     else if (action == copyAction) {
-        QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(path));
+        QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(currentSelectedFilePath));
     }
 #endif
     else if (action == createFolderUnderTopFolder || action == createFolderUnderSelectedFolder) {
@@ -215,13 +228,13 @@ void MainWindow::contextMenu(const QPoint &pos) {
             i++;
         }
     } else if (action == setAsNewRoot) {
-        setCurrentRootDirPath(path);
+        setCurrentRootDirPath(currentSelectedFilePath);
     } else if (action == addToFileQueue) {
-        fileOperationQueue<<path;
+        fileOperationQueue << currentSelectedFilePath;
     } else if (action == moveAllQueuedFilesHere && currentSelectedFileInfo.isDir()) {
         for (auto &filePath : fileOperationQueue) {
             QFileInfo qFileInfo(filePath);
-            QFileInfo newFileInfo(path, qFileInfo.fileName());
+            QFileInfo newFileInfo(currentSelectedFilePath, qFileInfo.fileName());
             QFile file(filePath);
             auto newFilePath = newFileInfo.absoluteFilePath();
             if (filePath != newFilePath) {
@@ -231,6 +244,8 @@ void MainWindow::contextMenu(const QPoint &pos) {
         fileOperationQueue.clear();
     } else if (action == clearQueuedFiles) {
         fileOperationQueue.clear();
+    } else if (action == removeFromFileQueue) {
+        fileOperationQueue.remove(currentSelectedFilePath);
     }
 }
 
@@ -386,7 +401,7 @@ void MainWindow::syncFiles() {
     QString syncConfigDirPath = getSyncConfigDir();
     env.insert("UNISON", syncConfigDirPath);
     unisonProcess->setProcessEnvironment(env);
-//    connect(unisonProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(handleSyncFinished(int, QProcess::ExitStatus)));
+    connect(unisonProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(handleSyncFinished(int, QProcess::ExitStatus)));
     connect(unisonProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStdOutput()));  // connect process signals with your code
     connect(unisonProcess, SIGNAL(readyReadStandardError()), this, SLOT(processStdError()));  // same here
     QString command(QString("/Users/faywong/bin/unison %1 %2").arg("default", "-batch"));

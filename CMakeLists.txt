@@ -24,8 +24,6 @@ find_package(Qt5 COMPONENTS Concurrent REQUIRED)
 find_package(Qt5AutoUpdaterCore REQUIRED)
 find_package(Qt5AutoUpdaterWidgets REQUIRED)
 
-#find_package( QtAutoUpdater REQUIRED )
-
 add_executable(SyncFolder
     FileIconProvider.cpp
     FileLocatorWindow.cpp

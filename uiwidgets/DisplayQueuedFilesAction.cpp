@@ -4,6 +4,7 @@
 #include <QFileInfo>
 #include <QLabel>
 #include <QListWidget>
+
 DisplayQueuedFilesAction::DisplayQueuedFilesAction (const QSet<QString> &queuedFiles) :
         QWidgetAction (NULL) {
     QWidget* pWidget = new QWidget (NULL);

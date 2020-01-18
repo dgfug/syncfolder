@@ -16,7 +16,7 @@
     <name>ConfigurationPage</name>
     <message>
         <source>Remote configuration</source>
-        <translation>备份服务器</translation>
+        <translation>同步服务器</translation>
     </message>
     <message>
         <source>syncfolder cloud</source>
@@ -28,7 +28,7 @@
     </message>
     <message>
         <source>Sync service type:</source>
-        <translation>同步类型</translation>
+        <translation>同步服务类型</translation>
     </message>
     <message>
         <source>uri:</source>
@@ -39,7 +39,7 @@
     <name>DisplayQueuedFilesAction</name>
     <message>
         <source>queued files</source>
-        <translation>文件队列</translation>
+        <translation type="vanished">文件队列</translation>
     </message>
 </context>
 <context>
@@ -264,14 +264,18 @@
     </message>
     <message>
         <source>clear all queued files</source>
-        <translation>清除文件队列</translation>
+        <translation>清空文件队列</translation>
+    </message>
+    <message>
+        <source>remove from file queue</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QMainWindow</name>
     <message>
         <source>table of contents</source>
-        <translation>大纲</translation>
+        <translation>目录</translation>
     </message>
 </context>
 <context>
@@ -403,7 +407,7 @@
     <name>Ui_MainWindow</name>
     <message>
         <source>table of contents</source>
-        <translation type="vanished">大纲</translation>
+        <translation type="vanished">目录</translation>
     </message>
 </context>
 <context>
