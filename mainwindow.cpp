@@ -176,7 +176,13 @@ void MainWindow::contextMenu(const QPoint &pos) {
     if (currentSelectedFileInfo.isDir()) {
         setAsNewRoot = menu.addAction(tr("set as new root"));
         createFolderUnderSelectedFolder = menu.addAction(tr("create folder under selected folder"));
-        moveAllQueuedFilesHere = menu.addAction(tr("move all queued files here"));
+        if (!fileOperationQueue.isEmpty()) {
+            if (!hasAddFileQueueSeparator) {
+                menu.addSeparator();
+                hasAddFileQueueSeparator = true;
+            }
+            moveAllQueuedFilesHere = menu.addAction(tr("move all queued files here"));
+        }
     } else if (currentSelectedFileInfo.isFile()) {
         if (fileOperationQueue.contains(currentSelectedFilePath)) {
             if (!hasAddFileQueueSeparator) {
