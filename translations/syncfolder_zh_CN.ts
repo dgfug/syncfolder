@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="zh_CN">
+<TS version="2.1" language="zh_CN">
 <context>
     <name>CircleProgressBar</name>
     <message>
         <source>close</source>
-        <translation>关闭搜索</translation>
+        <translation type="vanished">关闭搜索</translation>
     </message>
     <message>
         <source>Got it</source>
@@ -39,7 +39,7 @@
     <name>DisplayQueuedFilesAction</name>
     <message>
         <source>queued files</source>
-        <translation>文件队列</translation>
+        <translation type="vanished">文件队列</translation>
     </message>
 </context>
 <context>
@@ -112,7 +112,7 @@
     </message>
     <message>
         <source>sync details</source>
-        <translation>同步详情</translation>
+        <translation type="vanished">同步详情</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -156,7 +156,7 @@
     </message>
     <message>
         <source>create folder under root</source>
-        <translation>创建目录（在顶层目录下）</translation>
+        <translation type="vanished">创建目录（在顶层目录下）</translation>
     </message>
     <message>
         <source>copy path to clipboard</source>
@@ -184,7 +184,7 @@
     </message>
     <message>
         <source>details</source>
-        <translation>详情</translation>
+        <translation type="vanished">详情</translation>
     </message>
     <message>
         <source>successful synchronization; everything is up-to-date now.</source>
@@ -212,11 +212,11 @@
     </message>
     <message>
         <source>Sync details</source>
-        <translation>同步详情</translation>
+        <translation type="vanished">同步详情</translation>
     </message>
     <message>
         <source>sync failed, please check your sync settings</source>
-        <translation>同步失败，请检查同步设置</translation>
+        <translation type="vanished">同步失败，请检查同步设置</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
@@ -269,6 +269,10 @@
     <message>
         <source>remove from file queue</source>
         <translation>从文件队列移除</translation>
+    </message>
+    <message>
+        <source>show in explorer</source>
+        <translation>在文件管理器中打开</translation>
     </message>
 </context>
 <context>
@@ -407,7 +411,7 @@
     <name>Ui_MainWindow</name>
     <message>
         <source>table of contents</source>
-        <translation>目录</translation>
+        <translation type="vanished">目录</translation>
     </message>
 </context>
 <context>
