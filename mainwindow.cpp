@@ -31,6 +31,7 @@
 #include <QtAutoUpdaterWidgets/UpdateController>
 #include <QtWidgets/QWidgetAction>
 #include <QtWidgets/QSpinBox>
+#include <QDesktopServices>
 #include "DisplayQueuedFilesAction.h"
 
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
@@ -152,6 +153,34 @@ void MainWindow::setCurrentRootDirPath(const QString &folderPath)
     }
 }
 
+void MainWindow::showInFolder(const QString& path)
+{
+    QFileInfo info(path);
+#if defined(Q_OS_WIN)
+    QStringList args;
+    if (!info.isDir())
+        args << "/select,";
+    args << QDir::toNativeSeparators(path);
+    if (QProcess::startDetached("explorer", args))
+        return;
+#elif defined(Q_OS_MAC)
+    QStringList args;
+    args << "-e";
+    args << "tell application \"Finder\"";
+    args << "-e";
+    args << "activate";
+    args << "-e";
+    args << "select POSIX file \"" + path + "\"";
+    args << "-e";
+    args << "end tell";
+    args << "-e";
+    args << "return";
+    if (!QProcess::execute("/usr/bin/osascript", args))
+        return;
+#endif
+    QDesktopServices::openUrl(QUrl::fromLocalFile(info.isDir()? path : info.path()));
+}
+
 /**
  * 左边文件浏览器的上下文菜单
  * @param pos
@@ -162,6 +191,7 @@ void MainWindow::contextMenu(const QPoint &pos) {
     const QFileInfo currentSelectedFileInfo(currentSelectedFilePath);
     QMenu menu;
     QAction *removeAction = menu.addAction(tr("delete"));
+    QAction *showInExplorerAction = menu.addAction(tr("show in explorer"));
 #ifndef QT_NO_CLIPBOARD
     QAction *copyAction = menu.addAction(tr("copy path to clipboard"));
 #endif
@@ -252,6 +282,8 @@ void MainWindow::contextMenu(const QPoint &pos) {
         fileOperationQueue.clear();
     } else if (action == removeFromFileQueue) {
         fileOperationQueue.remove(currentSelectedFilePath);
+    } else if (action == showInExplorerAction) {
+        showInFolder(currentSelectedFilePath);
     }
 }
 
