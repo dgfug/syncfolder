@@ -45,7 +45,7 @@ add_executable(SyncFolder
     qmarkdowntextedit/qplaintexteditsearchwidget.cpp
     qmarkdowntextedit/qplaintexteditsearchwidget.ui
     qmarkdowntextedit/media.qrc
-)
+        qmarkdowntextedit/LineNumberArea.cpp qmarkdowntextedit/LineNumberArea.h)
 
 target_include_directories(SyncFolder PUBLIC
         .

@@ -50,6 +50,8 @@ public:
     void doSearch(QString &searchText,
                   QPlainTextEditSearchWidget::SearchMode searchMode = QPlainTextEditSearchWidget::SearchMode::PlainTextMode);
     void jumpTo(qlonglong pos);
+    void lineNumberAreaPaintEvent(QPaintEvent *event);
+    int lineNumberAreaWidth();
 
 public slots:
     void duplicateText();
@@ -62,15 +64,6 @@ public slots:
     void highlightRichText(pmh_element **result);
 
 protected:
-    HGMarkdownHighlighter *_highlighter;
-    bool _highlightingEnabled;
-    QStringList _ignoredClickUrlSchemata;
-    QPlainTextEditSearchWidget *_searchWidget;
-    QWidget *_searchFrame;
-    AutoTextOptions _autoTextOptions;
-    QStringList _openingCharacters;
-    QStringList _closingCharacters;
-
     bool eventFilter(QObject *obj, QEvent *event);
     bool increaseSelectedTextIndention(bool reverse);
     bool handleTabEntered(bool reverse);
@@ -83,7 +76,20 @@ protected:
     bool quotationMarkCheck(const QString& quotationCharacter);
     void focusOutEvent(QFocusEvent *event);
     void paintEvent(QPaintEvent *e);
-
+    void resizeEvent(QResizeEvent *event) override;
+    HGMarkdownHighlighter *_highlighter;
+    bool _highlightingEnabled;
+    QStringList _ignoredClickUrlSchemata;
+    QPlainTextEditSearchWidget *_searchWidget;
+    QWidget *_searchFrame;
+    AutoTextOptions _autoTextOptions;
+    QStringList _openingCharacters;
+    QStringList _closingCharacters;
+    QWidget *lineNumberArea;
+private slots:
+    void updateLineNumberAreaWidth(int newBlockCount);
+    void highlightCurrentLine();
+    void updateLineNumberArea(const QRect &rect, int dy);
 signals:
     void urlClicked(QString url);
 };
