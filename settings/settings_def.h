@@ -8,6 +8,7 @@
 #define KEY_LAST_FOLDER "dmeditor/last_opened_folder"
 #define KEY_LAST_WIN_WIDTH "dmeditor/last_win_width"
 #define KEY_LAST_WIN_HEIGHT "dmeditor/last_win_height"
+#define KEY_LAST_PRIMARY_FONT_SIZE "dmeditor/last_primary_font_size"
 
 class DMSettings {
 public:
@@ -19,6 +20,11 @@ public:
     static inline int getInt(const QString &key) {
         QSettings settings;
         return settings.value(key, 0).toInt();
+    }
+
+    static inline int getInt(const QString &key, int def) {
+        QSettings settings;
+        return settings.value(key, def).toInt();
     }
 
     static inline void setString(const QString &key, const QString &val) {

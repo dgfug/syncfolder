@@ -156,7 +156,8 @@ public:
         }
 
         QFont font = QFont();
-        font.setPointSize(15);
+        int primaryFontSize = DMSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
+        font.setPointSize(primaryFontSize);
 //        font.setFamily("Source Code Variable");
         fileTree->setFont(font);
         fileTree->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#DAEFD0; selection-color:#1CA96B; }");

@@ -8,6 +8,7 @@
 #include <QtGui>
 #include <QtConcurrent>
 #include <algorithm>
+#include <settings/settings_def.h>
 #include "highlighter.h"
 
 HGMarkdownHighlighter::HGMarkdownHighlighter(QTextDocument *parent,
@@ -40,93 +41,116 @@ void HGMarkdownHighlighter::setDefaultStyles()
     QVector<HighlightingStyle> *styles = new QVector<HighlightingStyle>();
 
     // TODO: support theme
-    // base16-atelierseaside.light theme
-    int defaultFontSize = 14;
+    int primaryFontSize = DMSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
     QTextCharFormat headers;
-    headers.setForeground(QBrush(QColor("#242A2D")));
+    headers.setForeground(QBrush(QColor("#006BC4")));
     // 遵循 css 默认 size
-    headers.setFontWeight(QFont::Black);
-    headers.setFontPointSize(defaultFontSize * 1.6);
-    STY(pmh_H1, headers);
     headers.setFontWeight(QFont::ExtraBold);
-    headers.setFontPointSize(defaultFontSize * 1.5);
-    STY(pmh_H2, headers);
+    headers.setFontPointSize(primaryFontSize * 1.4);
+    headers.setToolTip(tr("H1"));
+    STY(pmh_H1, headers);
     headers.setFontWeight(QFont::Bold);
-    headers.setFontPointSize(defaultFontSize * 1.4);
-    STY(pmh_H3, headers);
+    headers.setFontPointSize(primaryFontSize * 1.36);
+    headers.setToolTip(tr("H2"));
+    STY(pmh_H2, headers);
     headers.setFontWeight(QFont::DemiBold);
-    headers.setFontPointSize(defaultFontSize * 1.3);
-    STY(pmh_H4, headers);
+    headers.setFontPointSize(primaryFontSize * 1.3);
+    headers.setToolTip(tr("H3"));
+    STY(pmh_H3, headers);
     headers.setFontWeight(QFont::Medium);
-    headers.setFontPointSize(defaultFontSize * 1.2);
-    STY(pmh_H5, headers);
+    headers.setFontPointSize(primaryFontSize * 1.26);
+    headers.setToolTip(tr("H4"));
+    STY(pmh_H4, headers);
     headers.setFontWeight(QFont::Normal);
-    headers.setFontPointSize(defaultFontSize * 1.1);
+    headers.setFontPointSize(primaryFontSize * 1.2);
+    headers.setToolTip(tr("H5"));
+    STY(pmh_H5, headers);
+    headers.setFontWeight(QFont::Light);
+    headers.setFontPointSize(primaryFontSize * 1.1);
+    headers.setToolTip(tr("H6"));
     STY(pmh_H6, headers);
 
     QTextCharFormat hrule;
     hrule.setForeground(QBrush(QColor("#5E6E5E")));
     STY(pmh_HRULE, hrule);
+    hrule.setToolTip(tr("horizontal line"));
 
     QTextCharFormat list;
     list.setForeground(QBrush(QColor("#E6193C")));
     STY(pmh_LIST_BULLET, list);
     STY(pmh_LIST_ENUMERATOR, list);
+    list.setToolTip(tr("list"));
 
     QTextCharFormat link;
-    link.setForeground(QBrush(QColor("#3D62F5")));
+    link.setForeground(QBrush(QColor("#54C691")));
+    link.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+    link.setUnderlineColor(QColor("#54C691"));
     STY(pmh_LINK, link);
     STY(pmh_AUTO_LINK_URL, link);
     STY(pmh_AUTO_LINK_EMAIL, link);
+    link.setToolTip(tr("link"));
 
     QTextCharFormat image;
-    image.setForeground(QBrush(QColor("#E6193C")));
+    image.setForeground(QBrush(QColor("#54C691")));
     STY(pmh_IMAGE, image);
+    image.setToolTip(tr("image"));
 
     QTextCharFormat ref;
     ref.setForeground(QBrush(QColor("#87711D")));
     STY(pmh_REFERENCE, ref);
+    ref.setToolTip(tr("reference"));
 
     QTextCharFormat code;
     code.setBackground(QBrush(QColor("#66AAAAAA")));
     // `abc` ```javascript ... 这种
     STY(pmh_CODE, code);
     STY(pmh_VERBATIM, code);
+    code.setToolTip(tr("code/verbratim"));
 
     /* Emphasis, aka italics, with *asterisks* or _underscores_. */
     QTextCharFormat emph;
     emph.setForeground(QBrush(QColor("#AD2BEE")));
     emph.setFontItalic(true);
+    emph.setFontWeight(QFont::Bold);
+    emph.setToolTip(tr("Emphasis"));
     STY(pmh_EMPH, emph);
 
     /* Strong emphasis, aka bold, with **asterisks** or __underscores__. */
     QTextCharFormat strong;
-    strong.setForeground(QBrush(QColor("#98981B")));
-    strong.setFontWeight(QFont::DemiBold);
+    strong.setForeground(QBrush(QColor("#3F4777")));
+    strong.setFontWeight(QFont::Bold);
     STY(pmh_STRONG, strong);
+    strong.setToolTip(tr("strong"));
 
-    QTextCharFormat comment; comment.setForeground(QBrush(QColor("#809980")));
+    QTextCharFormat comment;
+    comment.setForeground(QBrush(QColor("#809980")));
     STY(pmh_COMMENT, comment);
+    comment.setToolTip(tr("comment"));
 
     QTextCharFormat blockquote;
     blockquote.setForeground(QBrush(QColor("#87711D")));
     blockquote.setBackground(QBrush(QColor("#F0F0F0")));
     STY(pmh_BLOCKQUOTE, blockquote);
+    blockquote.setToolTip(tr("blockquote"));
 
     QTextCharFormat note;
     note.setForeground(QBrush(QColor("#AD2BEE")));
     note.setBackground(QBrush(QColor("#F0F0F0")));
+    note.setToolTip(tr("note"));
 
     STY(pmh_NOTE, note);
 
     QTextCharFormat strike;
     strike.setForeground(QBrush(QColor("#D55B7B")));
     strike.setFontStrikeOut(true);
+    strike.setFontWeight(QFont::Bold);
+    strike.setToolTip(tr("strike"));
     STY(pmh_STRIKE, strike);
 
     QTextCharFormat htmlBlock;
     htmlBlock.setForeground(QBrush(QColor("#E6193C")));
     htmlBlock.setBackground(QBrush(QColor("#CFE8CF")));
+    htmlBlock.setToolTip(tr("html block"));
 
     STY(pmh_HTMLBLOCK, htmlBlock);
     this->setStyles(*styles);
