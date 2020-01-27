@@ -25,7 +25,11 @@ public:
 
     void setCurrentRootDirPath(const QString &value);
 
+    // implement of DMEditorDelegate start
     void openFile_l(const QString &, size_t lineNo, bool needSelect = false) override;
+    void updateMarkdownPreview() override ;
+    void updateToc(const QVector<QStandardItem*> &nodes) override;
+    // implement of DMEditorDelegate end
 
     QString getSyncConfigDir();
 
@@ -53,7 +57,6 @@ public slots:
                            const QString &newName);
     void handleOrgCaptured(const QString &);
     void handleTocClicked(const QItemSelection&,const QItemSelection&);
-    void updateToc(const QVector<QStandardItem*> &nodes) override;
 
 protected:
     void setupMenus();

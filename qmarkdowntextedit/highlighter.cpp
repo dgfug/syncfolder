@@ -285,6 +285,7 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
     }
 
     mainWin->updateToc(tocItems);
+    mainWin->updateMarkdownPreview();
     document->markContentsDirty(0, document->characterCount());
     pmh_free_elements(parsedElement);
 }

@@ -34,6 +34,7 @@ SOURCES += \
     mainwindow.cpp \
     settingdialog.cpp \
     syncapp.cpp \
+    uiwidgets/DisplayQueuedFilesAction.cpp \
     uiwidgets/ProgressCircle.cpp \
     uiwidgets/displayqueuedfilesaction.cpp
 
@@ -57,6 +58,7 @@ HEADERS += \
         settings/settings_def.h \
         syncapp.h \
         uiwidgets/CircleProgressBar.h \
+        uiwidgets/DisplayQueuedFilesAction.h \
         uiwidgets/ProgressCircle.h \
         uiwidgets/displayqueuedfilesaction.h
 

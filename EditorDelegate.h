@@ -8,6 +8,7 @@ class DMEditorDelegate {
 public:
     virtual void openFile_l(const QString &, size_t lineNo, bool needSelect = false) = 0;
     virtual void updateToc(const QVector<QStandardItem*> &nodes) = 0;
+    virtual void updateMarkdownPreview() = 0;
 };
 
 #endif // EDITERDELEGATE_H

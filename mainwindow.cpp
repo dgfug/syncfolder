@@ -115,14 +115,18 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
 
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream fileToRead(&file);
+        // TODO: file io in main thread
         ui->markdownEditor->setVisible(true);
         ui->imageScrollArea->setVisible(false);
         ui->splitter->setStretchFactor(0, 1);
         ui->splitter->setStretchFactor(1, 3);
-        ui->markdownEditor->setText(fileToRead.readAll());
+
+        QString text = fileToRead.readAll();
+        ui->markdownEditor->setText(text);
         QTextCursor cursor(ui->markdownEditor->document()->findBlockByLineNumber(lineNo - 1));
         ui->markdownEditor->moveCursor(QTextCursor::End);
         ui->markdownEditor->setTextCursor(cursor);
+
         setWindowTitle(QCoreApplication::translate("MainWindow", fileInfo.fileName().toStdString().c_str(), nullptr));
         DMSettings::setString(KEY_LAST_FILE, filePath);
         if (needSelect) {
@@ -609,4 +613,8 @@ void MainWindow::updateToc(const QVector<QStandardItem*> &nodes) {
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::updateMarkdownPreview() {
+    ui->markdownPreviewDoc->setMarkdown(ui->markdownEditor->toPlainText());
 }

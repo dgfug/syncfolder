@@ -38,6 +38,7 @@ class Ui_MainWindow
 
 public:
     QMarkdownTextEdit *markdownEditor;
+    QTextEdit *markdownPreviewDoc;
     QMenuBar *menuBar;
     QStatusBar *statusBar;
     QHBoxLayout *bodyLayout;
@@ -158,7 +159,6 @@ public:
         QFont font = QFont();
         int primaryFontSize = DMSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
         font.setPointSize(primaryFontSize);
-//        font.setFamily("Source Code Variable");
         fileTree->setFont(font);
         fileTree->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#DAEFD0; selection-color:#1CA96B; }");
         tocTree->setFont(font);
@@ -169,6 +169,19 @@ public:
         splitter->addWidget(markdownEditor);
         splitter->setStretchFactor(1, 3);
 
+        markdownPreviewDoc = new QTextEdit(mainWindow);
+        markdownPreviewDoc->setReadOnly(true);
+        // TODO: fix the issue: stylesheet doesn't work
+        QFile styleSheetFile(":/styles/github-markdown.css");
+        // TODO: remove file io in main thread
+        if (styleSheetFile.exists() && styleSheetFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream styleSheetStream(&styleSheetFile);
+            markdownPreviewDoc->document()->setDefaultStyleSheet(styleSheetStream.readAll());
+            styleSheetFile.close();
+        }
+
+        splitter->addWidget(markdownPreviewDoc);
+        splitter->setStretchFactor(2, 3);
         // we handle drag & drop globally in MainWindow, so disable it here
         markdownEditor->viewport()->setAcceptDrops(false);
 
