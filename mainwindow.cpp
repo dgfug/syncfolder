@@ -115,7 +115,7 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
 
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream fileToRead(&file);
-        // TODO: file io in main thread
+        // TODO: move file io into non-main thread
         ui->markdownEditor->setVisible(true);
         ui->imageScrollArea->setVisible(false);
         ui->splitter->setStretchFactor(0, 1);
@@ -126,7 +126,10 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
         QTextCursor cursor(ui->markdownEditor->document()->findBlockByLineNumber(lineNo - 1));
         ui->markdownEditor->moveCursor(QTextCursor::End);
         ui->markdownEditor->setTextCursor(cursor);
-
+        QString baseDocUrl = QUrl::fromLocalFile(fileInfo.canonicalFilePath()).toString();
+//        ui->markdownPreviewDoc->document()->setMetaInformation( QTextDocument::DocumentUrl,
+//                                                                baseDocUrl );
+        ui->markdownPreviewDoc->document()->setBaseUrl(QUrl::fromLocalFile(fileInfo.canonicalFilePath()));
         setWindowTitle(QCoreApplication::translate("MainWindow", fileInfo.fileName().toStdString().c_str(), nullptr));
         DMSettings::setString(KEY_LAST_FILE, filePath);
         if (needSelect) {
@@ -615,6 +618,14 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::updateMarkdownPreview() {
+void MainWindow::updateMarkdownPreview(const QStringList &images) {
+    // TODO: download and add image resources
+//    QImage image(64, 64, QImage::Format_RGB32);
+//    image.fill(qRgb(255, 160, 128));
+//
+////! [Adding a resource]
+//    document->addResource(QTextDocument::ImageResource,
+//                          QUrl("mydata://image.png"), QVariant(image));
     ui->markdownPreviewDoc->setMarkdown(ui->markdownEditor->toPlainText());
 }
+

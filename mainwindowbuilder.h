@@ -171,14 +171,6 @@ public:
 
         markdownPreviewDoc = new QTextEdit(mainWindow);
         markdownPreviewDoc->setReadOnly(true);
-        // TODO: fix the issue: stylesheet doesn't work
-        QFile styleSheetFile(":/styles/github-markdown.css");
-        // TODO: remove file io in main thread
-        if (styleSheetFile.exists() && styleSheetFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextStream styleSheetStream(&styleSheetFile);
-            markdownPreviewDoc->document()->setDefaultStyleSheet(styleSheetStream.readAll());
-            styleSheetFile.close();
-        }
 
         splitter->addWidget(markdownPreviewDoc);
         splitter->setStretchFactor(2, 3);

@@ -193,6 +193,8 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
 
     QString textContent = document->toRawText();
     std::vector<tok> tocs;
+    QStringList referredImages;
+
     for (int i = 0; i < highlightingStyles->size(); i++)
     {
         HighlightingStyle style = highlightingStyles->at(i);
@@ -205,6 +207,10 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
             if (elem_cursor->end <= elem_cursor->pos) {
                 elem_cursor = elem_cursor->next;
                 continue;
+            }
+
+            if (style.type == pmh_IMAGE) {
+                referredImages << elem_cursor->address;
             }
 
             if (isTocElement) {
@@ -285,7 +291,7 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
     }
 
     mainWin->updateToc(tocItems);
-    mainWin->updateMarkdownPreview();
+    mainWin->updateMarkdownPreview(referredImages);
     document->markContentsDirty(0, document->characterCount());
     pmh_free_elements(parsedElement);
 }
