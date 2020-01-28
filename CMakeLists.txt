@@ -6,10 +6,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-#set(Qt5_DIR "~/tools/Qt/5.13.1/clang_64/lib/cmake/Qt5")
-#set(Qt5AutoUpdaterCore_DIR "~/tools/Qt/5.13.1/clang_64/lib/cmake/Qt5AutoUpdaterCore")
-#set(Qt5AutoUpdaterWidgets_DIR "~/tools/Qt/5.13.1/clang_64/lib/cmake/Qt5AutoUpdaterWidgets")
-
 if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
@@ -21,8 +17,7 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt5 COMPONENTS Gui REQUIRED)
 find_package(Qt5 COMPONENTS Concurrent REQUIRED)
-find_package(Qt5AutoUpdaterCore REQUIRED)
-find_package(Qt5AutoUpdaterWidgets REQUIRED)
+find_package(Qt5 COMPONENTS Network REQUIRED)
 
 add_executable(SyncFolder
     FileIconProvider.cpp
@@ -46,7 +41,7 @@ add_executable(SyncFolder
     qmarkdowntextedit/qplaintexteditsearchwidget.ui
     qmarkdowntextedit/media.qrc
     qmarkdowntextedit/LineNumberArea.cpp
-    qmarkdowntextedit/LineNumberArea.h)
+    qmarkdowntextedit/LineNumberArea.h uiwidgets/MarkdownPreviewView.cpp uiwidgets/MarkdownPreviewView.h)
 
 target_include_directories(SyncFolder PUBLIC
         .
@@ -59,4 +54,4 @@ set_target_properties(SyncFolder PROPERTIES
         CXX_EXTENSIONS NO
         )
 
-target_link_libraries(SyncFolder Qt5::Widgets Qt5::Concurrent Qt5::AutoUpdaterCore Qt5::AutoUpdaterWidgets)
+target_link_libraries(SyncFolder Qt5::Widgets Qt5::Concurrent Qt5::Network)

@@ -587,14 +587,7 @@ void MainWindow::about() {
 }
 
 void MainWindow::checkIfUpdateAvailable() {
-    QApplication *a = static_cast<QApplication*>(QApplication::instance());
-    auto updater = QtAutoUpdater::Updater::create("qtifw", {
-            {"path", "/Users/faywong/tools/Qt/MaintenanceTool.app"} //.exe or .app is automatically added on the platform
-    }, a);
-
-    auto controller = QtAutoUpdater::UpdateController{updater, a};
-    //start the update check -> AskLevel to give the user maximum control
-    controller.start(QtAutoUpdater::UpdateController::DisplayLevel::Ask);
+    // TODO: migrate to SimpleAutoUpdater
 }
 
 void MainWindow::revealInTreeView_l(const QString &path) {

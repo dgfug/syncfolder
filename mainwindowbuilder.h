@@ -29,6 +29,9 @@
 #include <QLabel>
 #include <QScrollArea>
 #include <QStandardItemModel>
+#include <QtWidgets/QTextBrowser>
+#include <QtWidgets/QScrollBar>
+#include <uiwidgets/MarkdownPreviewView.h>
 #include "settings/settings_def.h"
 
 QT_BEGIN_NAMESPACE
@@ -38,7 +41,7 @@ class Ui_MainWindow
 
 public:
     QMarkdownTextEdit *markdownEditor;
-    QTextEdit *markdownPreviewDoc;
+    MarkdownPreviewView *markdownPreviewDoc;
     QMenuBar *menuBar;
     QStatusBar *statusBar;
     QHBoxLayout *bodyLayout;
@@ -169,13 +172,21 @@ public:
         splitter->addWidget(markdownEditor);
         splitter->setStretchFactor(1, 3);
 
-        markdownPreviewDoc = new QTextEdit(mainWindow);
+        markdownPreviewDoc = new MarkdownPreviewView(mainWindow);
         markdownPreviewDoc->setReadOnly(true);
 
         splitter->addWidget(markdownPreviewDoc);
         splitter->setStretchFactor(2, 3);
         // we handle drag & drop globally in MainWindow, so disable it here
         markdownEditor->viewport()->setAcceptDrops(false);
+
+        // sync scroll: editor -> previewer
+        QObject::connect(markdownEditor->verticalScrollBar(), &QScrollBar::valueChanged,
+                         [&](int newValue ) {
+//                             e new / e max = (p new) / p max
+
+                             int newV = newValue * markdownPreviewDoc->verticalScrollBar()->maximum() / markdownEditor->verticalScrollBar()->maximum();
+                             markdownPreviewDoc->verticalScrollBar()->setValue(newV); });
 
         imageLabel = new QLabel;
         imageLabel->setBackgroundRole(QPalette::Base);
