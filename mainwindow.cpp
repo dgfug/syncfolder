@@ -127,8 +127,8 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
         ui->markdownEditor->moveCursor(QTextCursor::End);
         ui->markdownEditor->setTextCursor(cursor);
         QString baseDocUrl = QUrl::fromLocalFile(fileInfo.canonicalFilePath()).toString();
-//        ui->markdownPreviewDoc->document()->setMetaInformation( QTextDocument::DocumentUrl,
-//                                                                baseDocUrl );
+        ui->markdownPreviewDoc->document()->setMetaInformation( QTextDocument::DocumentUrl,
+                                                                baseDocUrl );
         ui->markdownPreviewDoc->document()->setBaseUrl(QUrl::fromLocalFile(fileInfo.canonicalFilePath()));
         setWindowTitle(QCoreApplication::translate("MainWindow", fileInfo.fileName().toStdString().c_str(), nullptr));
         DMSettings::setString(KEY_LAST_FILE, filePath);
@@ -623,8 +623,8 @@ void MainWindow::updateMarkdownPreview(const QStringList &images) {
 //    QImage image(64, 64, QImage::Format_RGB32);
 //    image.fill(qRgb(255, 160, 128));
 //
-////! [Adding a resource]
-//    document->addResource(QTextDocument::ImageResource,
+//    //! [Adding a resource]
+//    ui->markdownPreviewDoc->document()->addResource(QTextDocument::ImageResource,
 //                          QUrl("mydata://image.png"), QVariant(image));
     ui->markdownPreviewDoc->setMarkdown(ui->markdownEditor->toPlainText());
 }
