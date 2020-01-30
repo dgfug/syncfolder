@@ -43,7 +43,7 @@ void HGMarkdownHighlighter::setDefaultStyles()
     // TODO: support theme
     int primaryFontSize = DMSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
     QTextCharFormat headers;
-    headers.setForeground(QBrush(QColor("#006BC4")));
+    headers.setForeground(QBrush(QColor("#3F8FFF")));
     // 遵循 css 默认 size
     headers.setFontWeight(QFont::ExtraBold);
     headers.setFontPointSize(primaryFontSize * 1.4);

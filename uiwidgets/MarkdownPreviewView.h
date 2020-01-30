@@ -11,7 +11,7 @@
 class MarkdownPreviewView : public QTextBrowser {
 public:
     explicit MarkdownPreviewView(QWidget* parent = nullptr);
-    bool preloadResources(const QStringList &images);
+    bool preloadResources(const QStringList &images, const QString markdownText);
 
 protected:
     QVariant loadResource(int type, const QUrl &name) override;
@@ -22,6 +22,7 @@ protected slots:
 private:
     QCache<QString, QPixmap> resourceCache;
     QNetworkAccessManager *nam;
+    QString pendingMarkdownText;
 };
 
 #endif //SYNCFOLDER_MARKDOWNPREVIEWVIEW_H

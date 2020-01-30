@@ -613,12 +613,8 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::updateMarkdownPreview(const QStringList &images) {
-    if (ui->markdownPreviewDoc->preloadResources(images)) {
-        QTimer::singleShot(2000, this, [&]() {
-            ui->markdownPreviewDoc->setMarkdown(ui->markdownEditor->toPlainText());
-        });
-    } else {
-        ui->markdownPreviewDoc->setMarkdown(ui->markdownEditor->toPlainText());
-    }
+    QString markdownText = ui->markdownEditor->toPlainText();
+    ui->markdownPreviewDoc->preloadResources(images, markdownText);
+    ui->markdownPreviewDoc->setMarkdown(markdownText);
 }
 

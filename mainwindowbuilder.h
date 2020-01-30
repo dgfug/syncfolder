@@ -184,9 +184,11 @@ public:
         QObject::connect(markdownEditor->verticalScrollBar(), &QScrollBar::valueChanged,
                          [&](int newValue ) {
 //                             e new / e max = (p new) / p max
-
-                             int newV = newValue * markdownPreviewDoc->verticalScrollBar()->maximum() / markdownEditor->verticalScrollBar()->maximum();
-                             markdownPreviewDoc->verticalScrollBar()->setValue(newV); });
+                             int eMax = markdownEditor->verticalScrollBar()->maximum();
+                             if (eMax > 0.01) {
+                                 int newV = newValue * markdownPreviewDoc->verticalScrollBar()->maximum() / eMax;
+                                 markdownPreviewDoc->verticalScrollBar()->setValue(newV);
+                             }});
 
         imageLabel = new QLabel;
         imageLabel->setBackgroundRole(QPalette::Base);

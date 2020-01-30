@@ -6,16 +6,16 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QtGui/QDesktopServices>
+#include <QPainter>
 #include "MarkdownPreviewView.h"
-
 
 MarkdownPreviewView::MarkdownPreviewView(QWidget *parent) : QTextBrowser(parent), resourceCache(/* maxCost */30), nam(new QNetworkAccessManager(this)) {
     connect(nam, &QNetworkAccessManager::finished, this, &MarkdownPreviewView::downloadFinished);
 }
 
-bool MarkdownPreviewView::preloadResources(const QStringList &resList) {
-    QSet<QString> resSet(resList.begin(), resList.end());
+bool MarkdownPreviewView::preloadResources(const QStringList &resList, const QString markdownText) {
     bool needWaitResReady = false;
+    QSet<QString> resSet(resList.begin(), resList.end());
     for (auto image : resSet) {
         const QUrl url = QUrl(image);
         if ((url.scheme() == "http" || url.scheme() == "https")
@@ -26,22 +26,38 @@ bool MarkdownPreviewView::preloadResources(const QStringList &resList) {
             nam->get(request);
         }
     }
+    if (needWaitResReady) {
+        pendingMarkdownText = markdownText;
+    }
     return needWaitResReady;
 }
 
 void MarkdownPreviewView::downloadFinished(QNetworkReply *reply) {
-    QPixmap *pm = new QPixmap();
-    pm->loadFromData(reply->readAll());
-    resourceCache.insert(reply->url().toString(), pm);
-//    qDebug()<<"downloadFinished url: " << reply->url().toString() << " => pm: " << pm;
-    viewport()->update();
+    if (reply->error() == QNetworkReply::NoError) {
+        QPixmap *pm = new QPixmap();
+        pm->loadFromData(reply->readAll());
+        QString url = reply->url().toString();
+        resourceCache.insert(url, pm);
+        if (!pendingMarkdownText.isEmpty()) {
+//            qDebug()<<"relayout after downloadFinished res: " << url;
+            setMarkdown(pendingMarkdownText);
+        }
+    }
 }
 
 QVariant MarkdownPreviewView::loadResource(int type, const QUrl &name) {
     if (type==QTextDocument::ImageResource
             && (name.scheme() == "http" || name.scheme() == "https")) {
-//                qDebug()<<"loadResource res: " << name;
         if (resourceCache.contains(name.toString())) {
+            qDebug()<<"loadResource found res: " << name;
+//            QImage image(QSize(400,300),QImage::Format_RGB32);
+//            QPainter painter(&image);
+//            painter.setBrush(QBrush(Qt::green));
+//            painter.fillRect(QRectF(0,0,400,300),Qt::green);
+//            painter.fillRect(QRectF(100,100,200,100),Qt::white);
+//            painter.setPen(QPen(Qt::black));
+//            painter.drawText(QRect(100,100,200,100),"Text you want to draw...");
+//            return QVariant(image);
             return *resourceCache.take(name.toString());
         }
     }
