@@ -31,6 +31,7 @@
 #include <QScrollBar>
 #include <QClipboard>
 #include <utility>
+#include <QString>
 #include <settings/settings_def.h>
 
 QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent, bool initHighlighter)
@@ -44,7 +45,6 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent, bool initHighlighter)
                                        << "\"" << "'" << "_" << "~";
 
     // markdown highlighting is enabled by default
-    _highlightingEnabled = true;
     if (initHighlighter) {
         _highlighter = new HGMarkdownHighlighter(document(), dynamic_cast<DMEditorDelegate *>(parent->window()));
         connect(_highlighter, SIGNAL(parseFinished(pmh_element **)), this, SLOT(highlightRichText(pmh_element **)), Qt::QueuedConnection);
@@ -1168,15 +1168,20 @@ void QMarkdownTextEdit::updateLineNumberArea(const QRect &rect, int dy) {
 
 int QMarkdownTextEdit::lineNumberAreaWidth()
 {
+    int digits = getDigitsNum();
+
+    int space = 3 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits;
+    return space;
+}
+
+int QMarkdownTextEdit::getDigitsNum() const {
     int digits = 1;
     int max = qMax(1, blockCount());
     while (max >= 10) {
         max /= 10;
         ++digits;
     }
-
-    int space = 3 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits;
-    return space;
+    return digits;
 }
 
 void QMarkdownTextEdit::resizeEvent(QResizeEvent *e)
@@ -1190,6 +1195,7 @@ void QMarkdownTextEdit::lineNumberAreaPaintEvent(QPaintEvent *event) {
     QPainter painter(lineNumberArea);
     painter.fillRect(event->rect(), QColor(0xfd, 0xff, 0xe4));
     QTextBlock block = firstVisibleBlock();
+    int digitsNum = getDigitsNum();
     int blockNumber = block.blockNumber();
     int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
     int bottom = top + qRound(blockBoundingRect(block).height());
@@ -1197,8 +1203,9 @@ void QMarkdownTextEdit::lineNumberAreaPaintEvent(QPaintEvent *event) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
             painter.setPen(QColor(0xb1, 0xa9, 0xb4));
+            QString unifiedNum = QString::number(blockNumber + 1).rightJustified(digitsNum, '0');
             painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
-                             Qt::AlignCenter, number);
+                             Qt::AlignCenter, unifiedNum);
         }
 
         block = block.next();

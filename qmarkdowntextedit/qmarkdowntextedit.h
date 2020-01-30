@@ -78,7 +78,6 @@ protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *event) override;
     HGMarkdownHighlighter *_highlighter;
-    bool _highlightingEnabled;
     QStringList _ignoredClickUrlSchemata;
     QPlainTextEditSearchWidget *_searchWidget;
     QWidget *_searchFrame;
@@ -86,6 +85,7 @@ protected:
     QStringList _openingCharacters;
     QStringList _closingCharacters;
     QWidget *lineNumberArea;
+    int getDigitsNum() const;
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
     void highlightCurrentLine();
