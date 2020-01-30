@@ -32,6 +32,7 @@
 #include <QtWidgets/QWidgetAction>
 #include <QtWidgets/QSpinBox>
 #include <QDesktopServices>
+#include <QTimer>
 #include "DisplayQueuedFilesAction.h"
 
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
@@ -612,13 +613,12 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::updateMarkdownPreview(const QStringList &images) {
-    // TODO: download and add image resources
-//    QImage image(64, 64, QImage::Format_RGB32);
-//    image.fill(qRgb(255, 160, 128));
-//
-//    //! [Adding a resource]
-//    ui->markdownPreviewDoc->document()->addResource(QTextDocument::ImageResource,
-//                          QUrl("mydata://image.png"), QVariant(image));
-    ui->markdownPreviewDoc->setMarkdown(ui->markdownEditor->toPlainText());
+    if (ui->markdownPreviewDoc->preloadResources(images)) {
+        QTimer::singleShot(2000, this, [&]() {
+            ui->markdownPreviewDoc->setMarkdown(ui->markdownEditor->toPlainText());
+        });
+    } else {
+        ui->markdownPreviewDoc->setMarkdown(ui->markdownEditor->toPlainText());
+    }
 }
 

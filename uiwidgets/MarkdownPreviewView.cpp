@@ -5,33 +5,45 @@
 #include <QtCore/QEventLoop>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
+#include <QtGui/QDesktopServices>
 #include "MarkdownPreviewView.h"
 
-QPixmap MarkdownPreviewView::downloadOnlineImg(const QString& url){
-    QNetworkAccessManager nam;
-    QEventLoop loop;
-    QObject::connect(&nam, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-    QNetworkReply *reply = nam.get(QNetworkRequest(url));
-    loop.exec();
-    QPixmap pm;
-    pm.loadFromData(reply->readAll());
-    delete reply;
-    return pm;
+
+MarkdownPreviewView::MarkdownPreviewView(QWidget *parent) : QTextBrowser(parent), resourceCache(/* maxCost */30), nam(new QNetworkAccessManager(this)) {
+    connect(nam, &QNetworkAccessManager::finished, this, &MarkdownPreviewView::downloadFinished);
+}
+
+bool MarkdownPreviewView::preloadResources(const QStringList &resList) {
+    QSet<QString> resSet(resList.begin(), resList.end());
+    bool needWaitResReady = false;
+    for (auto image : resSet) {
+        const QUrl url = QUrl(image);
+        if ((url.scheme() == "http" || url.scheme() == "https")
+                && !resourceCache.contains(image)) {
+            needWaitResReady = true;
+//            qDebug()<<"preloadResources url: " << url.toString();
+            QNetworkRequest request(url);
+            nam->get(request);
+        }
+    }
+    return needWaitResReady;
+}
+
+void MarkdownPreviewView::downloadFinished(QNetworkReply *reply) {
+    QPixmap *pm = new QPixmap();
+    pm->loadFromData(reply->readAll());
+    resourceCache.insert(reply->url().toString(), pm);
+//    qDebug()<<"downloadFinished url: " << reply->url().toString() << " => pm: " << pm;
+    viewport()->update();
 }
 
 QVariant MarkdownPreviewView::loadResource(int type, const QUrl &name) {
     if (type==QTextDocument::ImageResource
             && (name.scheme() == "http" || name.scheme() == "https")) {
-        //        qDebug()<<"load res: " << name;
-        QImage image(64, 64, QImage::Format_RGB32);
-        image.fill(qRgb(255, 160, 128));
-        return QVariant(image);
-//        return QVariant(this->downloadOnlineImg(name.toString()));
-    } else {
-        return QTextBrowser::loadResource(type, name);
+//                qDebug()<<"loadResource res: " << name;
+        if (resourceCache.contains(name.toString())) {
+            return *resourceCache.take(name.toString());
+        }
     }
-}
-
-MarkdownPreviewView::MarkdownPreviewView(QWidget *parent) : QTextBrowser(parent) {
-
+    return QTextBrowser::loadResource(type, name);
 }
