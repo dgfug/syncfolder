@@ -50,7 +50,7 @@ QVariant MarkdownPreviewView::loadResource(int type, const QUrl &name) {
     if (type==QTextDocument::ImageResource
             && (name.scheme() == "http" || name.scheme() == "https")) {
         if (resourceCache.contains(name.toString())) {
-            qDebug()<<"loadResource found res: " << name;
+//            qDebug()<<"loadResource found res: " << name;
 //            QImage image(QSize(400,300),QImage::Format_RGB32);
 //            QPainter painter(&image);
 //            painter.setBrush(QBrush(Qt::green));

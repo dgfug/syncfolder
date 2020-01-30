@@ -10,6 +10,7 @@
 #include "FullTextSearchWindow.h"
 #include "FileLocatorWindow.h"
 #include "CircleProgressBar.h"
+#include <QSimpleUpdater.h>
 
 namespace Ui {
 class MainWindow;
@@ -57,6 +58,8 @@ public slots:
                            const QString &newName);
     void handleOrgCaptured(const QString &);
     void handleTocClicked(const QItemSelection&,const QItemSelection&);
+    void updateChangelog (const QString& url);
+    void displayAppcast (const QString& url, const QByteArray& reply);
 
 protected:
     void setupMenus();
@@ -73,6 +76,7 @@ private:
     Ui::MainWindow *ui;
     QString currentFilePath;
     QString currentRootDirPath;
+    QSimpleUpdater* m_updater;
 
     // search related
     std::vector<std::string> fileNamesDictionary;

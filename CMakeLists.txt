@@ -31,6 +31,8 @@ add_executable(SyncFolder
     syncapp.cpp
     uiwidgets/ProgressCircle.cpp
     uiwidgets/DisplayQueuedFilesAction.cpp
+    uiwidgets/MarkdownPreviewView.cpp
+    uiwidgets/MarkdownPreviewView.h
     resources.qrc
     translations/syncfolder_zh_CN.ts
     qmarkdowntextedit/highlighter.cpp
@@ -41,12 +43,24 @@ add_executable(SyncFolder
     qmarkdowntextedit/qplaintexteditsearchwidget.ui
     qmarkdowntextedit/media.qrc
     qmarkdowntextedit/LineNumberArea.cpp
-    qmarkdowntextedit/LineNumberArea.h uiwidgets/MarkdownPreviewView.cpp uiwidgets/MarkdownPreviewView.h)
+    qmarkdowntextedit/LineNumberArea.h
+    3rdparty/QSimpleUpdater/src/Updater.cpp
+    3rdparty/QSimpleUpdater/src/Updater.h
+    3rdparty/QSimpleUpdater/src/Downloader.cpp
+    3rdparty/QSimpleUpdater/src/Downloader.h
+    3rdparty/QSimpleUpdater/src/QSimpleUpdater.cpp
+    3rdparty/QSimpleUpdater/include/QSimpleUpdater.h
+    3rdparty/QSimpleUpdater/src/Downloader.ui
+    3rdparty/QSimpleUpdater/etc/resources/qsimpleupdater.qrc
+    )
 
 target_include_directories(SyncFolder PUBLIC
         .
         uiwidgets
-        qmarkdowntextedit)
+        qmarkdowntextedit
+        3rdparty/QSimpleUpdater
+        3rdparty/QSimpleUpdater/include
+        3rdparty/QSimpleUpdater/src)
 
 set_target_properties(SyncFolder PROPERTIES
         CXX_STANDARD 17

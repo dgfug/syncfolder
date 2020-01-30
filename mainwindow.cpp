@@ -35,6 +35,10 @@
 #include <QTimer>
 #include "DisplayQueuedFilesAction.h"
 
+static const QString DEFS_URL = "https://raw.githubusercontent.com/"
+                                "alex-spataru/QSimpleUpdater/master/tutorial/"
+                                "definitions/updates.json";
+
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -46,6 +50,48 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     ui->setupUi(this);
     setupMenus();
     setAcceptDrops(true);
+    /* QSimpleUpdater is single-instance */
+    m_updater = QSimpleUpdater::getInstance();
+
+    /* Check for updates when the "Check For Updates" button is clicked */
+    connect (m_updater, SIGNAL (checkingFinished  (QString)),
+             this,        SLOT (updateChangelog   (QString)));
+    connect (m_updater, SIGNAL (appcastDownloaded (QString, QByteArray)),
+             this,        SLOT (displayAppcast    (QString, QByteArray)));
+
+    /* Apply the settings */
+    m_updater->setModuleVersion (DEFS_URL, "0.1");
+    m_updater->setNotifyOnFinish (DEFS_URL, true);
+    m_updater->setNotifyOnUpdate (DEFS_URL, true);
+    m_updater->setUseCustomAppcast (DEFS_URL, true);
+    m_updater->setDownloaderEnabled (DEFS_URL, true);
+    m_updater->setMandatoryUpdate (DEFS_URL, true);
+
+    /* Check for updates */
+    m_updater->checkForUpdates (DEFS_URL);
+}
+
+void MainWindow::updateChangelog (const QString& url)
+{
+    qDebug()<<"changelog: "<<m_updater->getChangelog (url);
+}
+
+
+//==============================================================================
+// Window::displayAppcast
+//==============================================================================
+
+void MainWindow::displayAppcast (const QString& url, const QByteArray& reply)
+{
+    QString text = "This is the downloaded appcast: <p><pre>" +
+                   QString::fromUtf8 (reply) +
+                   "</pre></p><p> If you need to store more information on the "
+                   "appcast (or use another format), just use the "
+                   "<b>QSimpleUpdater::setCustomAppcast()</b> function. "
+                   "It allows your application to interpret the appcast "
+                   "using your code and not QSU's code.</p>";
+
+    qDebug()<<"changelog: "<< text;
 }
 
 void MainWindow::handleOrgCaptured(const QString &url)
