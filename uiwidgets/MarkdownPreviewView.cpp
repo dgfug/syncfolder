@@ -11,6 +11,7 @@
 
 MarkdownPreviewView::MarkdownPreviewView(QWidget *parent) : QTextBrowser(parent), resourceCache(/* maxCost */30), nam(new QNetworkAccessManager(this)) {
     connect(nam, &QNetworkAccessManager::finished, this, &MarkdownPreviewView::downloadFinished);
+    setOpenLinks(false);
 }
 
 bool MarkdownPreviewView::preloadResources(const QStringList &resList, const QString markdownText) {
