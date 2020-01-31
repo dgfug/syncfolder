@@ -3,12 +3,15 @@
 
 #include <QSettings>
 #include <QString>
+#include <QDateTime>
+#include <QDebug>
 
 #define KEY_LAST_FILE "dmeditor/last_opened_file"
 #define KEY_LAST_FOLDER "dmeditor/last_opened_folder"
 #define KEY_LAST_WIN_WIDTH "dmeditor/last_win_width"
 #define KEY_LAST_WIN_HEIGHT "dmeditor/last_win_height"
 #define KEY_LAST_PRIMARY_FONT_SIZE "dmeditor/last_primary_font_size"
+#define KEY_LAST_CHECK_UPDATE "dmeditor/last_check_update"
 
 class DMSettings {
 public:
@@ -20,6 +23,17 @@ public:
     static inline int getInt(const QString &key) {
         QSettings settings;
         return settings.value(key, 0).toInt();
+    }
+
+    static inline QDateTime getDateTime(const QString &key) {
+        QSettings settings;
+        qDebug()<<"settings: " << settings.fileName();
+        return settings.value(key, QDateTime::fromMSecsSinceEpoch(0)).toDateTime();
+    }
+
+    static inline void setDateTime(const QString &key, const QDateTime time) {
+        QSettings settings;
+        settings.setValue(key, time);
     }
 
     static inline int getInt(const QString &key, int def) {

@@ -60,6 +60,7 @@ public slots:
     void handleTocClicked(const QItemSelection&,const QItemSelection&);
     void updateChangelog (const QString& url);
     void displayAppcast (const QString& url, const QByteArray& reply);
+    void onUpdateDownloadFinished(const QString& url, const QString& path);
 
 protected:
     void setupMenus();

@@ -34,10 +34,7 @@
 #include <QDesktopServices>
 #include <QTimer>
 #include "DisplayQueuedFilesAction.h"
-
-static const QString DEFS_URL = "https://raw.githubusercontent.com/"
-                                "alex-spataru/QSimpleUpdater/master/tutorial/"
-                                "definitions/updates.json";
+#include "syncapp.h"
 
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     QMainWindow(parent),
@@ -53,35 +50,37 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     /* QSimpleUpdater is single-instance */
     m_updater = QSimpleUpdater::getInstance();
 
-    /* Check for updates when the "Check For Updates" button is clicked */
-    connect (m_updater, SIGNAL (checkingFinished  (QString)),
-             this,        SLOT (updateChangelog   (QString)));
-    connect (m_updater, SIGNAL (appcastDownloaded (QString, QByteArray)),
-             this,        SLOT (displayAppcast    (QString, QByteArray)));
+    qint64 days = DMSettings::getDateTime(KEY_LAST_CHECK_UPDATE).daysTo(QDateTime::currentDateTime());
+    if (true/*qAbs(days) > 1*/) {
+        /* Check for updates when the "Check For Updates" button is clicked */
+        connect (m_updater, SIGNAL (checkingFinished  (QString)),
+                 this,        SLOT (updateChangelog   (QString)));
+        connect (m_updater, SIGNAL (appcastDownloaded (QString, QByteArray)),
+                 this,        SLOT (displayAppcast    (QString, QByteArray)));
+        connect (m_updater, SIGNAL (downloadFinished (QString, QString)),
+                 this,        SLOT (onUpdateDownloadFinished(QString, QString)));
 
-    /* Apply the settings */
-    m_updater->setModuleVersion (DEFS_URL, "0.1");
-    m_updater->setNotifyOnFinish (DEFS_URL, true);
-    m_updater->setNotifyOnUpdate (DEFS_URL, true);
-    m_updater->setUseCustomAppcast (DEFS_URL, true);
-    m_updater->setDownloaderEnabled (DEFS_URL, true);
-    m_updater->setMandatoryUpdate (DEFS_URL, true);
+        /* Apply the settings */
+        m_updater->setModuleVersion (DEFS_URL, SYNC_FOLDER_VER);
+        m_updater->setNotifyOnFinish (DEFS_URL, false);
+        m_updater->setNotifyOnUpdate (DEFS_URL, false);
+        m_updater->setUseCustomAppcast (DEFS_URL, true);
+        m_updater->setDownloaderEnabled (DEFS_URL, true);
+        m_updater->setMandatoryUpdate (DEFS_URL, true);
+        m_updater->setUseCustomInstallProcedures(DEFS_URL, true);
 
-    /* Check for updates */
-    m_updater->checkForUpdates (DEFS_URL);
+        /* Check for updates */
+        m_updater->checkForUpdates (DEFS_URL);
+    }
 }
 
 void MainWindow::updateChangelog (const QString& url)
 {
+    DMSettings::setDateTime(KEY_LAST_CHECK_UPDATE, QDateTime::currentDateTime());
     qDebug()<<"changelog: "<<m_updater->getChangelog (url);
 }
 
-
-//==============================================================================
-// Window::displayAppcast
-//==============================================================================
-
-void MainWindow::displayAppcast (const QString& url, const QByteArray& reply)
+void MainWindow::displayAppcast(const QString& url, const QByteArray& reply)
 {
     QString text = "This is the downloaded appcast: <p><pre>" +
                    QString::fromUtf8 (reply) +
@@ -92,6 +91,11 @@ void MainWindow::displayAppcast (const QString& url, const QByteArray& reply)
                    "using your code and not QSU's code.</p>";
 
     qDebug()<<"changelog: "<< text;
+}
+
+void MainWindow::onUpdateDownloadFinished(const QString& url, const QString& path)
+{
+    qDebug()<<"url: "<< url << ", path: " << path;
 }
 
 void MainWindow::handleOrgCaptured(const QString &url)
