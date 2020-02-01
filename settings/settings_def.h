@@ -6,14 +6,17 @@
 #include <QDateTime>
 #include <QDebug>
 
-#define KEY_LAST_FILE "dmeditor/last_opened_file"
-#define KEY_LAST_FOLDER "dmeditor/last_opened_folder"
-#define KEY_LAST_WIN_WIDTH "dmeditor/last_win_width"
-#define KEY_LAST_WIN_HEIGHT "dmeditor/last_win_height"
-#define KEY_LAST_PRIMARY_FONT_SIZE "dmeditor/last_primary_font_size"
-#define KEY_LAST_CHECK_UPDATE "dmeditor/last_check_update"
+#define KEY_LAST_FILE "syncfolder/last_opened_file"
+#define KEY_LAST_FOLDER "syncfolder/last_opened_folder"
+#define KEY_LAST_WIN_WIDTH "syncfolder/last_win_width"
+#define KEY_LAST_WIN_HEIGHT "syncfolder/last_win_height"
+#define KEY_LAST_PRIMARY_FONT_SIZE "syncfolder/last_primary_font_size"
+#define KEY_LAST_CHECK_UPDATE "syncfolder/last_check_update"
+#define KEY_API_ENDPOINT "syncfolder/api_endpoint"
+#define KEY_API_USERNAME "syncfolder/api_username"
+#define KEY_API_PASSWORD "syncfolder/api_password"
 
-class DMSettings {
+class SyncFolderSettings {
 public:
     static inline QString getString(const QString &key) {
         QSettings settings;

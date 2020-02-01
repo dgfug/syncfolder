@@ -46,14 +46,14 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     if (rootPath.isEmpty()) {
-        rootPath = DMSettings::getString(KEY_LAST_FOLDER);
+        rootPath = SyncFolderSettings::getString(KEY_LAST_FOLDER);
     }
 
     if (!rootPath.isEmpty()) {
         w.setCurrentRootDirPath(rootPath);
     }
 
-    QString lastEditedFile = DMSettings::getString(KEY_LAST_FILE);
+    QString lastEditedFile = SyncFolderSettings::getString(KEY_LAST_FILE);
     if (!lastEditedFile.isEmpty()) {
         w.openFile_l(lastEditedFile, 1, true);
     }

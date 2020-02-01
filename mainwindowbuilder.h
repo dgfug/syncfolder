@@ -58,8 +58,8 @@ public:
         if (mainWindow->objectName().isEmpty())
             mainWindow->setObjectName(QString::fromUtf8("MainWindow"));
 
-        int lastWidth = DMSettings::getInt(KEY_LAST_WIN_WIDTH);
-        int lastHeight = DMSettings::getInt(KEY_LAST_WIN_HEIGHT);
+        int lastWidth = SyncFolderSettings::getInt(KEY_LAST_WIN_WIDTH);
+        int lastHeight = SyncFolderSettings::getInt(KEY_LAST_WIN_HEIGHT);
 
         QScreen *screen = QGuiApplication::primaryScreen();
         QRect screenGeometry = screen->geometry();
@@ -76,8 +76,8 @@ public:
             }
             windowWidth *= factor;
             windowHeight *= factor;
-            DMSettings::setInt(KEY_LAST_WIN_WIDTH, windowWidth);
-            DMSettings::setInt(KEY_LAST_WIN_HEIGHT, windowHeight);
+            SyncFolderSettings::setInt(KEY_LAST_WIN_WIDTH, windowWidth);
+            SyncFolderSettings::setInt(KEY_LAST_WIN_HEIGHT, windowHeight);
         }
 
         // TODO: handle window size changed
@@ -160,7 +160,7 @@ public:
         }
 
         QFont font = QFont();
-        int primaryFontSize = DMSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
+        int primaryFontSize = SyncFolderSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
         font.setPointSize(primaryFontSize);
         fileTree->setFont(font);
         fileTree->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#DAEFD0; selection-color:#1CA96B; }");

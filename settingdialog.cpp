@@ -8,30 +8,29 @@ SettingDialog::SettingDialog()
 {
     contentsWidget = new QListWidget;
     contentsWidget->setViewMode(QListView::IconMode);
-    contentsWidget->setIconSize(QSize(96, 84));
+    contentsWidget->setIconSize(QSize(64, 46));
     contentsWidget->setMovement(QListView::Static);
-    contentsWidget->setMaximumWidth(128);
+    contentsWidget->setMaximumWidth(88);
     contentsWidget->setSpacing(12);
 
     pagesWidget = new QStackedWidget;
     pagesWidget->addWidget(new ConfigurationPage);
-    pagesWidget->addWidget(new UpdatePage);
-    pagesWidget->addWidget(new QueryPage);
+//    pagesWidget->addWidget(new ConfigurationPage);
 
-    QPushButton *closeButton = new QPushButton(tr("Close"));
+    QPushButton *saveButton = new QPushButton(tr("Save"));
 
     createIcons();
     contentsWidget->setCurrentRow(0);
 
-    connect(closeButton, &QAbstractButton::clicked, this, &QWidget::close);
+    connect(saveButton, &QAbstractButton::clicked, this, &SettingDialog::save);
 
     QHBoxLayout *horizontalLayout = new QHBoxLayout;
-    horizontalLayout->addWidget(contentsWidget);
+    horizontalLayout->addWidget(contentsWidget, 0);
     horizontalLayout->addWidget(pagesWidget, 1);
 
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
     buttonsLayout->addStretch(1);
-    buttonsLayout->addWidget(closeButton);
+    buttonsLayout->addWidget(saveButton);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addLayout(horizontalLayout);
@@ -40,28 +39,17 @@ SettingDialog::SettingDialog()
     mainLayout->addLayout(buttonsLayout);
     setLayout(mainLayout);
 
-    setWindowTitle(tr("Config Dialog"));
+    setWindowTitle(tr("Setting Dialog"));
+    setMinimumWidth(500);
 }
 
 void SettingDialog::createIcons()
 {
     QListWidgetItem *configButton = new QListWidgetItem(contentsWidget);
-    configButton->setIcon(QIcon(":/icons/config.png"));
+    configButton->setIcon(QIcon(":/icons/update.png"));
     configButton->setText(tr("Sync"));
     configButton->setTextAlignment(Qt::AlignHCenter);
     configButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-    QListWidgetItem *updateButton = new QListWidgetItem(contentsWidget);
-    updateButton->setIcon(QIcon(":/icons/update.png"));
-    updateButton->setText(tr("Update"));
-    updateButton->setTextAlignment(Qt::AlignHCenter);
-    updateButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-    QListWidgetItem *queryButton = new QListWidgetItem(contentsWidget);
-    queryButton->setIcon(QIcon(":/icons/query.png"));
-    queryButton->setText(tr("Query"));
-    queryButton->setTextAlignment(Qt::AlignHCenter);
-    queryButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     connect(contentsWidget, &QListWidget::currentItemChanged, this, &SettingDialog::changePage);
 }
@@ -72,4 +60,8 @@ void SettingDialog::changePage(QListWidgetItem *current, QListWidgetItem *previo
         current = previous;
 
     pagesWidget->setCurrentIndex(contentsWidget->row(current));
+}
+
+void SettingDialog::save() {
+    dynamic_cast<ConfigurationPage*>(pagesWidget->currentWidget())->save();
 }

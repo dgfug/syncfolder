@@ -52,7 +52,7 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent, bool initHighlighter)
 //    setHighlightingEnabled(true);
 
     QFont font = QFont();
-    int primaryFontSize = DMSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
+    int primaryFontSize = SyncFolderSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
     font.setPointSize(primaryFontSize);
 //    font.setFamily("Source Code Variable");
     this->setFont(font);

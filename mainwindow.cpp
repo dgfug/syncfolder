@@ -27,14 +27,10 @@
 #include "syncapp.h"
 #include <QDateTime>
 #include "settingdialog.h"
-#include <QtAutoUpdaterCore/Updater>
-#include <QtAutoUpdaterWidgets/UpdateController>
 #include <QtWidgets/QWidgetAction>
-#include <QtWidgets/QSpinBox>
 #include <QDesktopServices>
 #include <QTimer>
 #include "DisplayQueuedFilesAction.h"
-#include "syncapp.h"
 
 MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     QMainWindow(parent),
@@ -50,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     /* QSimpleUpdater is single-instance */
     m_updater = QSimpleUpdater::getInstance();
 
-    qint64 days = DMSettings::getDateTime(KEY_LAST_CHECK_UPDATE).daysTo(QDateTime::currentDateTime());
+    qint64 days = SyncFolderSettings::getDateTime(KEY_LAST_CHECK_UPDATE).daysTo(QDateTime::currentDateTime());
     if (qAbs(days) > 1) {
         /* Check for updates when the "Check For Updates" button is clicked */
         connect (m_updater, SIGNAL (checkingFinished  (QString)),
@@ -61,15 +57,15 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
                  this,        SLOT (onUpdateDownloadFinished(QString, QString)));
 
         /* Apply the settings */
-        m_updater->setModuleVersion (DEFS_URL, SYNC_FOLDER_VER);
-        m_updater->setNotifyOnFinish (DEFS_URL, false);
-        m_updater->setNotifyOnUpdate (DEFS_URL, true);
-        m_updater->setUseCustomAppcast (DEFS_URL, false);
-        m_updater->setDownloaderEnabled (DEFS_URL, true);
-        m_updater->setMandatoryUpdate (DEFS_URL, true);
+        m_updater->setModuleVersion (syncfolderUpdateUrl, SYNC_FOLDER_VER);
+        m_updater->setNotifyOnFinish (syncfolderUpdateUrl, false);
+        m_updater->setNotifyOnUpdate (syncfolderUpdateUrl, true);
+        m_updater->setUseCustomAppcast (syncfolderUpdateUrl, false);
+        m_updater->setDownloaderEnabled (syncfolderUpdateUrl, true);
+        m_updater->setMandatoryUpdate (syncfolderUpdateUrl, true);
 
         /* Check for updates */
-        m_updater->checkForUpdates (DEFS_URL);
+        m_updater->checkForUpdates (syncfolderUpdateUrl);
     }
 }
 
@@ -77,7 +73,7 @@ void MainWindow::onCheckingUpdateFinished (const QString& url)
 {
     // 确实有更新，则记下更新时间
     if (m_updater->getUpdateAvailable(url)) {
-        DMSettings::setDateTime(KEY_LAST_CHECK_UPDATE, QDateTime::currentDateTime());
+        SyncFolderSettings::setDateTime(KEY_LAST_CHECK_UPDATE, QDateTime::currentDateTime());
     }
 //    qDebug()<<"changelog: "<<m_updater->getChangelog (url);
 }
@@ -184,7 +180,7 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
                                                                 baseDocUrl );
         ui->markdownPreviewDoc->document()->setBaseUrl(QUrl::fromLocalFile(fileInfo.canonicalFilePath()));
         setWindowTitle(QCoreApplication::translate("MainWindow", fileInfo.fileName().toStdString().c_str(), nullptr));
-        DMSettings::setString(KEY_LAST_FILE, filePath);
+        SyncFolderSettings::setString(KEY_LAST_FILE, filePath);
         if (needSelect) {
             revealInTreeView();
         }
@@ -200,7 +196,7 @@ void MainWindow::setCurrentRootDirPath(const QString &folderPath)
         if (rootIndex.isValid())
             ui->fileTree->setRootIndex(rootIndex);
 
-        DMSettings::setString(KEY_LAST_FOLDER, folderPath);
+        SyncFolderSettings::setString(KEY_LAST_FOLDER, folderPath);
     }
 
     QDirIterator it(currentRootDirPath, QDir::NoDotAndDotDot | QDir::Files, QDirIterator::Subdirectories);
@@ -559,20 +555,15 @@ void MainWindow::setupMenus()
     connect(launchFindFileAction, SIGNAL(triggered()), this, SLOT(launchFindFileWindow()));
     this->addAction(launchFindFileAction);
 
-    // tidy menu
-    QMenu *tidyMenu = new QMenu(tr("&tidy"), this);
-    menuBar()->addMenu(tidyMenu);
-
     // about menu
     QMenu *aboutMenu = new QMenu(tr("&about"), this);
     menuBar()->addMenu(aboutMenu);
 
     aboutMenu->addAction(tr("&about"), this, SLOT(about()),
-                        QKeySequence(Qt::Key_F1));
+                        QKeySequence(Qt::Key_Info));
 
-    // check update menu
-    aboutMenu->addAction(tr("&check update"), this, SLOT(checkIfUpdateAvailable()),
-                        QKeySequence(Qt::Key_F2));
+    aboutMenu->addAction(tr("&help"), this, SLOT(help()),
+                         QKeySequence(Qt::Key_Help));
 }
 
 void MainWindow::launchSearchWindow() {
@@ -633,14 +624,14 @@ void MainWindow::revealInTreeView() {
 
 void MainWindow::about() {
     QMessageBox::about(this, tr("SyncFolder"),
-              tr("<p><b>作者</b>：<a href=\"mailto://philip584521@gmail.com\">philip584521@gmail.com</a>"
-                 "<p><b>反馈</b>：<a href=\"https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html\">官方论坛</a>"
-                 "<p><b>版本</b>：v0.1.0"
+              tr(
+                 "<p><b>反馈</b>：<a href=\"http://syncfolder.chengxi.fun/\">官网</a>"
+                 "<br /><p><b>版本</b>：" SYNC_FOLDER_VER
                  ));
 }
 
-void MainWindow::checkIfUpdateAvailable() {
-    // TODO: migrate to SimpleAutoUpdater
+void MainWindow::help() {
+    QDesktopServices::openUrl(QUrl("https://syncfolder.chengxi.fun/help"));
 }
 
 void MainWindow::revealInTreeView_l(const QString &path) {

@@ -6,9 +6,7 @@
 #include <QMessageBox>
 #include <QtDebug>
 
-const QString DEFS_URL = "https://raw.githubusercontent.com/"
-                                "alex-spataru/QSimpleUpdater/master/tutorial/"
-                                "definitions/updates.json";
+const QString syncfolderUpdateUrl = "http://syncfolder.chengxi.fun/api/v1/updates.json";
 
 #define SYNC_FOLDER_VER "0.1"
 

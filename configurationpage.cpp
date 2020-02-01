@@ -1,116 +1,102 @@
 #include <QtWidgets>
-
+#include <QSimpleUpdater.h>
 #include "configurationpage.h"
+#include "settings/settings_def.h"
+#include "syncapp.h"
 
 ConfigurationPage::ConfigurationPage(QWidget *parent)
     : QWidget(parent)
 {
-    QGroupBox *configGroup = new QGroupBox(tr("Remote configuration"));
+    QGroupBox *configGroup = new QGroupBox(tr("Sync Remote"));
 
     QComboBox *syncServiceTypeCombo = new QComboBox;
-    syncServiceTypeCombo->addItem(tr("syncfolder cloud"));
-    syncServiceTypeCombo->addItem(tr("Self-built server"));
+    syncServiceTypeCombo->addItem(tr("SyncFolder cloud"));
+    syncServiceTypeCombo->addItem(tr("Self deploy server"));
 
     QHBoxLayout *serviceTypeLayout = new QHBoxLayout;
     QLabel *serverLabel = new QLabel(tr("Sync service type:"));
     serviceTypeLayout->addWidget(serverLabel);
     serviceTypeLayout->addWidget(syncServiceTypeCombo);
 
-    QHBoxLayout *serviceUriLayout = new QHBoxLayout;
-    QLabel *remoteUriLabel = new QLabel(tr("uri:"));
-    serviceUriLayout->addWidget(remoteUriLabel);
-    QLineEdit *remoteUriLineEdit = new QLineEdit();
-    serviceUriLayout->addWidget(remoteUriLineEdit);
+    QHBoxLayout *serviceApiLayout = new QHBoxLayout;
+    QLabel *serviceApiEndPointLabel = new QLabel(tr("service api endpoint:"));
+    serviceApiLayout->addWidget(serviceApiEndPointLabel);
+    serviceApiEndPointEdit = new QLineEdit();
+    serviceApiEndPointEdit->setText("https://cloud.chengxi.fun/api/v1");
+    serviceApiLayout->addWidget(serviceApiEndPointEdit);
+
+    QVBoxLayout *syncCloudLayout = new QVBoxLayout;
+    // username part
+    QHBoxLayout *usernameLayout = new QHBoxLayout;
+    QLabel *usernameLabel = new QLabel(tr("username:"));
+    usernameLayout->addWidget(usernameLabel);
+    usernameEdit = new QLineEdit();
+    usernameEdit->setPlaceholderText(tr("your subscribed account name here"));
+    usernameLayout->addWidget(usernameEdit);
+
+    syncCloudLayout->addLayout(usernameLayout);
+
+    // password part
+    QHBoxLayout *passwordLayout = new QHBoxLayout;
+    QLabel *passwordLabel = new QLabel(tr("password:"));
+    passwordLayout->addWidget(passwordLabel);
+    passwordEdit = new QLineEdit();
+    passwordEdit->setPlaceholderText(tr("password of your subscribed account here"));
+    passwordEdit->setEchoMode(QLineEdit::Password);
+    passwordLayout->addWidget(passwordEdit);
+
+    syncCloudLayout->addLayout(passwordLayout);
+
+    // apply for account
+    QHBoxLayout *applyAccountLayout = new QHBoxLayout;
+    QLabel *applyAccountLabel = new QLabel(tr("apply account:"));
+    applyAccountLayout->addWidget(applyAccountLabel);
+    QString platform = QSimpleUpdater::getInstance()->getPlatformKey(syncfolderUpdateUrl);
+    QLabel *targetPage = new QLabel("<a href=\"https://cloud.chengxi.fun/api/v1/signup?source=qt_setting_ui&platform=" + platform + "\">Apply for an account!</a>");
+    targetPage->setTextFormat(Qt::TextFormat::RichText);
+
+    connect(targetPage, &QLabel::linkActivated, [=](const QString &url) {
+        QDesktopServices::openUrl(QUrl(url));
+    });
+
+    applyAccountLayout->addWidget(targetPage);
+
+    syncCloudLayout->addLayout(applyAccountLayout);
 
     QVBoxLayout *configLayout = new QVBoxLayout;
     configLayout->addLayout(serviceTypeLayout);
-    configLayout->addLayout(serviceUriLayout);
+    configLayout->addLayout(serviceApiLayout);
+    configLayout->addLayout(syncCloudLayout);
 
     configGroup->setLayout(configLayout);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(configGroup);
     mainLayout->addStretch(1);
+
+    connect(syncServiceTypeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+    [&](int index) {
+        if (index == 0 /* cloud service */) {
+            serviceApiEndPointEdit->setText("https://cloud.chengxi.fun/api/v2");
+        } else if (index == 1 /* self hosted service */) {
+            serviceApiEndPointEdit->setPlaceholderText("https://your_server_goes_here/api");
+        }
+    });
+
     setLayout(mainLayout);
 }
 
-UpdatePage::UpdatePage(QWidget *parent)
-    : QWidget(parent)
-{
-    QGroupBox *updateGroup = new QGroupBox(tr("Package selection"));
-    QCheckBox *systemCheckBox = new QCheckBox(tr("Update system"));
-    QCheckBox *appsCheckBox = new QCheckBox(tr("Update applications"));
-    QCheckBox *docsCheckBox = new QCheckBox(tr("Update documentation"));
-
-    QGroupBox *packageGroup = new QGroupBox(tr("Existing packages"));
-
-    QListWidget *packageList = new QListWidget;
-    QListWidgetItem *qtItem = new QListWidgetItem(packageList);
-    qtItem->setText(tr("Qt"));
-    QListWidgetItem *qsaItem = new QListWidgetItem(packageList);
-    qsaItem->setText(tr("QSA"));
-    QListWidgetItem *teamBuilderItem = new QListWidgetItem(packageList);
-    teamBuilderItem->setText(tr("Teambuilder"));
-
-    QPushButton *startUpdateButton = new QPushButton(tr("Start update"));
-
-    QVBoxLayout *updateLayout = new QVBoxLayout;
-    updateLayout->addWidget(systemCheckBox);
-    updateLayout->addWidget(appsCheckBox);
-    updateLayout->addWidget(docsCheckBox);
-    updateGroup->setLayout(updateLayout);
-
-    QVBoxLayout *packageLayout = new QVBoxLayout;
-    packageLayout->addWidget(packageList);
-    packageGroup->setLayout(packageLayout);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addWidget(updateGroup);
-    mainLayout->addWidget(packageGroup);
-    mainLayout->addSpacing(12);
-    mainLayout->addWidget(startUpdateButton);
-    mainLayout->addStretch(1);
-    setLayout(mainLayout);
+void ConfigurationPage::save() {
+    SyncFolderSettings settings;
+    settings.setString(KEY_API_ENDPOINT, serviceApiEndPointEdit->text());
+    if (!usernameEdit->text().isEmpty()) {
+        settings.setString(KEY_API_USERNAME, usernameEdit->text());
+    }
+    if (!passwordEdit->text().isEmpty()) {
+        settings.setString(KEY_API_PASSWORD, passwordEdit->text());
+    }
 }
 
-QueryPage::QueryPage(QWidget *parent)
-    : QWidget(parent)
-{
-    QGroupBox *packagesGroup = new QGroupBox(tr("Look for packages"));
-
-    QLabel *nameLabel = new QLabel(tr("Name:"));
-    QLineEdit *nameEdit = new QLineEdit;
-
-    QLabel *dateLabel = new QLabel(tr("Released after:"));
-    QDateTimeEdit *dateEdit = new QDateTimeEdit(QDate::currentDate());
-
-    QCheckBox *releasesCheckBox = new QCheckBox(tr("Releases"));
-    QCheckBox *upgradesCheckBox = new QCheckBox(tr("Upgrades"));
-
-    QSpinBox *hitsSpinBox = new QSpinBox;
-    hitsSpinBox->setPrefix(tr("Return up to "));
-    hitsSpinBox->setSuffix(tr(" results"));
-    hitsSpinBox->setSpecialValueText(tr("Return only the first result"));
-    hitsSpinBox->setMinimum(1);
-    hitsSpinBox->setMaximum(100);
-    hitsSpinBox->setSingleStep(10);
-
-    QPushButton *startQueryButton = new QPushButton(tr("Start query"));
-
-    QGridLayout *packagesLayout = new QGridLayout;
-    packagesLayout->addWidget(nameLabel, 0, 0);
-    packagesLayout->addWidget(nameEdit, 0, 1);
-    packagesLayout->addWidget(dateLabel, 1, 0);
-    packagesLayout->addWidget(dateEdit, 1, 1);
-    packagesLayout->addWidget(releasesCheckBox, 2, 0);
-    packagesLayout->addWidget(upgradesCheckBox, 3, 0);
-    packagesLayout->addWidget(hitsSpinBox, 4, 0, 1, 2);
-    packagesGroup->setLayout(packagesLayout);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addWidget(packagesGroup);
-    mainLayout->addSpacing(12);
-    mainLayout->addWidget(startQueryButton);
-    mainLayout->addStretch(1);
-    setLayout(mainLayout);
+void ConfigurationPage::reset() {
+    // noop
 }

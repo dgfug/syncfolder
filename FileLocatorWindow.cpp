@@ -20,7 +20,7 @@ FindFileWindow::FindFileWindow(DMEditorDelegate *delegate, std::vector<std::stri
     QGridLayout *mainLayout = new QGridLayout(this);
     mainLayout->addWidget(new QLabel(tr("文件名:")), 0, 0);
     fileNameLineEdit = new QLineEdit(this);
-    int width = DMSettings::getInt(KEY_LAST_WIN_WIDTH);
+    int width = SyncFolderSettings::getInt(KEY_LAST_WIN_WIDTH);
     width = width > 0 ? (width * 0.6f) : 300;
     fileNameLineEdit->setMinimumWidth(width);
     mainLayout->addWidget(fileNameLineEdit, 0, 1);

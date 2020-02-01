@@ -23,12 +23,12 @@ add_executable(SyncFolder
     FileIconProvider.cpp
     FileLocatorWindow.cpp
     FullTextSearchWindow.cpp
-    configurationpage.cpp
     fileformat.cpp
     main.cpp
     mainwindow.cpp
     settingdialog.cpp
     syncapp.cpp
+    configurationpage.cpp
     uiwidgets/ProgressCircle.cpp
     uiwidgets/DisplayQueuedFilesAction.cpp
     uiwidgets/MarkdownPreviewView.cpp
@@ -52,7 +52,7 @@ add_executable(SyncFolder
     3rdparty/QSimpleUpdater/include/QSimpleUpdater.h
     3rdparty/QSimpleUpdater/src/Downloader.ui
     3rdparty/QSimpleUpdater/etc/resources/qsimpleupdater.qrc
-    )
+        ISettingPage.h)
 
 target_include_directories(SyncFolder PUBLIC
         .

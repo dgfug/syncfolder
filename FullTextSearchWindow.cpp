@@ -94,7 +94,7 @@ FullTextSearchWindow::FullTextSearchWindow(DMEditorDelegate *delegate, QWidget *
     connect(textComboBox->lineEdit(), &QLineEdit::returnPressed,
             this, &FullTextSearchWindow::animateFindClick);
 
-    QString lastFolder = DMSettings::getString(KEY_LAST_FOLDER);
+    QString lastFolder = SyncFolderSettings::getString(KEY_LAST_FOLDER);
 
     directoryComboBox = createComboBox(QDir::toNativeSeparators(lastFolder.isEmpty() ? QDir::currentPath() : lastFolder));
     connect(directoryComboBox->lineEdit(), &QLineEdit::returnPressed,

@@ -49,7 +49,7 @@ public slots:
     void handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void revealInTreeView();
     void about();
-    void checkIfUpdateAvailable();
+    void help();
     void contextMenu(const QPoint &pos);
     void processStdOutput();
     void processStdError();
