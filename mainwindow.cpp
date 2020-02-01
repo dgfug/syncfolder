@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     m_updater = QSimpleUpdater::getInstance();
 
     qint64 days = DMSettings::getDateTime(KEY_LAST_CHECK_UPDATE).daysTo(QDateTime::currentDateTime());
-    if (true/*qAbs(days) > 1*/) {
+    if (qAbs(days) > 1) {
         /* Check for updates when the "Check For Updates" button is clicked */
         connect (m_updater, SIGNAL (checkingFinished  (QString)),
                  this,        SLOT (onCheckingUpdateFinished(QString)));
