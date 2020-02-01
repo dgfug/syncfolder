@@ -9,7 +9,8 @@
 const QString DEFS_URL = "https://raw.githubusercontent.com/"
                                 "alex-spataru/QSimpleUpdater/master/tutorial/"
                                 "definitions/updates.json";
-#define SYNC_FOLDER_VER "0.1"
+
+#define SYNC_FOLDER_VER "1.1"
 
 class SyncApp : public QApplication
 {

@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     if (true/*qAbs(days) > 1*/) {
         /* Check for updates when the "Check For Updates" button is clicked */
         connect (m_updater, SIGNAL (checkingFinished  (QString)),
-                 this,        SLOT (updateChangelog   (QString)));
+                 this,        SLOT (onCheckingUpdateFinished(QString)));
         connect (m_updater, SIGNAL (appcastDownloaded (QString, QByteArray)),
                  this,        SLOT (displayAppcast    (QString, QByteArray)));
         connect (m_updater, SIGNAL (downloadFinished (QString, QString)),
@@ -63,21 +63,23 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
         /* Apply the settings */
         m_updater->setModuleVersion (DEFS_URL, SYNC_FOLDER_VER);
         m_updater->setNotifyOnFinish (DEFS_URL, false);
-        m_updater->setNotifyOnUpdate (DEFS_URL, false);
-        m_updater->setUseCustomAppcast (DEFS_URL, true);
+        m_updater->setNotifyOnUpdate (DEFS_URL, true);
+        m_updater->setUseCustomAppcast (DEFS_URL, false);
         m_updater->setDownloaderEnabled (DEFS_URL, true);
         m_updater->setMandatoryUpdate (DEFS_URL, true);
-        m_updater->setUseCustomInstallProcedures(DEFS_URL, true);
 
         /* Check for updates */
         m_updater->checkForUpdates (DEFS_URL);
     }
 }
 
-void MainWindow::updateChangelog (const QString& url)
+void MainWindow::onCheckingUpdateFinished (const QString& url)
 {
-    DMSettings::setDateTime(KEY_LAST_CHECK_UPDATE, QDateTime::currentDateTime());
-    qDebug()<<"changelog: "<<m_updater->getChangelog (url);
+    // 确实有更新，则记下更新时间
+    if (m_updater->getUpdateAvailable(url)) {
+        DMSettings::setDateTime(KEY_LAST_CHECK_UPDATE, QDateTime::currentDateTime());
+    }
+//    qDebug()<<"changelog: "<<m_updater->getChangelog (url);
 }
 
 void MainWindow::displayAppcast(const QString& url, const QByteArray& reply)

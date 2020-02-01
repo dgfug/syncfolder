@@ -58,7 +58,7 @@ public slots:
                            const QString &newName);
     void handleOrgCaptured(const QString &);
     void handleTocClicked(const QItemSelection&,const QItemSelection&);
-    void updateChangelog (const QString& url);
+    void onCheckingUpdateFinished (const QString& url);
     void displayAppcast (const QString& url, const QByteArray& reply);
     void onUpdateDownloadFinished(const QString& url, const QString& path);
 

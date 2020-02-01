@@ -69,3 +69,5 @@ set_target_properties(SyncFolder PROPERTIES
         )
 
 target_link_libraries(SyncFolder Qt5::Widgets Qt5::Concurrent Qt5::Network)
+
+add_subdirectory(3rdparty/litehtml-qt/)

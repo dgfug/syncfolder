@@ -85,5 +85,7 @@ DISTFILES += \
 QMAKE_INFO_PLIST = config/Info.plist
 TRANSLATIONS = translations/syncfolder_zh_CN.ts
 
+include(3rdparty/QSimpleUpdater/QSimpleUpdater.pro)
+
 #DEFINES += "pmh_DEBUG_OUTPUT=1"
 

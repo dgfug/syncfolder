@@ -27,7 +27,6 @@ public:
 
     static inline QDateTime getDateTime(const QString &key) {
         QSettings settings;
-        qDebug()<<"settings: " << settings.fileName();
         return settings.value(key, QDateTime::fromMSecsSinceEpoch(0)).toDateTime();
     }
 

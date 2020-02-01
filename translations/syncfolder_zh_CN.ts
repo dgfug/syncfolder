@@ -39,7 +39,134 @@
     <name>DisplayQueuedFilesAction</name>
     <message>
         <source>queued files</source>
-        <translation type="vanished">文件队列</translation>
+        <translation>文件队列</translation>
+    </message>
+</context>
+<context>
+    <name>Downloader</name>
+    <message>
+        <source>Updater</source>
+        <translation>软件更新</translation>
+    </message>
+    <message>
+        <source>Downloading updates</source>
+        <translation>下载更新中</translation>
+    </message>
+    <message>
+        <source>Time remaining: 0 minutes</source>
+        <translation>剩余时间：0 分钟</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation>打开</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <source>Time remaining</source>
+        <translation>剩余时间</translation>
+    </message>
+    <message>
+        <source>unknown</source>
+        <translation>未知</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <source>Cannot find downloaded update!</source>
+        <translation>找不到已下载更新!</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <source>Download complete!</source>
+        <translation>下载完成!</translation>
+    </message>
+    <message>
+        <source>The installer will open separately</source>
+        <translation>安装器将会单独启动</translation>
+    </message>
+    <message>
+        <source>Click &quot;OK&quot; to begin installing the update</source>
+        <translation>点击 &quot;OK&quot; 来开始安装更新</translation>
+    </message>
+    <message>
+        <source>In order to install the update, you may need to quit the application.</source>
+        <translation>建议您退出应用程序来更好的安装更新.</translation>
+    </message>
+    <message>
+        <source>In order to install the update, you may need to quit the application. This is a mandatory update, exiting now will close the application</source>
+        <translation>建议您退出应用程序来更好的安装更新.这是一个强制关键更新，退出将会关闭当前应用</translation>
+    </message>
+    <message>
+        <source>Click the &quot;Open&quot; button to apply the update</source>
+        <translation>点击 “打开” 来应用更新</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to cancel the download?</source>
+        <translation>您确认要取消下载？</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to cancel the download? This is a mandatory update, exiting now will close the application</source>
+        <translation>您确认要取消下载？提醒您：当前是一个强制关键更新</translation>
+    </message>
+    <message>
+        <source>%1 bytes</source>
+        <translation>%1 字节</translation>
+    </message>
+    <message>
+        <source>%1 KB</source>
+        <translation>%1 千字节</translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation>%1 兆字节</translation>
+    </message>
+    <message>
+        <source>of</source>
+        <translation>的</translation>
+    </message>
+    <message>
+        <source>Downloading Updates</source>
+        <translation>下载更新</translation>
+    </message>
+    <message>
+        <source>Time Remaining</source>
+        <translation>剩余时间</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>位置</translation>
+    </message>
+    <message>
+        <source>about %1 hours</source>
+        <translation>大约 %1 小时</translation>
+    </message>
+    <message>
+        <source>about one hour</source>
+        <translation>大约一小时</translation>
+    </message>
+    <message>
+        <source>%1 minutes</source>
+        <translation>%1 分钟</translation>
+    </message>
+    <message>
+        <source>1 minute</source>
+        <translation>1 分钟</translation>
+    </message>
+    <message>
+        <source>%1 seconds</source>
+        <translation>%1 分钟</translation>
+    </message>
+    <message>
+        <source>1 second</source>
+        <translation>1 分钟</translation>
     </message>
 </context>
 <context>
@@ -98,6 +225,85 @@
     <message>
         <source>Size</source>
         <translation>尺寸</translation>
+    </message>
+</context>
+<context>
+    <name>HGMarkdownHighlighter</name>
+    <message>
+        <source>H1</source>
+        <translation>一级标题</translation>
+    </message>
+    <message>
+        <source>H2</source>
+        <translation>二级标题</translation>
+    </message>
+    <message>
+        <source>H3</source>
+        <translation>三级标题</translation>
+    </message>
+    <message>
+        <source>H4</source>
+        <translation>四级标题</translation>
+    </message>
+    <message>
+        <source>H5</source>
+        <translation>五级标题</translation>
+    </message>
+    <message>
+        <source>H6</source>
+        <translation>六级标题</translation>
+    </message>
+    <message>
+        <source>horizontal line</source>
+        <translation>水平线</translation>
+    </message>
+    <message>
+        <source>list</source>
+        <translation>列表</translation>
+    </message>
+    <message>
+        <source>link</source>
+        <translation>链接</translation>
+    </message>
+    <message>
+        <source>image</source>
+        <translation>图片</translation>
+    </message>
+    <message>
+        <source>reference</source>
+        <translation>引用</translation>
+    </message>
+    <message>
+        <source>code/verbratim</source>
+        <translation>代码</translation>
+    </message>
+    <message>
+        <source>Emphasis</source>
+        <translation>强调</translation>
+    </message>
+    <message>
+        <source>strong</source>
+        <translation>着重</translation>
+    </message>
+    <message>
+        <source>comment</source>
+        <translation>标注</translation>
+    </message>
+    <message>
+        <source>blockquote</source>
+        <translation>块引用</translation>
+    </message>
+    <message>
+        <source>note</source>
+        <translation>笔记</translation>
+    </message>
+    <message>
+        <source>strike</source>
+        <translation>笔画</translation>
+    </message>
+    <message>
+        <source>html block</source>
+        <translation>HTML块</translation>
     </message>
 </context>
 <context>
@@ -451,6 +657,29 @@
     <message>
         <source>Start update</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>Updater</name>
+    <message>
+        <source>Would you like to download the update now?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Would you like to download the update now? This is a mandatory update, exiting now will close the application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version %1 of %2 has been released!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No updates are available for the moment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Congratulations! You are running the latest version of %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
