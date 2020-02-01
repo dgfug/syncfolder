@@ -40,33 +40,32 @@ void HGMarkdownHighlighter::setDefaultStyles()
 {
     QVector<HighlightingStyle> *styles = new QVector<HighlightingStyle>();
 
-    // TODO: support theme
-    int primaryFontSize = DMSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
     QTextCharFormat headers;
     headers.setForeground(QBrush(QColor("#3F8FFF")));
     // 遵循 css 默认 size
-    headers.setFontWeight(QFont::ExtraBold);
-    headers.setFontPointSize(primaryFontSize * 1.4);
+    headers.setFontWeight(QFont::Bold);
+
+    headers.setProperty(QTextFormat::FontSizeAdjustment, 4 - 1);
     headers.setToolTip(tr("H1"));
     STY(pmh_H1, headers);
-    headers.setFontWeight(QFont::Bold);
-    headers.setFontPointSize(primaryFontSize * 1.36);
+
+    headers.setProperty(QTextFormat::FontSizeAdjustment, 4 - 2);
     headers.setToolTip(tr("H2"));
     STY(pmh_H2, headers);
-    headers.setFontWeight(QFont::DemiBold);
-    headers.setFontPointSize(primaryFontSize * 1.3);
+
+    headers.setProperty(QTextFormat::FontSizeAdjustment, 4 - 3);
     headers.setToolTip(tr("H3"));
     STY(pmh_H3, headers);
-    headers.setFontWeight(QFont::Medium);
-    headers.setFontPointSize(primaryFontSize * 1.26);
+
+    headers.setProperty(QTextFormat::FontSizeAdjustment, 4 - 4);
     headers.setToolTip(tr("H4"));
     STY(pmh_H4, headers);
-    headers.setFontWeight(QFont::Normal);
-    headers.setFontPointSize(primaryFontSize * 1.2);
+
+    headers.setProperty(QTextFormat::FontSizeAdjustment, 4 - 5);
     headers.setToolTip(tr("H5"));
     STY(pmh_H5, headers);
-    headers.setFontWeight(QFont::Light);
-    headers.setFontPointSize(primaryFontSize * 1.1);
+
+    headers.setProperty(QTextFormat::FontSizeAdjustment, 4 - 6);
     headers.setToolTip(tr("H6"));
     STY(pmh_H6, headers);
 
