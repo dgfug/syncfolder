@@ -315,6 +315,7 @@ void MainWindow::contextMenu(const QPoint &pos) {
                 auto i = ui->fileTreeModel->mkdir(index, name);
                 ui->fileTree->scrollTo(i);
                 ui->fileTree->selectionModel()->select(i, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+                ui->fileTree->edit(i);
                 break;
             }
             i++;
