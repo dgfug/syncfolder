@@ -32,14 +32,13 @@
 #include <QTimer>
 #include "DisplayQueuedFilesAction.h"
 
-MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    currentFilePath(""),
-    currentRootDirPath(""),
-    searchWindow(nullptr),
-    findFileWindow(nullptr)
-{
+MainWindow::MainWindow(QWidget *parent, QString *dirPath) :
+        QMainWindow(parent),
+        ui(new Ui::MainWindow),
+        currentFilePath(""),
+        currentRootDirPath(""),
+        searchWindow(nullptr),
+        findFileWindow(nullptr) {
     ui->setupUi(this);
     setupMenus();
     setAcceptDrops(true);
@@ -49,28 +48,27 @@ MainWindow::MainWindow(QWidget *parent, QString* dirPath) :
     qint64 days = SyncFolderSettings::getDateTime(KEY_LAST_CHECK_UPDATE).daysTo(QDateTime::currentDateTime());
     if (qAbs(days) > 1) {
         /* Check for updates when the "Check For Updates" button is clicked */
-        connect (m_updater, SIGNAL (checkingFinished  (QString)),
-                 this,        SLOT (onCheckingUpdateFinished(QString)));
-        connect (m_updater, SIGNAL (appcastDownloaded (QString, QByteArray)),
-                 this,        SLOT (displayAppcast    (QString, QByteArray)));
-        connect (m_updater, SIGNAL (downloadFinished (QString, QString)),
-                 this,        SLOT (onUpdateDownloadFinished(QString, QString)));
+        connect(m_updater, SIGNAL (checkingFinished(QString)),
+                this, SLOT (onCheckingUpdateFinished(QString)));
+        connect(m_updater, SIGNAL (appcastDownloaded(QString, QByteArray)),
+                this, SLOT (displayAppcast(QString, QByteArray)));
+        connect(m_updater, SIGNAL (downloadFinished(QString, QString)),
+                this, SLOT (onUpdateDownloadFinished(QString, QString)));
 
         /* Apply the settings */
-        m_updater->setModuleVersion (syncfolderUpdateUrl, SYNC_FOLDER_VER);
-        m_updater->setNotifyOnFinish (syncfolderUpdateUrl, false);
-        m_updater->setNotifyOnUpdate (syncfolderUpdateUrl, true);
-        m_updater->setUseCustomAppcast (syncfolderUpdateUrl, false);
-        m_updater->setDownloaderEnabled (syncfolderUpdateUrl, true);
-        m_updater->setMandatoryUpdate (syncfolderUpdateUrl, true);
+        m_updater->setModuleVersion(syncfolderUpdateUrl, SYNC_FOLDER_VER);
+        m_updater->setNotifyOnFinish(syncfolderUpdateUrl, false);
+        m_updater->setNotifyOnUpdate(syncfolderUpdateUrl, true);
+        m_updater->setUseCustomAppcast(syncfolderUpdateUrl, false);
+        m_updater->setDownloaderEnabled(syncfolderUpdateUrl, true);
+        m_updater->setMandatoryUpdate(syncfolderUpdateUrl, true);
 
         /* Check for updates */
-        m_updater->checkForUpdates (syncfolderUpdateUrl);
+        m_updater->checkForUpdates(syncfolderUpdateUrl);
     }
 }
 
-void MainWindow::onCheckingUpdateFinished (const QString& url)
-{
+void MainWindow::onCheckingUpdateFinished(const QString &url) {
     // 确实有更新，则记下更新时间
     if (m_updater->getUpdateAvailable(url)) {
         SyncFolderSettings::setDateTime(KEY_LAST_CHECK_UPDATE, QDateTime::currentDateTime());
@@ -78,26 +76,23 @@ void MainWindow::onCheckingUpdateFinished (const QString& url)
 //    qDebug()<<"changelog: "<<m_updater->getChangelog (url);
 }
 
-void MainWindow::displayAppcast(const QString& url, const QByteArray& reply)
-{
+void MainWindow::displayAppcast(const QString &url, const QByteArray &reply) {
     QString text = "This is the downloaded appcast: <p><pre>" +
-                   QString::fromUtf8 (reply) +
+                   QString::fromUtf8(reply) +
                    "</pre></p><p> If you need to store more information on the "
                    "appcast (or use another format), just use the "
                    "<b>QSimpleUpdater::setCustomAppcast()</b> function. "
                    "It allows your application to interpret the appcast "
                    "using your code and not QSU's code.</p>";
 
-    qDebug()<<"changelog: "<< text;
+    qDebug() << "changelog: " << text;
 }
 
-void MainWindow::onUpdateDownloadFinished(const QString& url, const QString& path)
-{
-    qDebug()<<"url: "<< url << ", path: " << path;
+void MainWindow::onUpdateDownloadFinished(const QString &url, const QString &path) {
+    qDebug() << "url: " << url << ", path: " << path;
 }
 
-void MainWindow::handleOrgCaptured(const QString &url)
-{
+void MainWindow::handleOrgCaptured(const QString &url) {
     QUrl note = QUrl::fromEncoded(url.toUtf8().constData());
     note.setQuery(note.query(QUrl::FullyDecoded), QUrl::DecodedMode);
     QUrlQuery urlQuery(note);
@@ -109,17 +104,17 @@ void MainWindow::handleOrgCaptured(const QString &url)
     newFileWithTitleContent(QString("%1_%2").arg(title).arg(now), body);
 }
 
-void MainWindow::handleTocClicked(const QItemSelection& selected,const QItemSelection& deselected) {
+void MainWindow::handleTocClicked(const QItemSelection &selected, const QItemSelection &deselected) {
     QModelIndexList selectedList = selected.indexes();
     if (!selectedList.empty()) {
         auto modelIndex = selectedList[0];
         qlonglong pos = ui->tocModel->data(modelIndex, Qt::UserRole + 1).toLongLong();
-        qDebug()<<"pos: "  + pos;
+        qDebug() << "pos: " + pos;
         ui->markdownEditor->jumpTo(pos);
     }
 }
 
-void MainWindow::fileSelectionChanged(const QItemSelection& selected,const QItemSelection& deselected) {
+void MainWindow::fileSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
     QModelIndexList selectedList = selected.indexes();
     if (!selectedList.empty()) {
         auto modelIndex = selectedList[0];
@@ -172,17 +167,17 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
 
         QString text = fileToRead.readAll();
         ui->markdownEditor->setText(text);
-        QTextBlock targetBlock = ui->markdownEditor->document()->findBlockByLineNumber(lineNo - 1);
+        QTextBlock targetBlock = ui->markdownEditor->document()->findBlockByNumber(lineNo - 1);
         if (targetBlock.isValid()) {
             QTextCursor cursor(targetBlock);
             ui->markdownEditor->moveCursor(QTextCursor::End);
             ui->markdownEditor->setTextCursor(cursor);
-//            ui->markdownEditor->ensureCursorVisible();
+            ui->markdownEditor->ensureCursorVisible();
         }
 
         QString baseDocUrl = QUrl::fromLocalFile(fileInfo.canonicalFilePath()).toString();
-        ui->markdownPreviewDoc->document()->setMetaInformation( QTextDocument::DocumentUrl,
-                                                                baseDocUrl );
+        ui->markdownPreviewDoc->document()->setMetaInformation(QTextDocument::DocumentUrl,
+                                                               baseDocUrl);
         ui->markdownPreviewDoc->document()->setBaseUrl(QUrl::fromLocalFile(fileInfo.canonicalFilePath()));
         setWindowTitle(QCoreApplication::translate("MainWindow", fileInfo.fileName().toStdString().c_str(), nullptr));
         SyncFolderSettings::setString(KEY_LAST_FILE, filePath);
@@ -192,8 +187,7 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
     }
 }
 
-void MainWindow::setCurrentRootDirPath(const QString &folderPath)
-{
+void MainWindow::setCurrentRootDirPath(const QString &folderPath) {
     currentRootDirPath = folderPath;
     if (!folderPath.isEmpty()) {
         ui->fileTreeModel->setRootPath(folderPath);
@@ -214,8 +208,7 @@ void MainWindow::setCurrentRootDirPath(const QString &folderPath)
     }
 }
 
-void MainWindow::showInFolder(const QString& path)
-{
+void MainWindow::showInFolder(const QString &path) {
     QFileInfo info(path);
 #if defined(Q_OS_WIN)
     QStringList args;
@@ -239,7 +232,7 @@ void MainWindow::showInFolder(const QString& path)
     if (!QProcess::execute("/usr/bin/osascript", args))
         return;
 #endif
-    QDesktopServices::openUrl(QUrl::fromLocalFile(info.isDir()? path : info.path()));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(info.isDir() ? path : info.path()));
 }
 
 /**
@@ -300,7 +293,7 @@ void MainWindow::contextMenu(const QPoint &pos) {
     if (action == removeAction) {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this, tr("Deletion confirm"), tr("Safe to delete?"),
-                                      QMessageBox::Yes|QMessageBox::No);
+                                      QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             ui->fileTreeModel->remove(curSelectedIndex);
         }
@@ -311,15 +304,17 @@ void MainWindow::contextMenu(const QPoint &pos) {
     }
 #endif
     else if (action == createFolderUnderTopFolder || action == createFolderUnderSelectedFolder) {
-        auto index = (action == createFolderUnderTopFolder) ? ui->fileTreeModel->index(currentRootDirPath, 0) : curSelectedIndex;
-        int i= 0;
+        auto index = (action == createFolderUnderTopFolder) ? ui->fileTreeModel->index(currentRootDirPath, 0)
+                                                            : curSelectedIndex;
+        int i = 0;
         while (true) {
             QString name = (i == 0) ? QString(tr("untitled")) : QString(tr("untitled_%1")).arg(i);
             QFileInfo newFile = QFileInfo(currentRootDirPath, name);
             if (!newFile.exists()) {
                 auto i = ui->fileTreeModel->mkdir(index, name);
                 ui->fileTree->scrollTo(i);
-                ui->fileTree->selectionModel()->select(i, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+                ui->fileTree->selectionModel()->select(i,
+                                                       QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
                 ui->fileTree->edit(i);
                 break;
             }
@@ -349,22 +344,20 @@ void MainWindow::contextMenu(const QPoint &pos) {
     }
 }
 
-void MainWindow::processSyncStdOutput()
-{
+void MainWindow::processSyncStdOutput() {
 //    qDebug()<< unisonProcess->readAllStandardOutput();
     syncLog += unisonProcess->readAllStandardOutput();  // read stdout channel
 }
 
-void MainWindow::processSyncStdError()
-{
+void MainWindow::processSyncStdError() {
 //    qDebug()<< unisonProcess->readAllStandardError();
     syncLog += unisonProcess->readAllStandardError();  // read stderror channel
 }
 
-void MainWindow::openFile()
-{
+void MainWindow::openFile() {
     QString filePath = QFileDialog::getOpenFileName(this,
-            tr("Open File"), "", "Markdown Files (*.mdtext *.md *.markdown *.txt *.text)");
+                                                    tr("Open File"), "",
+                                                    "Markdown Files (*.mdtext *.md *.markdown *.txt *.text)");
 
     if (!filePath.isEmpty()) {
         QFileInfo checkFile(filePath);
@@ -382,13 +375,13 @@ void MainWindow::openFile()
     }
 }
 
-void MainWindow::openDirectory()
-{
-    QString homeLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory);
+void MainWindow::openDirectory() {
+    QString homeLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, QString(),
+                                                  QStandardPaths::LocateDirectory);
     QString dirPath = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-                                                    homeLocation,
-                                                    QFileDialog::ShowDirsOnly
-                                                    | QFileDialog::DontResolveSymlinks);
+                                                        homeLocation,
+                                                        QFileDialog::ShowDirsOnly
+                                                        | QFileDialog::DontResolveSymlinks);
     if (!dirPath.isEmpty()) {
         QFileInfo checkFile(dirPath);
         if (checkFile.isDir()) {
@@ -403,10 +396,9 @@ void MainWindow::openDirectory()
     }
 }
 
-void MainWindow::dragEnterEvent(QDragEnterEvent* event)
-{
+void MainWindow::dragEnterEvent(QDragEnterEvent *event) {
     if (event->mimeData()->hasUrls()) {
-       event->acceptProposedAction();
+        event->acceptProposedAction();
     }
     // if some actions should not be usable, like move, this code must be adopted
 }
@@ -414,18 +406,18 @@ void MainWindow::dragEnterEvent(QDragEnterEvent* event)
 void MainWindow::dropEvent(QDropEvent *event) {
     if (event->mimeData()->hasUrls()) {
         QMimeDatabase mimeDatabase;
-        foreach (QUrl url, event->mimeData()->urls()) {
-            auto filePath = url.toLocalFile();
-            QFileInfo fileInfo(filePath);
-            if (fileInfo.isFile()) {
-                const QMimeType mimeType = mimeDatabase.mimeTypeForFile(filePath);
-                if (FileFormat::getType(mimeType) == FileFormat::FMT::MarkDown) {
-                    openFile_l(filePath, 1);
+                foreach (QUrl url, event->mimeData()->urls()) {
+                auto filePath = url.toLocalFile();
+                QFileInfo fileInfo(filePath);
+                if (fileInfo.isFile()) {
+                    const QMimeType mimeType = mimeDatabase.mimeTypeForFile(filePath);
+                    if (FileFormat::getType(mimeType) == FileFormat::FMT::MarkDown) {
+                        openFile_l(filePath, 1);
+                    }
+                } else if (fileInfo.isDir()) {
+                    setCurrentRootDirPath(filePath);
                 }
-            } else if (fileInfo.isDir()) {
-                setCurrentRootDirPath(filePath);
             }
-        }
     }
 }
 
@@ -439,7 +431,7 @@ void MainWindow::newFileWithTitleContent(const QString &title, const QString &co
     auto selectedFile = ui->fileTreeModel->fileInfo(selectionIndex);
 
     QString dir = selectedFile.isDir() ? selectedFile.absoluteFilePath() : selectedFile.absolutePath();
-    int i= 0;
+    int i = 0;
 
     while (true) {
         QString name = i == 0 ? QString("%1.md").arg(title) : QString("%1%2.md").arg(title).arg(i);
@@ -460,8 +452,7 @@ void MainWindow::newFileWithTitleContent(const QString &title, const QString &co
     }
 }
 
-void MainWindow::newFile()
-{
+void MainWindow::newFile() {
     newFileWithTitleContent(tr("untitled"), "");
 }
 
@@ -476,8 +467,7 @@ void MainWindow::saveFileFromText(const QString &text) {
     }
 }
 
-void MainWindow::saveFile()
-{
+void MainWindow::saveFile() {
     saveFileFromText(ui->markdownEditor->toPlainText());
 }
 
@@ -501,8 +491,10 @@ void MainWindow::syncFiles() {
     QString syncConfigDirPath = getSyncConfigDir();
     env.insert("UNISON", syncConfigDirPath);
     unisonProcess->setProcessEnvironment(env);
-    connect(unisonProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(handleSyncFinished(int, QProcess::ExitStatus)));
-    connect(unisonProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processSyncStdOutput()));  // connect process signals with your code
+    connect(unisonProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this,
+            SLOT(handleSyncFinished(int, QProcess::ExitStatus)));
+    connect(unisonProcess, SIGNAL(readyReadStandardOutput()), this,
+            SLOT(processSyncStdOutput()));  // connect process signals with your code
     connect(unisonProcess, SIGNAL(readyReadStandardError()), this, SLOT(processSyncStdError()));  // same here
     QString command(QString("/Users/faywong/bin/unison %1 %2").arg("default", "-batch"));
     unisonProcess->start(command);
@@ -518,8 +510,7 @@ QString MainWindow::getSyncConfigDir() {
     return currentRootDir.filePath(configDirName);
 }
 
-void MainWindow::setupMenus()
-{
+void MainWindow::setupMenus() {
     QMenu *fileMenu = new QMenu(tr("&File"), this);
     menuBar()->addMenu(fileMenu);
 
@@ -566,7 +557,7 @@ void MainWindow::setupMenus()
     menuBar()->addMenu(aboutMenu);
 
     aboutMenu->addAction(tr("&about"), this, SLOT(about()),
-                        QKeySequence(Qt::Key_Info));
+                         QKeySequence(Qt::Key_Info));
 
     aboutMenu->addAction(tr("&help"), this, SLOT(help()),
                          QKeySequence(Qt::Key_Help));
@@ -576,6 +567,14 @@ void MainWindow::launchSearchWindow() {
     if (searchWindow == nullptr) {
         searchWindow = new FullTextSearchWindow(this, currentRootDirPath);
     }
+    searchWindow->setGeometry(
+            QStyle::alignedRect(
+                    Qt::LeftToRight,
+                    Qt::AlignCenter,
+                    searchWindow->size(),
+                    qApp->desktop()->availableGeometry()
+            )
+    );
     searchWindow->show();
 }
 
@@ -586,31 +585,30 @@ void MainWindow::launchFindFileWindow() {
     findFileWindow->show();
 }
 
-void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatus)
-{
+void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     QString status;
     QString emoji;
     switch (exitCode) {
-    case 0:
-        status = tr("successful synchronization; everything is up-to-date now.");
-        emoji = "😀";
-        break;
-    case 1:
-        status = tr("some files were skipped, but all file transfers were successful.");
-        emoji = "😞";
-        break;
-    case 2:
-        status = tr("non-fatal failures occurred during file transfer.");
-        emoji = "😥";
-        break;
-    case 3:
-        status = tr("a fatal error occurred, or the execution was interrupted.");
-        emoji = "😭";
-        break;
-    default:
-        status = tr("unknown");
-        emoji = "💥";
-        break;
+        case 0:
+            status = tr("successful synchronization; everything is up-to-date now.");
+            emoji = "😀";
+            break;
+        case 1:
+            status = tr("some files were skipped, but all file transfers were successful.");
+            emoji = "😞";
+            break;
+        case 2:
+            status = tr("non-fatal failures occurred during file transfer.");
+            emoji = "😥";
+            break;
+        case 3:
+            status = tr("a fatal error occurred, or the execution was interrupted.");
+            emoji = "😭";
+            break;
+        default:
+            status = tr("unknown");
+            emoji = "💥";
+            break;
     }
 
     QString result = QString(tr("%1 Sync result: %2, status: %3")).arg(emoji).arg(status).arg(exitCode);
@@ -630,10 +628,10 @@ void MainWindow::revealInTreeView() {
 
 void MainWindow::about() {
     QMessageBox::about(this, tr("SyncFolder"),
-              tr(
-                 "<p><b>反馈</b>：<a href=\"http://syncfolder.chengxi.fun/\">官网</a>"
-                 "<br /><p><b>版本</b>：" SYNC_FOLDER_VER
-                 ));
+                       tr(
+                               "<p><b>反馈</b>：<a href=\"http://syncfolder.chengxi.fun/\">官网</a>"
+                               "<br /><p><b>版本</b>：" SYNC_FOLDER_VER
+                       ));
 }
 
 void MainWindow::help() {
@@ -648,16 +646,15 @@ void MainWindow::revealInTreeView_l(const QString &path) {
     }
 }
 
-void MainWindow::updateToc(const QVector<QStandardItem*> &nodes) {
+void MainWindow::updateToc(const QVector<QStandardItem *> &nodes) {
     ui->tocModel->removeRows(0, ui->tocModel->rowCount());
     QStandardItem *rootNode = ui->tocModel->invisibleRootItem();
-    for(auto &node : nodes) {
-       rootNode->appendRow(node);
+    for (auto &node : nodes) {
+        rootNode->appendRow(node);
     }
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
