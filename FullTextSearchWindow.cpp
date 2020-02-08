@@ -277,7 +277,6 @@ void FullTextSearchWindow::contextMenu(const QPoint &pos)
 }
 
 void FullTextSearchWindow::handleRgTaskFinished(int exitCode, QProcess::ExitStatus exitStatus) {
-    qDebug()<<"rgTaskStdout: " << rgTaskStdout;
     if (exitStatus == EXIT_SUCCESS) {
         showFiles(rgTaskStdout);
         rgTaskStdout.clear();
