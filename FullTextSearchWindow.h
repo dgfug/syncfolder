@@ -53,7 +53,8 @@
 
 #include <QWidget>
 #include <QDir>
-
+#include <QTreeView>
+#include <QProcess>
 #include "EditorDelegate.h"
 
 QT_BEGIN_NAMESPACE
@@ -64,29 +65,26 @@ class QTableWidget;
 class QTableWidgetItem;
 QT_END_NAMESPACE
 
-typedef struct {
-    QString file;
-    size_t lineNo;
-    QString context;
-} SearchResultItem;
 //! [0]
 class FullTextSearchWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    FullTextSearchWindow(DMEditorDelegate *delegate, QWidget *parent = 0);
+    FullTextSearchWindow(DMEditorDelegate *delegate, const QString docDir, QWidget *parent = 0);
 
 private slots:
     void browse();
     void find();
     void animateFindClick();
-    void openFileOfItem(int row, int column);
+    void openFileOfItem(const QItemSelection&,const QItemSelection&);
     void contextMenu(const QPoint &pos);
+    void handleRgTaskFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void processRgStdOutput();
+    void processRgStdError();
 
 private:
-    QList<SearchResultItem> findFiles(const QStringList &files, const QString &text);
-    void showFiles(const QList<SearchResultItem> &paths);
+    void showFiles(const QString &results);
     QComboBox *createComboBox(const QString &text = QString());
     void createFilesTable();
 
@@ -94,9 +92,13 @@ private:
     QComboBox *directoryComboBox;
     QLabel *filesFoundLabel;
     QPushButton *findButton;
-    QTableWidget *filesTable;
+    QTreeView *foundFilesTree;
+    QStandardItemModel *foundFilesModel;
 
-    QDir currentDir;
+    QString currentDir;
     DMEditorDelegate *editorDelegate;
+    QString rgTaskStdout;
+    QString rgTaskStderror;
+    QProcess *rgTaskProcess;
 };
 #endif

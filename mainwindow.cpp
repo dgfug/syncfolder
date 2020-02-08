@@ -172,9 +172,14 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
 
         QString text = fileToRead.readAll();
         ui->markdownEditor->setText(text);
-        QTextCursor cursor(ui->markdownEditor->document()->findBlockByLineNumber(lineNo - 1));
-        ui->markdownEditor->moveCursor(QTextCursor::End);
-        ui->markdownEditor->setTextCursor(cursor);
+        QTextBlock targetBlock = ui->markdownEditor->document()->findBlockByLineNumber(lineNo - 1);
+        if (targetBlock.isValid()) {
+            QTextCursor cursor(targetBlock);
+            ui->markdownEditor->moveCursor(QTextCursor::End);
+            ui->markdownEditor->setTextCursor(cursor);
+//            ui->markdownEditor->ensureCursorVisible();
+        }
+
         QString baseDocUrl = QUrl::fromLocalFile(fileInfo.canonicalFilePath()).toString();
         ui->markdownPreviewDoc->document()->setMetaInformation( QTextDocument::DocumentUrl,
                                                                 baseDocUrl );
@@ -344,16 +349,16 @@ void MainWindow::contextMenu(const QPoint &pos) {
     }
 }
 
-void MainWindow::processStdOutput()
+void MainWindow::processSyncStdOutput()
 {
 //    qDebug()<< unisonProcess->readAllStandardOutput();
-    syncLog += unisonProcess->readAllStandardOutput();  // read error channel
+    syncLog += unisonProcess->readAllStandardOutput();  // read stdout channel
 }
 
-void MainWindow::processStdError()
+void MainWindow::processSyncStdError()
 {
 //    qDebug()<< unisonProcess->readAllStandardError();
-    syncLog += unisonProcess->readAllStandardError();  // read error channel
+    syncLog += unisonProcess->readAllStandardError();  // read stderror channel
 }
 
 void MainWindow::openFile()
@@ -497,8 +502,8 @@ void MainWindow::syncFiles() {
     env.insert("UNISON", syncConfigDirPath);
     unisonProcess->setProcessEnvironment(env);
     connect(unisonProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(handleSyncFinished(int, QProcess::ExitStatus)));
-    connect(unisonProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStdOutput()));  // connect process signals with your code
-    connect(unisonProcess, SIGNAL(readyReadStandardError()), this, SLOT(processStdError()));  // same here
+    connect(unisonProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processSyncStdOutput()));  // connect process signals with your code
+    connect(unisonProcess, SIGNAL(readyReadStandardError()), this, SLOT(processSyncStdError()));  // same here
     QString command(QString("/Users/faywong/bin/unison %1 %2").arg("default", "-batch"));
     unisonProcess->start(command);
 }
@@ -569,7 +574,7 @@ void MainWindow::setupMenus()
 
 void MainWindow::launchSearchWindow() {
     if (searchWindow == nullptr) {
-        searchWindow = new FullTextSearchWindow(this);
+        searchWindow = new FullTextSearchWindow(this, currentRootDirPath);
     }
     searchWindow->show();
 }

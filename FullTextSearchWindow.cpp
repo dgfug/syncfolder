@@ -49,13 +49,14 @@
 ****************************************************************************/
 
 #include <QtWidgets>
-
+#include <QJsonDocument>
+#include <QJsonObject>
 #include "FullTextSearchWindow.h"
 
 #include "settings/settings_def.h"
 #include "fileformat.h"
 //! [17]
-enum { absoluteFileNameRole = Qt::UserRole + 1 };
+enum { filePathRole = Qt::UserRole + 1 };
 enum { lineNoRole = Qt::UserRole + 2 };
 
 //! [17]
@@ -63,7 +64,7 @@ enum { lineNoRole = Qt::UserRole + 2 };
 //! [18]
 static inline QString fileNameOfItem(const QTableWidgetItem *item)
 {
-    return item->data(absoluteFileNameRole).toString();
+    return item->data(filePathRole).toString();
 }
 
 static inline int lineNoOfItem(const QTableWidgetItem *item)
@@ -72,21 +73,13 @@ static inline int lineNoOfItem(const QTableWidgetItem *item)
     return lineNo;
 }
 //! [18]
-
-//! [14]
-static inline void openFile(const QString &fileName)
-{
-
-}
 //! [14]
 
 //! [0]
-FullTextSearchWindow::FullTextSearchWindow(DMEditorDelegate *delegate, QWidget *parent)
-    : QWidget(parent), editorDelegate(delegate)
+FullTextSearchWindow::FullTextSearchWindow(DMEditorDelegate *delegate, const QString docDir, QWidget *parent)
+    : QWidget(parent), editorDelegate(delegate), rgTaskProcess(nullptr), currentDir(docDir)
 {
-    setWindowTitle(tr("Find Files"));
-    QPushButton *browseButton = new QPushButton(tr("&Browse..."), this);
-    connect(browseButton, &QAbstractButton::clicked, this, &FullTextSearchWindow::browse);
+    setWindowTitle(tr("Find content search with keyword"));
     findButton = new QPushButton(tr("&Find"), this);
     connect(findButton, &QAbstractButton::clicked, this, &FullTextSearchWindow::find);
 
@@ -96,10 +89,6 @@ FullTextSearchWindow::FullTextSearchWindow(DMEditorDelegate *delegate, QWidget *
 
     QString lastFolder = SyncFolderSettings::getString(KEY_LAST_FOLDER);
 
-    directoryComboBox = createComboBox(QDir::toNativeSeparators(lastFolder.isEmpty() ? QDir::currentPath() : lastFolder));
-    connect(directoryComboBox->lineEdit(), &QLineEdit::returnPressed,
-            this, &FullTextSearchWindow::animateFindClick);
-
     filesFoundLabel = new QLabel;
 
     createFilesTable();
@@ -108,11 +97,9 @@ FullTextSearchWindow::FullTextSearchWindow(DMEditorDelegate *delegate, QWidget *
     mainLayout->addWidget(new QLabel(tr("Containing text:")), 1, 0);
     mainLayout->addWidget(textComboBox, 1, 1, 1, 2);
     mainLayout->addWidget(new QLabel(tr("In directory:")), 2, 0);
-    mainLayout->addWidget(directoryComboBox, 2, 1);
-    mainLayout->addWidget(browseButton, 2, 2);
-    mainLayout->addWidget(filesTable, 3, 0, 1, 3);
-    mainLayout->addWidget(filesFoundLabel, 4, 0, 1, 2);
-    mainLayout->addWidget(findButton, 4, 2);
+    mainLayout->addWidget(foundFilesTree, 2, 0, 1, 3);
+    mainLayout->addWidget(filesFoundLabel, 3, 0, 1, 2);
+    mainLayout->addWidget(findButton, 3, 2);
 
     connect(new QShortcut(QKeySequence(Qt::Key_Escape), this), &QShortcut::activated,
         this, &QWidget::hide);
@@ -141,23 +128,20 @@ static void updateComboBox(QComboBox *comboBox)
 //! [3]
 void FullTextSearchWindow::find()
 {
-    filesTable->setRowCount(0);
-
     QString text = textComboBox->currentText();
-    QString path = QDir::cleanPath(directoryComboBox->currentText());
-    currentDir = QDir(path);
-//! [3]
-
     updateComboBox(textComboBox);
-    updateComboBox(directoryComboBox);
 
-    QDirIterator it(path, QDir::AllEntries | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
-    QStringList files;
-    while (it.hasNext())
-        files << it.next();
-    if (!text.isEmpty()) {
-        showFiles(findFiles(files, text));
-    }
+    rgTaskStdout.clear();
+    rgTaskStderror.clear();
+    FullTextSearchWindow *that = this;
+    rgTaskProcess = new QProcess(this);
+    connect(rgTaskProcess, SIGNAL(finished(int, QProcess::ExitStatus)), that, SLOT(handleRgTaskFinished(int, QProcess::ExitStatus)));
+    connect(rgTaskProcess, SIGNAL(readyReadStandardOutput()), that, SLOT(processRgStdOutput()));
+    connect(rgTaskProcess, SIGNAL(readyReadStandardError()), that, SLOT(processRgStdError()));
+    QString command("rg");
+    QStringList arguments;
+    arguments <<"--json" << text << currentDir;
+    rgTaskProcess->start(command, arguments);
 }
 //! [4]
 
@@ -166,76 +150,69 @@ void FullTextSearchWindow::animateFindClick()
     findButton->animateClick();
 }
 
-//! [5]
-QList<SearchResultItem> FullTextSearchWindow::findFiles(const QStringList &files, const QString &text)
+void FullTextSearchWindow::showFiles(const QString &results)
 {
-    QProgressDialog progressDialog(this);
-    progressDialog.setCancelButtonText(tr("&Cancel"));
-    progressDialog.setRange(0, files.size());
-    progressDialog.setWindowTitle(tr("Find Files"));
+    QStringList rgResult = rgTaskStdout.split(QRegExp("[\r\n]"),QString::SkipEmptyParts);
 
-//! [5] //! [6]
-    QMimeDatabase mimeDatabase;
-    QList<SearchResultItem> foundFiles;
+    QVector<QStandardItem*> items;
+    QStandardItem *fileBeginItem;
+    foundFilesModel->removeRows(0, foundFilesModel->rowCount());
+    QStandardItem *rootNode = foundFilesModel->invisibleRootItem();
 
-    for (int i = 0; i < files.size(); ++i) {
-        progressDialog.setValue(i);
-        progressDialog.setLabelText(tr("Searching file number %1 of %n...", nullptr, files.size()).arg(i));
-        QCoreApplication::processEvents();
-//! [6]
+    for (auto &r : rgResult) {
+        auto json_doc= QJsonDocument::fromJson(r.toUtf8());
+        if (json_doc.isObject()) {
+            QJsonObject jsonObj = json_doc.object();
+            if (jsonObj.contains("type")) {
+                if (jsonObj.value("type") == "begin") {
+                    if (jsonObj.contains("data") && jsonObj.value("data").toObject().contains("path")) {
+                        QString path = jsonObj.value("data").toObject().value("path").toObject().value("text").toString();
+                        fileBeginItem = new QStandardItem(path);
+                        fileBeginItem->setData((QString)path, filePathRole);
+                        fileBeginItem->setEditable(false);
+                        rootNode->appendRow(fileBeginItem);
+                    }
+                } else if (jsonObj.value("type") == "match") {
+                    if (jsonObj.contains("data") && jsonObj.value("data").toObject().contains("path")) {
+                        QJsonObject data = jsonObj.value("data").toObject();
+                        QString path = data.value("path").toObject().value("text").toString();
+                        QString lines = data.value("lines").toObject().value("text").toString();
+                        int line_number = data.value("line_number").toInt();
+                        QStandardItem *fileMatchItem = new QStandardItem(lines);
+                        fileMatchItem->setData((QString)path, filePathRole);
+                        fileMatchItem->setData((qlonglong)line_number, lineNoRole);
+                        fileMatchItem->setEditable(false);
 
-        if (progressDialog.wasCanceled())
-            break;
-
-//! [7]
-        const QString fileName = files.at(i);
-        const QMimeType mimeType = mimeDatabase.mimeTypeForFile(fileName);
-
-        if (FileFormat::FMT::MarkDown != FileFormat::getType(mimeType)) {
-//            qWarning() << "Not searching binary file " << QDir::toNativeSeparators(fileName);
-            continue;
-        }
-        QFile file(fileName);
-        if (file.open(QIODevice::ReadOnly)) {
-            QString line;
-            QTextStream in(&file);
-            size_t lineNo = 0;
-            while (!in.atEnd()) {
-                if (progressDialog.wasCanceled())
-                    break;
-                lineNo++;
-                line = in.readLine();
-                if (line.contains(text, Qt::CaseInsensitive)) {
-                    foundFiles.push_back({files[i], lineNo, QString(line)});
+                        if (fileBeginItem) {
+                            fileBeginItem->appendRow(fileMatchItem);
+                        } else {
+                            rootNode->appendRow(fileMatchItem);
+                        }
+                    }
+                } else if (jsonObj.value("type") == "end") {
+                    if (jsonObj.contains("data") && jsonObj.value("data").toObject().contains("stats")) {
+                        int matches = jsonObj.value("data").toObject().value("stats").toObject().value("matches").toInt();
+                        fileBeginItem->setText(fileBeginItem->text() + tr("(%n matches)", nullptr, matches));
+                    }
+                    fileBeginItem = nullptr;
+                } else if (jsonObj.value("type") == "summary") {
+                    if (jsonObj.contains("data") && jsonObj.value("data").toObject().contains("stats")) {
+                        QJsonObject stats = jsonObj.value("data").toObject().value("stats").toObject();
+                        if (stats.contains("elapsed")) {
+                            QString elapsed = stats.value("elapsed").toObject().value("human").toString();
+                            if (stats.contains("matches")) {
+                                int matches = stats.value("matches").toInt();
+                                filesFoundLabel->setText(tr("%n matches found, consumes ", nullptr, matches) + elapsed);
+                                filesFoundLabel->setWordWrap(true);
+                            }
+                        }
+                    }
                 }
             }
         }
     }
-    return foundFiles;
-}
 
-void FullTextSearchWindow::showFiles(const QList<SearchResultItem> &paths)
-{
-    for (auto fileItem : paths) {
-        const QString toolTip = fileItem.context;
-        const QString relativePath = QDir::toNativeSeparators(currentDir.relativeFilePath(fileItem.file));
-        QTableWidgetItem *fileNameItem = new QTableWidgetItem(relativePath);
-        fileNameItem->setData(absoluteFileNameRole, QVariant(fileItem.file));
-        fileNameItem->setToolTip(toolTip);
-        fileNameItem->setFlags(fileNameItem->flags() ^ Qt::ItemIsEditable);
-        QTableWidgetItem *lineNoItem = new QTableWidgetItem(QString("") + fileItem.lineNo);
-        lineNoItem->setData(lineNoRole, (int)(fileItem.lineNo));
-        lineNoItem->setToolTip(toolTip);
-        lineNoItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        lineNoItem->setFlags(lineNoItem->flags() ^ Qt::ItemIsEditable);
-
-        int row = filesTable->rowCount();
-        filesTable->insertRow(row);
-        filesTable->setItem(row, 0, fileNameItem);
-        filesTable->setItem(row, 1, lineNoItem);
-    }
-    filesFoundLabel->setText(tr("%n file(s) found (Double click on a file to open it)", nullptr, paths.size()));
-    filesFoundLabel->setWordWrap(true);
+    foundFilesTree->expandAll();
 }
 //! [8]
 
@@ -253,30 +230,24 @@ QComboBox *FullTextSearchWindow::createComboBox(const QString &text)
 //! [11]
 void FullTextSearchWindow::createFilesTable()
 {
-    filesTable = new QTableWidget(0, 2);
-    filesTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-
-    QStringList labels;
-    labels << tr("Filename") << tr("Size");
-    filesTable->setHorizontalHeaderLabels(labels);
-    filesTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    filesTable->verticalHeader()->hide();
-    filesTable->setShowGrid(false);
-//! [15]
-    filesTable->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(filesTable, &QTableWidget::customContextMenuRequested,
-            this, &FullTextSearchWindow::contextMenu);
-    connect(filesTable, &QTableWidget::cellActivated,
-            this, &FullTextSearchWindow::openFileOfItem);
-//! [15]
+    foundFilesTree = new QTreeView;
+    foundFilesModel = new QStandardItemModel(this);
+    foundFilesTree->setModel(foundFilesModel);
+    foundFilesTree->expandAll();
+    QObject::connect(foundFilesTree->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(openFileOfItem(const QItemSelection&,const QItemSelection&)));
 }
 
-void FullTextSearchWindow::openFileOfItem(int row, int /* column */)
+void FullTextSearchWindow::openFileOfItem(const QItemSelection& selected, const QItemSelection&)
 {
-    const QTableWidgetItem *item = filesTable->item(row, 0);
-    const QTableWidgetItem *lineNoItem = filesTable->item(row, 1);
-
-    editorDelegate->openFile_l(fileNameOfItem(item), (size_t)lineNoOfItem(lineNoItem), true);
+    QModelIndexList selectedList = selected.indexes();
+    if (!selectedList.empty()) {
+        auto modelIndex = selectedList[0];
+        QString filePath = foundFilesModel->data(modelIndex, filePathRole).toString();
+        qlonglong lineNo = foundFilesModel->data(modelIndex, lineNoRole).toLongLong();
+        if (lineNo > 0) {
+            editorDelegate->openFile_l(filePath, lineNo, true);
+        }
+    }
 }
 
 //! [12]
@@ -284,24 +255,40 @@ void FullTextSearchWindow::openFileOfItem(int row, int /* column */)
 //! [16]
 void FullTextSearchWindow::contextMenu(const QPoint &pos)
 {
-    const QTableWidgetItem *item = filesTable->itemAt(pos);
-    if (!item)
-        return;
-    QMenu menu;
-#ifndef QT_NO_CLIPBOARD
-    QAction *copyAction = menu.addAction("Copy Name");
-#endif
-    QAction *openAction = menu.addAction("Open");
-    QAction *action = menu.exec(filesTable->mapToGlobal(pos));
-    if (!action)
-        return;
-    const QString fileName = fileNameOfItem(item);
-    if (action == openAction)
-        openFile(fileName);
-#ifndef QT_NO_CLIPBOARD
-    else
-        if (action == copyAction)
-        QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(fileName));
-#endif
+//    const QTableWidgetItem *item = filesTable->itemAt(pos);
+//    if (!item)
+//        return;
+//    QMenu menu;
+//#ifndef QT_NO_CLIPBOARD
+//    QAction *copyAction = menu.addAction("Copy Name");
+//#endif
+//    QAction *openAction = menu.addAction("Open");
+//    QAction *action = menu.exec(filesTable->mapToGlobal(pos));
+//    if (!action)
+//        return;
+//    const QString fileName = fileNameOfItem(item);
+//    if (action == openAction)
+//        openFile(fileName);
+//#ifndef QT_NO_CLIPBOARD
+//    else
+//        if (action == copyAction)
+//        QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(fileName));
+//#endif
+}
+
+void FullTextSearchWindow::handleRgTaskFinished(int exitCode, QProcess::ExitStatus exitStatus) {
+    qDebug()<<"rgTaskStdout: " << rgTaskStdout;
+    if (exitStatus == EXIT_SUCCESS) {
+        showFiles(rgTaskStdout);
+        rgTaskStdout.clear();
+    }
+}
+
+void FullTextSearchWindow::processRgStdOutput() {
+    rgTaskStdout += rgTaskProcess->readAllStandardOutput();
+}
+
+void FullTextSearchWindow::processRgStdError() {
+    rgTaskStderror += rgTaskProcess->readAllStandardError();
 }
 //! [16]

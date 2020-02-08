@@ -304,9 +304,9 @@ void HGMarkdownHighlighter::parse()
     if (content.length() > 1) {
         parseTaskFuture = QtConcurrent::run([=]() {
             QByteArray ba = content.toUtf8();
-            char *contentCstring = (char *)ba.data();
+            char *contentCString = (char *)ba.data();
             pmh_element **result;
-            pmh_markdown_to_elements(contentCstring, pmh_EXT_NOTES | pmh_EXT_STRIKE, &result);
+            pmh_markdown_to_elements(contentCString, pmh_EXT_NOTES | pmh_EXT_STRIKE, &result);
             emit parseFinished(result);
         });
     }

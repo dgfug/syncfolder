@@ -51,8 +51,8 @@ public slots:
     void about();
     void help();
     void contextMenu(const QPoint &pos);
-    void processStdOutput();
-    void processStdError();
+    void processSyncStdOutput();
+    void processSyncStdError();
     void handleFileRenamed(const QString &path,
                            const QString &oldName,
                            const QString &newName);
