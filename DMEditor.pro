@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent autoupdaterwidgets
+QT       += core gui concurrent network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -35,8 +35,8 @@ SOURCES += \
     settingdialog.cpp \
     syncapp.cpp \
     uiwidgets/DisplayQueuedFilesAction.cpp \
+    uiwidgets/MarkdownPreviewView.cpp \
     uiwidgets/ProgressCircle.cpp \
-    uiwidgets/displayqueuedfilesaction.cpp
 
 INCLUDEPATH += . \
             uiwidgets \
@@ -59,8 +59,8 @@ HEADERS += \
         syncapp.h \
         uiwidgets/CircleProgressBar.h \
         uiwidgets/DisplayQueuedFilesAction.h \
-        uiwidgets/ProgressCircle.h \
-        uiwidgets/displayqueuedfilesaction.h
+        uiwidgets/MarkdownPreviewView.h \
+        uiwidgets/ProgressCircle.h
 
 FORMS +=
 

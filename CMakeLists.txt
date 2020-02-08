@@ -10,8 +10,11 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
-message( STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH} )
-message( STATUS "Qt5_DIR: " ${Qt5_DIR} )
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(Qt5_DIR "/Users/faywong/tools/Qt5.14.1/5.14.1/clang_64/lib/cmake/Qt5")
+    message( STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH} )
+    message( STATUS "Qt5_DIR: " ${Qt5_DIR} )
+endif()
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt5 COMPONENTS Core REQUIRED)
