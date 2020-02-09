@@ -74,11 +74,10 @@ public:
     FullTextSearchWindow(DMEditorDelegate *delegate, const QString docDir, QWidget *parent = 0);
 
 private slots:
-    void browse();
     void find();
+    void copy();
     void animateFindClick();
-    void openFileOfItem(const QItemSelection&,const QItemSelection&);
-    void contextMenu(const QPoint &pos);
+    void openFileOfItem(const QItemSelection&, const QItemSelection&);
     void handleRgTaskFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void processRgStdOutput();
     void processRgStdError();
@@ -86,11 +85,12 @@ private slots:
 private:
     void showFiles(const QString &results);
     QComboBox *createComboBox(const QString &text = QString());
-    void createFilesTable();
+    void createFoundFilesTree();
 
     QComboBox *textComboBox;
     QComboBox *directoryComboBox;
     QLabel *filesFoundLabel;
+    QPushButton *copyButton;
     QPushButton *findButton;
     QTreeView *foundFilesTree;
     QStandardItemModel *foundFilesModel;

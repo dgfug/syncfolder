@@ -55,43 +55,24 @@
 
 #include "settings/settings_def.h"
 #include "fileformat.h"
-//! [17]
+
 enum { filePathRole = Qt::UserRole + 1 };
 enum { lineNoRole = Qt::UserRole + 2 };
+enum { contentRole = Qt::UserRole + 3 };
+enum { itemTypeRole = Qt::UserRole + 4 };
 
-//! [17]
-
-//! [18]
-static inline QString fileNameOfItem(const QTableWidgetItem *item)
-{
-    return item->data(filePathRole).toString();
-}
-
-static inline int lineNoOfItem(const QTableWidgetItem *item)
-{
-    int lineNo = item->data(lineNoRole).toInt();
-    return lineNo;
-}
-//! [18]
-//! [14]
-
-//! [0]
 FullTextSearchWindow::FullTextSearchWindow(DMEditorDelegate *delegate, const QString docDir, QWidget *parent)
-    : QWidget(parent), editorDelegate(delegate), rgTaskProcess(nullptr), currentDir(docDir)
+    : QWidget(parent), editorDelegate(delegate), rgTaskProcess(nullptr), currentDir(docDir), copyButton(nullptr), findButton(
+        nullptr)
 {
     setWindowTitle(tr("Find content search with keyword"));
-    findButton = new QPushButton(tr("&Find"), this);
-    connect(findButton, &QAbstractButton::clicked, this, &FullTextSearchWindow::find);
-
     textComboBox = createComboBox();
     connect(textComboBox->lineEdit(), &QLineEdit::returnPressed,
             this, &FullTextSearchWindow::animateFindClick);
 
-    QString lastFolder = SyncFolderSettings::getString(KEY_LAST_FOLDER);
-
     filesFoundLabel = new QLabel;
 
-    createFilesTable();
+    createFoundFilesTree();
 
     QGridLayout *mainLayout = new QGridLayout(this);
     mainLayout->addWidget(new QLabel(tr("Containing text:")), 1, 0);
@@ -99,25 +80,21 @@ FullTextSearchWindow::FullTextSearchWindow(DMEditorDelegate *delegate, const QSt
     mainLayout->addWidget(new QLabel(tr("In directory:")), 2, 0);
     mainLayout->addWidget(foundFilesTree, 2, 0, 1, 3);
     mainLayout->addWidget(filesFoundLabel, 3, 0, 1, 2);
-    mainLayout->addWidget(findButton, 3, 2);
+
+    copyButton = new QPushButton(tr("&Copy"), this);
+    connect(copyButton, &QAbstractButton::clicked, this, &FullTextSearchWindow::copy);
+
+    findButton = new QPushButton(tr("&Find"), this);
+    connect(findButton, &QAbstractButton::clicked, this, &FullTextSearchWindow::find);
+
+    mainLayout->addWidget(copyButton, 3, 2);
+    mainLayout->addWidget(findButton, 3, 3);
 
     connect(new QShortcut(QKeySequence(Qt::Key_Escape), this), &QShortcut::activated,
         this, &QWidget::hide);
-}
 
-//! [2]
-void FullTextSearchWindow::browse()
-{
-    QString directory =
-        QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, tr("Find Files"), QDir::currentPath()));
-
-    if (!directory.isEmpty()) {
-        if (directoryComboBox->findText(directory) == -1)
-            directoryComboBox->addItem(directory);
-        directoryComboBox->setCurrentIndex(directoryComboBox->findText(directory));
-    }
+    textComboBox->setFocus();
 }
-//! [2]
 
 static void updateComboBox(QComboBox *comboBox)
 {
@@ -169,6 +146,7 @@ void FullTextSearchWindow::showFiles(const QString &results)
                         QString path = jsonObj.value("data").toObject().value("path").toObject().value("text").toString();
                         fileBeginItem = new QStandardItem(path);
                         fileBeginItem->setData((QString)path, filePathRole);
+                        fileBeginItem->setData(QString("begin"), itemTypeRole);
                         fileBeginItem->setEditable(false);
                         rootNode->appendRow(fileBeginItem);
                     }
@@ -176,17 +154,17 @@ void FullTextSearchWindow::showFiles(const QString &results)
                     if (jsonObj.contains("data") && jsonObj.value("data").toObject().contains("path")) {
                         QJsonObject data = jsonObj.value("data").toObject();
                         QString path = data.value("path").toObject().value("text").toString();
-                        QString lines = data.value("lines").toObject().value("text").toString();
+                        QString lines = data.value("lines").toObject().value("text").toString().trimmed();
                         int line_number = data.value("line_number").toInt();
                         QStandardItem *fileMatchItem = new QStandardItem(lines);
                         fileMatchItem->setData((QString)path, filePathRole);
                         fileMatchItem->setData((qlonglong)line_number, lineNoRole);
+                        fileMatchItem->setData(lines, contentRole);
+                        fileMatchItem->setData(QString("match"), itemTypeRole);
                         fileMatchItem->setEditable(false);
 
                         if (fileBeginItem) {
                             fileBeginItem->appendRow(fileMatchItem);
-                        } else {
-                            rootNode->appendRow(fileMatchItem);
                         }
                     }
                 } else if (jsonObj.value("type") == "end") {
@@ -228,12 +206,13 @@ QComboBox *FullTextSearchWindow::createComboBox(const QString &text)
 //! [10]
 
 //! [11]
-void FullTextSearchWindow::createFilesTable()
+void FullTextSearchWindow::createFoundFilesTree()
 {
     foundFilesTree = new QTreeView;
     foundFilesModel = new QStandardItemModel(this);
     foundFilesTree->setModel(foundFilesModel);
     foundFilesTree->expandAll();
+    foundFilesTree->setExpandsOnDoubleClick(false);
     QObject::connect(foundFilesTree->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(openFileOfItem(const QItemSelection&,const QItemSelection&)));
 }
 
@@ -241,39 +220,31 @@ void FullTextSearchWindow::openFileOfItem(const QItemSelection& selected, const 
 {
     QModelIndexList selectedList = selected.indexes();
     if (!selectedList.empty()) {
-        auto modelIndex = selectedList[0];
-        QString filePath = foundFilesModel->data(modelIndex, filePathRole).toString();
-        qlonglong lineNo = foundFilesModel->data(modelIndex, lineNoRole).toLongLong();
+        auto curSelectedIndex = selectedList[0];
+
+        QString filePath = foundFilesModel->data(curSelectedIndex, filePathRole).toString();
+        qlonglong lineNo = foundFilesModel->data(curSelectedIndex, lineNoRole).toLongLong();
+        QString matchedContent = foundFilesModel->data(curSelectedIndex, contentRole).toString();
+        QString itemType = foundFilesModel->data(curSelectedIndex, itemTypeRole).toString();
+
         if (lineNo > 0) {
             editorDelegate->openFile_l(filePath, lineNo, true);
         }
     }
 }
 
-//! [12]
+void FullTextSearchWindow::copy() {
+    auto curSelectedIndex = foundFilesTree->selectionModel()->currentIndex();
 
-//! [16]
-void FullTextSearchWindow::contextMenu(const QPoint &pos)
-{
-//    const QTableWidgetItem *item = filesTable->itemAt(pos);
-//    if (!item)
-//        return;
-//    QMenu menu;
-//#ifndef QT_NO_CLIPBOARD
-//    QAction *copyAction = menu.addAction("Copy Name");
-//#endif
-//    QAction *openAction = menu.addAction("Open");
-//    QAction *action = menu.exec(filesTable->mapToGlobal(pos));
-//    if (!action)
-//        return;
-//    const QString fileName = fileNameOfItem(item);
-//    if (action == openAction)
-//        openFile(fileName);
-//#ifndef QT_NO_CLIPBOARD
-//    else
-//        if (action == copyAction)
-//        QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(fileName));
-//#endif
+    QString filePath = foundFilesModel->data(curSelectedIndex, filePathRole).toString();
+    QString matchedContent = foundFilesModel->data(curSelectedIndex, contentRole).toString();
+    QString itemType = foundFilesModel->data(curSelectedIndex, itemTypeRole).toString();
+
+    if (itemType == "match") {
+        QGuiApplication::clipboard()->setText(matchedContent);
+    } else if (itemType == "begin") {
+        QGuiApplication::clipboard()->setText(QDir::toNativeSeparators(filePath));
+    }
 }
 
 void FullTextSearchWindow::handleRgTaskFinished(int exitCode, QProcess::ExitStatus exitStatus) {
