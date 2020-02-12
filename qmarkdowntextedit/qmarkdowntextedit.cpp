@@ -57,7 +57,7 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent, bool initHighlighter)
 //    font.setFamily("Source Code Variable");
     this->setFont(font);
 
-    this->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#B5D788; }");
+    this->setStyleSheet("QWidget {background-color:#F9F9F5; font-size: 14px; color:#434C5B; selection-background-color:#BACBFA; }");
 
     // set the tab stop to the width of 4 spaces in the editor
     const int tabStop = 4;
@@ -1144,7 +1144,7 @@ void QMarkdownTextEdit::highlightCurrentLine() {
     if (!isReadOnly()) {
         QTextEdit::ExtraSelection selection;
 
-        QColor lineColor = QColor(Qt::yellow).lighter(160);
+        QColor lineColor = QColor("#F0F3F0");
 
         selection.format.setBackground(lineColor);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
@@ -1188,24 +1188,22 @@ void QMarkdownTextEdit::resizeEvent(QResizeEvent *e)
 {
     QPlainTextEdit::resizeEvent(e);
     QRect cr = contentsRect();
-    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth() + 4, cr.height()));
 }
 
 void QMarkdownTextEdit::lineNumberAreaPaintEvent(QPaintEvent *event) {
     QPainter painter(lineNumberArea);
-    painter.fillRect(event->rect(), QColor(0xfd, 0xff, 0xe4));
+    painter.fillRect(event->rect(), QColor("#F0F0F0"));
     QTextBlock block = firstVisibleBlock();
-    int digitsNum = getDigitsNum();
     int blockNumber = block.blockNumber();
     int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
     int bottom = top + qRound(blockBoundingRect(block).height());
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
-            painter.setPen(QColor(0xb1, 0xa9, 0xb4));
-            QString unifiedNum = QString::number(blockNumber + 1).rightJustified(digitsNum, '0');
-            painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
-                             Qt::AlignCenter, unifiedNum);
+            painter.setPen(QColor("#C0C0C0"));
+            painter.drawText(-4, top, lineNumberArea->width(), fontMetrics().height(),
+                             Qt::AlignRight, QString::number(blockNumber + 1));
         }
 
         block = block.next();

@@ -102,12 +102,14 @@ public:
 //        +----------------------------------------------------------+
         // 横向 flex 布局，最顶层的 splitter
         splitter = new QSplitter;
+        splitter->setHandleWidth(0);
         fileTree = new QTreeView;
         tocTree = new QTreeView;
         tocModel = new QStandardItemModel(mainWindow);
 
         // 竖向 flex 布局
         auto leftPanelSplitter = new QSplitter(Qt::Vertical);
+        leftPanelSplitter->setHandleWidth(0);
         leftPanelSplitter->addWidget(fileTree);
         leftPanelSplitter->setStretchFactor(0, 3);
         leftPanelSplitter->addWidget(tocTree);

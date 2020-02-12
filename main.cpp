@@ -12,6 +12,17 @@
 int main(int argc, char *argv[])
 {
     SyncApp a(argc, argv);
+    a.setStyleSheet("QStatusBar, QWidget[objectName^=\"centralWidget\"] { background-color: #F7F6F8; } QSplitter { background-color: #D2D2D7;} QDockWidget { background-color: #545256; } QSplitter::handle:horizontal {\n"
+                    "    width: 1px;"
+                    "}"
+                    ""
+                    "QSplitter::handle:vertical {"
+                    "    height: 1px;"
+                    "}"
+                    "QSplitter: {"
+                    "    width: 1px;"
+                    "    height: 1px;"
+                    "}");
     QTranslator translator;
     QString locale = QLocale::system().name();
     if (locale == "zh_CN") {
