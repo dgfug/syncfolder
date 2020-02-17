@@ -183,13 +183,27 @@ public:
         markdownEditor->viewport()->setAcceptDrops(false);
 
         // sync scroll: editor -> previewer
+        bool hasTriggered = false;
         QObject::connect(markdownEditor->verticalScrollBar(), &QScrollBar::valueChanged,
                          [&](int newValue ) {
 //                             e new / e max = (p new) / p max
                              int eMax = markdownEditor->verticalScrollBar()->maximum();
-                             if (eMax > 0.01) {
+                             if (eMax > 0.01 && !hasTriggered) {
+                                 hasTriggered = true;
                                  int newV = newValue * markdownPreviewDoc->verticalScrollBar()->maximum() / eMax;
                                  markdownPreviewDoc->verticalScrollBar()->setValue(newV);
+                                 hasTriggered = false;
+                             }});
+
+        QObject::connect(markdownPreviewDoc->verticalScrollBar(), &QScrollBar::valueChanged,
+                         [&](int newValue/* p new*/ ) {
+//                             e new / e max = (p new) / p max
+                             int eMax = markdownEditor->verticalScrollBar()->maximum();
+                             if (eMax > 0.01 && !hasTriggered) {
+                                 hasTriggered = true;
+                                 int newV = newValue * eMax  / markdownPreviewDoc->verticalScrollBar()->maximum();
+                                 markdownEditor->verticalScrollBar()->setValue(newV);
+                                 hasTriggered = false;
                              }});
 
         imageLabel = new QLabel;

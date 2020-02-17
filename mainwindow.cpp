@@ -652,6 +652,7 @@ void MainWindow::updateToc(const QVector<QStandardItem *> &nodes) {
     for (auto &node : nodes) {
         rootNode->appendRow(node);
     }
+    ui->tocTree->expandAll();
 }
 
 MainWindow::~MainWindow() {
