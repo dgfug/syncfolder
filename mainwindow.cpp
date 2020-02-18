@@ -188,7 +188,7 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
 }
 
 void MainWindow::setDocStatus(const QString &fileName, const QString &status) {
-    this->setWindowTitle(QString("%s(%s)").arg(fileName).arg(status));
+    this->setWindowTitle(status.isEmpty() ? fileName : (QString("%1(%2)").arg(fileName).arg(status)));
 }
 
 void MainWindow::setCurrentRootDirPath(const QString &folderPath) {
