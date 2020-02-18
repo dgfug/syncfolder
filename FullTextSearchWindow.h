@@ -84,11 +84,9 @@ private slots:
 
 private:
     void showFiles(const QString &results);
-    QComboBox *createComboBox(const QString &text = QString());
     void createFoundFilesTree();
 
-    QComboBox *textComboBox;
-    QComboBox *directoryComboBox;
+    QLineEdit *keywordLineEdit;
     QLabel *filesFoundLabel;
     QPushButton *copyButton;
     QPushButton *findButton;

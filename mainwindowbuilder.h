@@ -171,6 +171,11 @@ public:
 
         // create markdown editor
         markdownEditor = new QMarkdownTextEdit(mainWindow);
+        // TODO: add content change & save action -> window status
+//        QObject::connect(markdownEditor->document(), &QTextDocument::contentsChanged,
+//                [](int,int,int) {
+//        });
+
         splitter->addWidget(markdownEditor);
         splitter->setStretchFactor(1, 3);
 

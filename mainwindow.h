@@ -25,6 +25,7 @@ public:
     ~MainWindow() override;
 
     void setCurrentRootDirPath(const QString &value);
+    void setDocStatus(const QString &fileName, const QString &status);
 
     // implement of DMEditorDelegate start
     void openFile_l(const QString &, size_t lineNo, bool needSelect = false) override;

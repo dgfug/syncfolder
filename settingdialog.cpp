@@ -64,4 +64,5 @@ void SettingDialog::changePage(QListWidgetItem *current, QListWidgetItem *previo
 
 void SettingDialog::save() {
     dynamic_cast<ConfigurationPage*>(pagesWidget->currentWidget())->save();
+    close();
 }

@@ -179,12 +179,16 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
         ui->markdownPreviewDoc->document()->setMetaInformation(QTextDocument::DocumentUrl,
                                                                baseDocUrl);
         ui->markdownPreviewDoc->document()->setBaseUrl(QUrl::fromLocalFile(fileInfo.canonicalFilePath()));
-        setWindowTitle(QCoreApplication::translate("MainWindow", fileInfo.fileName().toStdString().c_str(), nullptr));
+        setDocStatus(fileInfo.fileName(), "");
         SyncFolderSettings::setString(KEY_LAST_FILE, filePath);
         if (needSelect) {
             revealInTreeView();
         }
     }
+}
+
+void MainWindow::setDocStatus(const QString &fileName, const QString &status) {
+    this->setWindowTitle(QString("%s(%s)").arg(fileName).arg(status));
 }
 
 void MainWindow::setCurrentRootDirPath(const QString &folderPath) {
@@ -617,7 +621,7 @@ void MainWindow::handleSyncFinished(int exitCode, QProcess::ExitStatus exitStatu
 }
 
 void MainWindow::handleFileRenamed(const QString &path, const QString &oldName, const QString &newName) {
-    setWindowTitle(QCoreApplication::translate("MainWindow", newName.toStdString().c_str(), nullptr));
+    setDocStatus(newName, "");
     QFileInfo fileInfo(path, newName);
     openFile_l(fileInfo.filePath(), 1, true);
 }

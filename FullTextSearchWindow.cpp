@@ -66,8 +66,8 @@ FullTextSearchWindow::FullTextSearchWindow(DMEditorDelegate *delegate, const QSt
         nullptr)
 {
     setWindowTitle(tr("Find content search with keyword"));
-    textComboBox = createComboBox();
-    connect(textComboBox->lineEdit(), &QLineEdit::returnPressed,
+    keywordLineEdit = new QLineEdit;
+    connect(keywordLineEdit, &QLineEdit::returnPressed,
             this, &FullTextSearchWindow::animateFindClick);
 
     filesFoundLabel = new QLabel;
@@ -76,7 +76,7 @@ FullTextSearchWindow::FullTextSearchWindow(DMEditorDelegate *delegate, const QSt
 
     QGridLayout *mainLayout = new QGridLayout(this);
     mainLayout->addWidget(new QLabel(tr("Containing text:")), 1, 0);
-    mainLayout->addWidget(textComboBox, 1, 1, 1, 2);
+    mainLayout->addWidget(keywordLineEdit, 1, 1, 1, 2);
     mainLayout->addWidget(new QLabel(tr("In directory:")), 2, 0);
     mainLayout->addWidget(foundFilesTree, 2, 0, 1, 3);
     mainLayout->addWidget(filesFoundLabel, 3, 0, 1, 2);
@@ -93,21 +93,13 @@ FullTextSearchWindow::FullTextSearchWindow(DMEditorDelegate *delegate, const QSt
     connect(new QShortcut(QKeySequence(Qt::Key_Escape), this), &QShortcut::activated,
         this, &QWidget::hide);
 
-    textComboBox->setFocus();
-}
-
-static void updateComboBox(QComboBox *comboBox)
-{
-    if (comboBox->findText(comboBox->currentText()) == -1)
-        comboBox->addItem(comboBox->currentText());
+    keywordLineEdit->setFocus();
 }
 
 //! [3]
 void FullTextSearchWindow::find()
 {
-    QString text = textComboBox->currentText();
-    updateComboBox(textComboBox);
-
+    QString text = keywordLineEdit->text();
     rgTaskStdout.clear();
     rgTaskStderror.clear();
     FullTextSearchWindow *that = this;
@@ -192,20 +184,7 @@ void FullTextSearchWindow::showFiles(const QString &results)
 
     foundFilesTree->expandAll();
 }
-//! [8]
 
-//! [10]
-QComboBox *FullTextSearchWindow::createComboBox(const QString &text)
-{
-    QComboBox *comboBox = new QComboBox;
-    comboBox->setEditable(true);
-    comboBox->addItem(text);
-    comboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    return comboBox;
-}
-//! [10]
-
-//! [11]
 void FullTextSearchWindow::createFoundFilesTree()
 {
     foundFilesTree = new QTreeView;
