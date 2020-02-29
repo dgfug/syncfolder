@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <settings/settings_def.h>
 #include "highlighter.h"
+#include "scidown_md.h"
 
 HGMarkdownHighlighter::HGMarkdownHighlighter(QTextDocument *parent,
                                              DMEditorDelegate *mainWindow,
@@ -290,7 +291,6 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
     }
 
     mainWin->updateToc(tocItems);
-    mainWin->updateMarkdownPreview(referredImages);
     document->markContentsDirty(0, document->characterCount());
     pmh_free_elements(parsedElement);
 }
@@ -298,7 +298,11 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
 void HGMarkdownHighlighter::parse()
 {
     if (parseTaskFuture.isRunning()) {
-        return;
+        parseTaskFuture.cancel();
+    }
+
+    if (toMdTaskFuture.isRunning()) {
+        toMdTaskFuture.cancel();
     }
     QString content = document->toPlainText();
     if (content.length() > 1) {
@@ -308,6 +312,17 @@ void HGMarkdownHighlighter::parse()
             pmh_element **result;
             pmh_markdown_to_elements(contentCString, pmh_EXT_NOTES | pmh_EXT_STRIKE, &result);
             emit parseFinished(result);
+        });
+
+        toMdTaskFuture = QtConcurrent::run([=]() {
+            QByteArray ba = content.toUtf8();
+            char *contentCString = (char *)ba.data();
+            uint8_t* output_data = nullptr;
+            size_t output_size;
+            md2html(reinterpret_cast<const uint8_t *>(contentCString), ba.size(), &output_data, &output_size);
+            QString html = QString::fromUtf8(reinterpret_cast<const char *>(output_data), output_size);
+            emit md2htmlFinished(html);
+            free(reinterpret_cast<void *>(output_data));
         });
     }
 }

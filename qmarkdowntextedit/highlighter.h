@@ -41,6 +41,7 @@ public:
 
 signals:
     void parseFinished(pmh_element **result);
+    void md2htmlFinished(const QString &html);
 
 private slots:
     void handleContentsChange(int position, int charsRemoved, int charsAdded);
@@ -50,6 +51,7 @@ private:
     DMEditorDelegate *mainWin;
     QTextDocument *document;
     QFuture<void> parseTaskFuture;
+    QFuture<void> toMdTaskFuture;
     QVector<HighlightingStyle> *highlightingStyles;
     int waitInterval;
     QTimer *timer;

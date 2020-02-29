@@ -10,7 +10,6 @@
 #include <QNetworkReply>
 class MarkdownPreviewView : public QTextBrowser {
 public:
-    explicit MarkdownPreviewView(QWidget* parent = nullptr);
     bool preloadResources(const QStringList &images, const QString markdownText);
 
 protected:

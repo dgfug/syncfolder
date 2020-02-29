@@ -9,6 +9,16 @@
 #ifndef UI_MAINWINDOW_H
 #define UI_MAINWINDOW_H
 
+#define leftPanel_INDEX 0
+#define mdEditor_INDEX 1
+#define mdPreviewer_INDEX 2
+
+int gSplitWeights[] = {
+        1,
+        3,
+        3
+};
+
 #include "FileIconProvider.h"
 
 #include <QtCore/QVariant>
@@ -32,6 +42,7 @@
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QScrollBar>
 #include <uiwidgets/MarkdownPreviewView.h>
+#include <QtWebEngineWidgets/QWebEngineView>
 #include "settings/settings_def.h"
 
 QT_BEGIN_NAMESPACE
@@ -41,7 +52,7 @@ class Ui_MainWindow
 
 public:
     QMarkdownTextEdit *markdownEditor;
-    MarkdownPreviewView *markdownPreviewDoc;
+    QWebEngineView *markdownPreviewView;
     QMenuBar *menuBar;
     QStatusBar *statusBar;
     QHBoxLayout *bodyLayout;
@@ -52,7 +63,6 @@ public:
     QFileSystemModel *fileTreeModel;
     // image viewer part
     QLabel *imageLabel;
-    QScrollArea *imageScrollArea;
     void setupUi(QMainWindow *mainWindow)
     {
         if (mainWindow->objectName().isEmpty())
@@ -126,7 +136,7 @@ public:
 
         bodyLayout->addWidget(splitter);
         splitter->addWidget(leftPanelSplitter);
-        splitter->setStretchFactor(0, 1);
+        splitter->setStretchFactor(leftPanel_INDEX, 1);
 
         fileTreeModel = new QFileSystemModel(mainWindow);
         fileTreeModel->setIconProvider(new DMFileIconProvider);
@@ -178,13 +188,13 @@ public:
 //        });
 
         splitter->addWidget(markdownEditor);
-        splitter->setStretchFactor(1, 3);
+        splitter->setStretchFactor(mdEditor_INDEX, 3);
 
-        markdownPreviewDoc = new MarkdownPreviewView(mainWindow);
-        markdownPreviewDoc->setReadOnly(true);
+        markdownPreviewView = new QWebEngineView(mainWindow);
+        splitter->addWidget(markdownPreviewView);
+        splitter->setStretchFactor(mdPreviewer_INDEX, 3);
+        splitter->setChildrenCollapsible(false);
 
-        splitter->addWidget(markdownPreviewDoc);
-        splitter->setStretchFactor(2, 3);
         // we handle drag & drop globally in MainWindow, so disable it here
         markdownEditor->viewport()->setAcceptDrops(false);
 
@@ -196,18 +206,18 @@ public:
                              int eMax = markdownEditor->verticalScrollBar()->maximum();
                              if (eMax > 0.01 && !hasTriggered) {
                                  hasTriggered = true;
-                                 int newV = newValue * markdownPreviewDoc->verticalScrollBar()->maximum() / eMax;
-                                 markdownPreviewDoc->verticalScrollBar()->setValue(newV);
+//                                 int newV = newValue * markdownPreviewView->verticalScrollBar()->maximum() / eMax;
+//                                 markdownPreviewView->verticalScrollBar()->setValue(newV);
                                  hasTriggered = false;
                              }});
 
-//        QObject::connect(markdownPreviewDoc->verticalScrollBar(), &QScrollBar::valueChanged,
+//        QObject::connect(markdownPreviewView->verticalScrollBar(), &QScrollBar::valueChanged,
 //                         [&](int newValue/* p new*/ ) {
 ////                             e new / e max = (p new) / p max
 //                             int eMax = markdownEditor->verticalScrollBar()->maximum();
 //                             if (eMax > 0.01 && !hasTriggered) {
 //                                 hasTriggered = true;
-//                                 int newV = newValue * eMax  / markdownPreviewDoc->verticalScrollBar()->maximum();
+//                                 int newV = newValue * eMax  / markdownPreviewView->verticalScrollBar()->maximum();
 //                                 markdownEditor->verticalScrollBar()->setValue(newV);
 //                                 hasTriggered = false;
 //                             }});
@@ -216,14 +226,6 @@ public:
         imageLabel->setBackgroundRole(QPalette::Base);
         imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
         imageLabel->setScaledContents(true);
-
-        imageScrollArea = new QScrollArea;
-        imageScrollArea->setBackgroundRole(QPalette::Dark);
-        imageScrollArea->setWidget(imageLabel);
-        imageScrollArea->setWidgetResizable(true);
-        imageScrollArea->setVisible(false);
-        splitter->addWidget(imageScrollArea);
-        splitter->setStretchFactor(2, 3);
 
         // create center widget
         QWidget *centerWidget = new QWidget();

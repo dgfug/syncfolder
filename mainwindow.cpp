@@ -7,13 +7,6 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QLabel>
-#include <QPushButton>
-#include <QProgressBar>
-#include <QImageReader>
-#include "settings/settings_def.h"
-#include <QStandardPaths>
-#include <iostream>
-#include <string>
 #include <QTextBlock>
 #include <QFile>
 #include <QGuiApplication>
@@ -139,17 +132,7 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
         }
     }
 
-    if (isImage) { // image for read
-        QImageReader reader(filePath);
-        reader.setAutoTransform(true);
-        const QImage newImage = reader.read();
-        if (!newImage.isNull()) {
-            ui->markdownEditor->setVisible(false);
-            ui->imageScrollArea->setVisible(true);
-            ui->splitter->setStretchFactor(0, 0);
-            ui->imageLabel->setPixmap(QPixmap::fromImage(newImage));
-        }
-    } else if (!filePath.isEmpty()) {
+    if (!isImage && !filePath.isEmpty()) {
         QFileInfo fileInfo(filePath);
         if (!fileInfo.exists() || !fileInfo.isFile()) {
             return;
@@ -160,10 +143,6 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
         file.open(QFile::ReadOnly | QFile::Text);
         QTextStream fileToRead(&file);
         // TODO: move file io into non-main thread
-        ui->markdownEditor->setVisible(true);
-        ui->imageScrollArea->setVisible(false);
-        ui->splitter->setStretchFactor(0, 1);
-        ui->splitter->setStretchFactor(1, 3);
 
         QString text = fileToRead.readAll();
         ui->markdownEditor->setText(text);
@@ -176,9 +155,10 @@ void MainWindow::openFile_l(const QString &filePath, size_t lineNo, bool needSel
         }
 
         QString baseDocUrl = QUrl::fromLocalFile(fileInfo.canonicalFilePath()).toString();
-        ui->markdownPreviewDoc->document()->setMetaInformation(QTextDocument::DocumentUrl,
-                                                               baseDocUrl);
-        ui->markdownPreviewDoc->document()->setBaseUrl(QUrl::fromLocalFile(fileInfo.canonicalFilePath()));
+        // TODO:
+//        ui->markdownPreviewView->document()->setMetaInformation(QTextDocument::DocumentUrl,
+//                                                               baseDocUrl);
+//        ui->markdownPreviewView->document()->setBaseUrl(QUrl::fromLocalFile(fileInfo.canonicalFilePath()));
         setDocStatus(fileInfo.fileName(), "");
         SyncFolderSettings::setString(KEY_LAST_FILE, filePath);
         if (needSelect) {
@@ -663,9 +643,28 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::updateMarkdownPreview(const QStringList &images) {
-    QString markdownText = ui->markdownEditor->toPlainText();
-    ui->markdownPreviewDoc->preloadResources(images, markdownText);
-    ui->markdownPreviewDoc->setMarkdown(markdownText);
+void MainWindow::updateMarkdownPreview(const QString &html) {
+    QFileInfo fileInfo(currentFilePath);
+    QString baseDocUrl = QUrl::fromLocalFile(fileInfo.canonicalFilePath()).toString();
+    ui->markdownPreviewView->setHtml(html, baseDocUrl);
+    connect(ui->markdownPreviewView, &QWebEngineView::loadFinished, [&]() {
+        QList<int> sizes = ui->splitter->sizes();
+        int sumWidth = 0;
+        for (int s : sizes) {
+            sumWidth += s;
+        }
+
+        int sumWeight = 0;
+        for (int i = 0; i < sizeof(gSplitWeights)/ sizeof(gSplitWeights[0]); i++) {
+            sumWeight += gSplitWeights[i];
+        }
+
+        QList<int> newSizes;
+        for (int i = 0; i < sizes.size(); i++) {
+            newSizes.append(sumWidth * gSplitWeights[i]/sumWeight);
+        }
+        ui->splitter->setSizes(newSizes);
+    });
+    ui->markdownPreviewView->showNormal();
 }
 

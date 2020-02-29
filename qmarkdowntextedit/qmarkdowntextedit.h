@@ -16,6 +16,7 @@
 
 #include <QPlainTextEdit>
 #include <QEvent>
+#include <QtWebEngineWidgets/QWebEngineView>
 #include "qplaintexteditsearchwidget.h"
 #include "highlighter.h"
 
@@ -36,7 +37,7 @@ public:
 
     Q_DECLARE_FLAGS(AutoTextOptions, AutoTextOption)
 
-    explicit QMarkdownTextEdit(QWidget *parent = nullptr, bool initHighlighter = true);
+    explicit QMarkdownTextEdit(QWidget *parent = nullptr);
     HGMarkdownHighlighter *highlighter();
     QPlainTextEditSearchWidget *searchWidget();
     void setIgnoredClickUrlSchemata(QStringList ignoredUrlSchemata);
@@ -62,7 +63,6 @@ public slots:
     bool openLinkAtCursorPosition();
     bool handleBracketRemoval();
     void highlightRichText(pmh_element **result);
-
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
     bool increaseSelectedTextIndention(bool reverse);

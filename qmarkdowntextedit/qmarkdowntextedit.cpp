@@ -34,7 +34,7 @@
 #include <QString>
 #include <settings/settings_def.h>
 
-QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent, bool initHighlighter)
+QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent)
         : QPlainTextEdit(parent) {
     installEventFilter(this);
     viewport()->installEventFilter(this);
@@ -45,10 +45,10 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent, bool initHighlighter)
                                        << "\"" << "'" << "_" << "~";
 
     // markdown highlighting is enabled by default
-    if (initHighlighter) {
-        _highlighter = new HGMarkdownHighlighter(document(), dynamic_cast<DMEditorDelegate *>(parent->window()));
-        connect(_highlighter, SIGNAL(parseFinished(pmh_element **)), this, SLOT(highlightRichText(pmh_element **)), Qt::QueuedConnection);
-    }
+    _highlighter = new HGMarkdownHighlighter(document(), dynamic_cast<DMEditorDelegate *>(parent->window()));
+    connect(_highlighter, SIGNAL(parseFinished(pmh_element **)), this, SLOT(highlightRichText(pmh_element **)), Qt::QueuedConnection);
+    connect(_highlighter, SIGNAL(md2htmlFinished(const QString&)), parent, SLOT(updateMarkdownPreview(const QString &)), Qt::QueuedConnection);
+
 //    setHighlightingEnabled(true);
 
     QFont font = QFont();

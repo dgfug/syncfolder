@@ -29,7 +29,6 @@ public:
 
     // implement of DMEditorDelegate start
     void openFile_l(const QString &, size_t lineNo, bool needSelect = false) override;
-    void updateMarkdownPreview(const QStringList &images) override ;
     void updateToc(const QVector<QStandardItem*> &nodes) override;
     // implement of DMEditorDelegate end
 
@@ -62,6 +61,7 @@ public slots:
     void onCheckingUpdateFinished (const QString& url);
     void displayAppcast (const QString& url, const QByteArray& reply);
     void onUpdateDownloadFinished(const QString& url, const QString& path);
+    void updateMarkdownPreview(const QString &html);
 
 protected:
     void setupMenus();

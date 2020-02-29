@@ -21,6 +21,11 @@ find_package(Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt5 COMPONENTS Gui REQUIRED)
 find_package(Qt5 COMPONENTS Concurrent REQUIRED)
 find_package(Qt5 COMPONENTS Network REQUIRED)
+find_package(Qt5 COMPONENTS WebEngineCore REQUIRED)
+find_package(Qt5 COMPONENTS WebEngineWidgets REQUIRED)
+
+FILE(GLOB scidownSrcs 3rdparty/scidown/*.c 3rdparty/scidown/src/*.c 3rdparty/scidown/src/charter/src/*.c
+        3rdparty/scidown/src/charter/src/csv_parser/*.c 3rdparty/scidown/src/charter/src/tinyexpr/*.c)
 
 add_executable(SyncFolder
     FileIconProvider.cpp
@@ -34,8 +39,7 @@ add_executable(SyncFolder
     configurationpage.cpp
     uiwidgets/ProgressCircle.cpp
     uiwidgets/DisplayQueuedFilesAction.cpp
-    uiwidgets/MarkdownPreviewView.cpp
-    uiwidgets/MarkdownPreviewView.h
+        uiwidgets/MarkdownPreviewView.h
     resources.qrc
     translations/syncfolder_zh_CN.ts
     qmarkdowntextedit/highlighter.cpp
@@ -55,12 +59,19 @@ add_executable(SyncFolder
     3rdparty/QSimpleUpdater/include/QSimpleUpdater.h
     3rdparty/QSimpleUpdater/src/Downloader.ui
     3rdparty/QSimpleUpdater/etc/resources/qsimpleupdater.qrc
-        ISettingPage.h)
+    3rdparty/scidown/
+    ISettingPage.h
+    ${scidownSrcs}
+    3rdparty/scidown/bin/scidown.c
+    3rdparty/scidown/bin/scidown_md.h)
 
 target_include_directories(SyncFolder PUBLIC
         .
         uiwidgets
         qmarkdowntextedit
+        3rdparty/scidown/src
+        3rdparty/scidown/bin
+        3rdparty/scidown/src/charter/src
         3rdparty/QSimpleUpdater
         3rdparty/QSimpleUpdater/include
         3rdparty/QSimpleUpdater/src)
@@ -71,6 +82,4 @@ set_target_properties(SyncFolder PROPERTIES
         CXX_EXTENSIONS NO
         )
 
-target_link_libraries(SyncFolder Qt5::Widgets Qt5::Concurrent Qt5::Network)
-
-#add_subdirectory(3rdparty/litehtml-qt/)
+target_link_libraries(SyncFolder Qt5::Widgets Qt5::Concurrent Qt5::Network Qt5::WebEngineCore Qt5::WebEngineWidgets)
