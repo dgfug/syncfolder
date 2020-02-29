@@ -3,4 +3,4 @@
 	url = git@github.com:alex-spataru/QSimpleUpdater.git
 [submodule "3rdparty/scidown"]
 	path = 3rdparty/scidown
-	url = https://github.com/faywong/scidown.git
+	url = git@github.com:faywong/scidown.git
