@@ -1170,7 +1170,7 @@ int QMarkdownTextEdit::lineNumberAreaWidth()
 {
     int digits = getDigitsNum();
 
-    int space = 3 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits;
+    int space = fontMetrics().horizontalAdvance(QLatin1Char('9')) * (digits + 2);
     return space;
 }
 
@@ -1188,7 +1188,7 @@ void QMarkdownTextEdit::resizeEvent(QResizeEvent *e)
 {
     QPlainTextEdit::resizeEvent(e);
     QRect cr = contentsRect();
-    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth() + 4, cr.height()));
+    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
 void QMarkdownTextEdit::lineNumberAreaPaintEvent(QPaintEvent *event) {
@@ -1201,8 +1201,8 @@ void QMarkdownTextEdit::lineNumberAreaPaintEvent(QPaintEvent *event) {
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
-            painter.setPen(QColor("#C0C0C0"));
-            painter.drawText(-4, top, lineNumberArea->width(), fontMetrics().height(),
+            painter.setPen(QColor("#000000"));
+            painter.drawText(0, top, lineNumberArea->width() - fontMetrics().horizontalAdvance(QLatin1Char('9')), fontMetrics().height(),
                              Qt::AlignRight, QString::number(blockNumber + 1));
         }
 

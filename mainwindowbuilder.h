@@ -174,6 +174,7 @@ public:
         // TODO: add content change & save action -> window status
 //        QObject::connect(markdownEditor->document(), &QTextDocument::contentsChanged,
 //                [](int,int,int) {
+//            // setDocStatus
 //        });
 
         splitter->addWidget(markdownEditor);
@@ -200,16 +201,16 @@ public:
                                  hasTriggered = false;
                              }});
 
-        QObject::connect(markdownPreviewDoc->verticalScrollBar(), &QScrollBar::valueChanged,
-                         [&](int newValue/* p new*/ ) {
-//                             e new / e max = (p new) / p max
-                             int eMax = markdownEditor->verticalScrollBar()->maximum();
-                             if (eMax > 0.01 && !hasTriggered) {
-                                 hasTriggered = true;
-                                 int newV = newValue * eMax  / markdownPreviewDoc->verticalScrollBar()->maximum();
-                                 markdownEditor->verticalScrollBar()->setValue(newV);
-                                 hasTriggered = false;
-                             }});
+//        QObject::connect(markdownPreviewDoc->verticalScrollBar(), &QScrollBar::valueChanged,
+//                         [&](int newValue/* p new*/ ) {
+////                             e new / e max = (p new) / p max
+//                             int eMax = markdownEditor->verticalScrollBar()->maximum();
+//                             if (eMax > 0.01 && !hasTriggered) {
+//                                 hasTriggered = true;
+//                                 int newV = newValue * eMax  / markdownPreviewDoc->verticalScrollBar()->maximum();
+//                                 markdownEditor->verticalScrollBar()->setValue(newV);
+//                                 hasTriggered = false;
+//                             }});
 
         imageLabel = new QLabel;
         imageLabel->setBackgroundRole(QPalette::Base);
