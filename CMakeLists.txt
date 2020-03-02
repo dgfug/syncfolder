@@ -24,8 +24,8 @@ find_package(Qt5 COMPONENTS Network REQUIRED)
 find_package(Qt5 COMPONENTS WebEngineCore REQUIRED)
 find_package(Qt5 COMPONENTS WebEngineWidgets REQUIRED)
 
-FILE(GLOB scidownSrcs 3rdparty/scidown/*.c 3rdparty/scidown/src/*.c 3rdparty/scidown/src/charter/src/*.c
-        3rdparty/scidown/src/charter/src/csv_parser/*.c 3rdparty/scidown/src/charter/src/tinyexpr/*.c)
+FILE(GLOB scidownSrcs 3rdparty/scidown/*.c 3rdparty/scidown/src/*.c 3rdparty/charter/src/*.c
+        3rdparty/charter/src/csv_parser/*.c 3rdparty/charter/src/tinyexpr/*.c)
 
 add_executable(SyncFolder
     FileIconProvider.cpp
@@ -71,7 +71,8 @@ target_include_directories(SyncFolder PUBLIC
         qmarkdowntextedit
         3rdparty/scidown/src
         3rdparty/scidown/bin
-        3rdparty/scidown/src/charter/src
+        3rdparty/charter/src
+        3rdparty/
         3rdparty/QSimpleUpdater
         3rdparty/QSimpleUpdater/include
         3rdparty/QSimpleUpdater/src)

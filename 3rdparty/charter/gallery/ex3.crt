@@ -1,0 +1,8 @@
+x-axis
+ label x
+y-axis
+ label f(x) = x^2 -x +4
+plot:
+ x range: -6 6 20
+ y math: x^2-x+4
+ marker o

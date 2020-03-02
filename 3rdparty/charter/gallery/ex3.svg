@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="600" height="400">
+<defs><clipPath id="plot-area"><rect x="70.00" y="25.00" width="495.00" height="325.00"/>
+</clipPath></defs><line clip-path="url(#plot-area)"  x1="92.50" y1="25.00" x2="92.50" y2="350.00"  style="stroke: #ccc;stroke-width:0.50"/>
+<line clip-path="url(#plot-area)"  x1="167.50" y1="25.00" x2="167.50" y2="350.00"  style="stroke: #ccc;stroke-width:0.50"/>
+<line clip-path="url(#plot-area)"  x1="242.50" y1="25.00" x2="242.50" y2="350.00"  style="stroke: #ccc;stroke-width:0.50"/>
+<line clip-path="url(#plot-area)"  x1="317.50" y1="25.00" x2="317.50" y2="350.00"  style="stroke: #ccc;stroke-width:0.50"/>
+<line clip-path="url(#plot-area)"  x1="392.50" y1="25.00" x2="392.50" y2="350.00"  style="stroke: #ccc;stroke-width:0.50"/>
+<line clip-path="url(#plot-area)"  x1="467.50" y1="25.00" x2="467.50" y2="350.00"  style="stroke: #ccc;stroke-width:0.50"/>
+<line clip-path="url(#plot-area)"  x1="542.50" y1="25.00" x2="542.50" y2="350.00"  style="stroke: #ccc;stroke-width:0.50"/>
+<line clip-path="url(#plot-area)"  x1="70.00" y1="291.72" x2="565.00" y2="291.72"  style="stroke: #ccc;stroke-width:0.50"/>
+<line clip-path="url(#plot-area)"  x1="70.00" y1="221.74" x2="565.00" y2="221.74"  style="stroke: #ccc;stroke-width:0.50"/>
+<line clip-path="url(#plot-area)"  x1="70.00" y1="151.75" x2="565.00" y2="151.75"  style="stroke: #ccc;stroke-width:0.50"/>
+<line clip-path="url(#plot-area)"  x1="70.00" y1="81.76" x2="565.00" y2="81.76"  style="stroke: #ccc;stroke-width:0.50"/>
+<polyline clip-path="url(#plot-area)" style="fill:none; stroke:#db5f57; stroke-width:2.00;"  points="92.50,39.77 116.18,94.44 139.87,143.53 163.55,187.03 187.24,224.96 210.92,257.29 234.61,284.05 258.29,305.22 281.97,320.80 305.66,330.81 329.34,335.23 353.03,334.06 376.71,327.32 400.39,314.99 424.08,297.07 447.76,273.58 471.45,244.50 495.13,209.83 518.82,169.59 542.50,123.76 " /><circle clip-path="url(#plot-area)"  cx="92.50" cy="39.77" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="116.18" cy="94.44" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="139.87" cy="143.53" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="163.55" cy="187.03" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="187.24" cy="224.96" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="210.92" cy="257.29" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="234.61" cy="284.05" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="258.29" cy="305.22" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="281.97" cy="320.80" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="305.66" cy="330.81" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="329.34" cy="335.23" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="353.03" cy="334.06" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="376.71" cy="327.32" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="400.39" cy="314.99" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="424.08" cy="297.07" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="447.76" cy="273.58" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="471.45" cy="244.50" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="495.13" cy="209.83" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="518.82" cy="169.59" r="3.00" fill="#db5f57" /><circle clip-path="url(#plot-area)"  cx="542.50" cy="123.76" r="3.00" fill="#db5f57" /><rect  x="70.00" y="25.00" width="495.00" height="325.00" style="fill:none; fill-opacity:1.00; stroke:black; stroke-width:0.50;" />
+<text  x="317.50" y="387.00" text-anchor="middle"  font-weight="regular">x</text>
+<text  transform="rotate(270,5.00,187.50) translate(0, 10)"  x="5.00" y="187.50" text-anchor="middle"  font-weight="regular">f(x) = x^2 -x +4</text>
+<line  x1="92.50" y1="351.00" x2="92.50" y2="356.00"  style="stroke: black;stroke-width:1.00"/>
+<text  x="92.50" y="370.00" text-anchor="middle"  font-weight="regular">-6.0</text>
+<line  x1="167.50" y1="351.00" x2="167.50" y2="356.00"  style="stroke: black;stroke-width:1.00"/>
+<text  x="167.50" y="370.00" text-anchor="middle"  font-weight="regular">-4.0</text>
+<line  x1="242.50" y1="351.00" x2="242.50" y2="356.00"  style="stroke: black;stroke-width:1.00"/>
+<text  x="242.50" y="370.00" text-anchor="middle"  font-weight="regular">-2.0</text>
+<line  x1="317.50" y1="351.00" x2="317.50" y2="356.00"  style="stroke: black;stroke-width:1.00"/>
+<text  x="317.50" y="370.00" text-anchor="middle"  font-weight="regular">0</text>
+<line  x1="392.50" y1="351.00" x2="392.50" y2="356.00"  style="stroke: black;stroke-width:1.00"/>
+<text  x="392.50" y="370.00" text-anchor="middle"  font-weight="regular">2.0</text>
+<line  x1="467.50" y1="351.00" x2="467.50" y2="356.00"  style="stroke: black;stroke-width:1.00"/>
+<text  x="467.50" y="370.00" text-anchor="middle"  font-weight="regular">4.0</text>
+<line  x1="542.50" y1="351.00" x2="542.50" y2="356.00"  style="stroke: black;stroke-width:1.00"/>
+<text  x="542.50" y="370.00" text-anchor="middle"  font-weight="regular">6.0</text>
+<line  x1="64.00" y1="291.72" x2="69.00" y2="291.72"  style="stroke: black;stroke-width:1.00"/>
+<text  x="60.00" y="295.72" text-anchor="end"  font-weight="regular">10.0</text>
+<line  x1="64.00" y1="221.74" x2="69.00" y2="221.74"  style="stroke: black;stroke-width:1.00"/>
+<text  x="60.00" y="225.74" text-anchor="end"  font-weight="regular">20.0</text>
+<line  x1="64.00" y1="151.75" x2="69.00" y2="151.75"  style="stroke: black;stroke-width:1.00"/>
+<text  x="60.00" y="155.75" text-anchor="end"  font-weight="regular">30.0</text>
+<line  x1="64.00" y1="81.76" x2="69.00" y2="81.76"  style="stroke: black;stroke-width:1.00"/>
+<text  x="60.00" y="85.76" text-anchor="end"  font-weight="regular">40.0</text>
+</svg>
+
