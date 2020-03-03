@@ -8,5 +8,12 @@
         <file>icons/update.png</file>
         <file>animations/sync.apng</file>
         <file>translations/syncfolder_zh_CN.qm</file>
+        <file>web_res/ajax/libs/KaTeX/0.11.1/katex.min.css</file>
+        <file>web_res/ajax/libs/highlight.js/9.18.1/styles/xcode.min.css</file>
+        <file>web_res/ajax/libs/KaTeX/0.11.1/katex.min.js</file>
+        <file>web_res/ajax/libs/KaTeX/0.11.1/contrib/auto-render.min.js</file>
+        <file>web_res/ajax/libs/highlight.js/9.18.1/highlight.min.js</file>
+        <file>web_res/npm/mermaid@8.4.0/dist/mermaid.min.js</file>
+        <file>web_res/HiraginoSansGBW6.otf</file>
     </qresource>
 </RCC>

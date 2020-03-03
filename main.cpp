@@ -12,17 +12,7 @@
 int main(int argc, char *argv[])
 {
     SyncApp a(argc, argv);
-    a.setStyleSheet("QStatusBar, QWidget[objectName^=\"centralWidget\"] { background-color: #F7F6F8; } QSplitter { background-color: #D2D2D7;} QDockWidget { background-color: #545256; } QSplitter::handle:horizontal {\n"
-                    "    width: 1px;"
-                    "}"
-                    ""
-                    "QSplitter::handle:vertical {"
-                    "    height: 1px;"
-                    "}"
-                    "QSplitter: {"
-                    "    width: 1px;"
-                    "    height: 1px;"
-                    "}");
+    a.setStyleSheet("QStatusBar, QWidget[objectName^=\"centralWidget\"] { background-color: #F7F6F8; }");
     QTranslator translator;
     QString locale = QLocale::system().name();
     if (locale == "zh_CN") {
@@ -53,6 +43,7 @@ int main(int argc, char *argv[])
     parser.addVersionOption();
     parser.addPositionalArgument("directory", "The directory to start in.");
     parser.process(a);
+
     QString rootPath = parser.positionalArguments().isEmpty()
         ? QString() : parser.positionalArguments().first();
 

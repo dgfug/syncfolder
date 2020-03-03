@@ -43,6 +43,7 @@ int gSplitWeights[] = {
 #include <QtWidgets/QScrollBar>
 #include <uiwidgets/MarkdownPreviewView.h>
 #include <QtWebEngineWidgets/QWebEngineView>
+#include <QWebEngineSettings>
 #include "settings/settings_def.h"
 
 QT_BEGIN_NAMESPACE
@@ -175,9 +176,9 @@ public:
         int primaryFontSize = SyncFolderSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
         font.setPointSize(primaryFontSize);
         fileTree->setFont(font);
-        fileTree->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#DAEFD0; selection-color:#1CA96B; }");
+        fileTree->setStyleSheet("QWidget {background-color:#F2F3F6; color:#003244; selection-background-color:#CFD9E2; selection-color:#31A583; }");
         tocTree->setFont(font);
-        tocTree->setStyleSheet("QWidget {background-color:#FFFAE4; color:#434C5B; selection-background-color:#DAEFD0; selection-color:#1CA96B; }");
+        tocTree->setStyleSheet("QWidget {background-color:#F2F3F6; color:#003244; selection-background-color:#CFD9E2; selection-color:#31A583; }");
 
         // create markdown editor
         markdownEditor = new QMarkdownTextEdit(mainWindow);
@@ -191,6 +192,8 @@ public:
         splitter->setStretchFactor(mdEditor_INDEX, 3);
 
         markdownPreviewView = new QWebEngineView(mainWindow);
+        markdownPreviewView->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
+        markdownPreviewView->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
         splitter->addWidget(markdownPreviewView);
         splitter->setStretchFactor(mdPreviewer_INDEX, 3);
         splitter->setChildrenCollapsible(false);

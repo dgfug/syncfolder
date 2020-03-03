@@ -647,6 +647,7 @@ void MainWindow::updateMarkdownPreview(const QString &html) {
     QFileInfo fileInfo(currentFilePath);
     QString baseDocUrl = QUrl::fromLocalFile(fileInfo.canonicalFilePath()).toString();
     ui->markdownPreviewView->setHtml(html, baseDocUrl);
+//    ui->markdownPreviewView->load(QUrl("qrc:/web_res/test.html"));
     connect(ui->markdownPreviewView, &QWebEngineView::loadFinished, [&]() {
         QList<int> sizes = ui->splitter->sizes();
         int sumWidth = 0;

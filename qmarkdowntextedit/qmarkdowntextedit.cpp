@@ -49,20 +49,27 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent)
     connect(_highlighter, SIGNAL(parseFinished(pmh_element **)), this, SLOT(highlightRichText(pmh_element **)), Qt::QueuedConnection);
     connect(_highlighter, SIGNAL(md2htmlFinished(const QString&)), parent, SLOT(updateMarkdownPreview(const QString &)), Qt::QueuedConnection);
 
-//    setHighlightingEnabled(true);
+    QString dir = QCoreApplication::applicationDirPath();
+    QStringList m_fontList;
+    m_fontList.clear();
 
-    QFont font = QFont();
-    int primaryFontSize = SyncFolderSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
-    font.setPointSize(primaryFontSize);
-//    font.setFamily("Source Code Variable");
-    this->setFont(font);
+    int lcdFontId = QFontDatabase::addApplicationFont(":/web_res/HiraginoSansGBW6.otf"); // 从source资源文件
+    if (lcdFontId != -1) // -1为加载失败
+    {
+        m_fontList << QFontDatabase::applicationFontFamilies(lcdFontId);
+    }
 
-    this->setStyleSheet("QWidget {background-color:#F9F9F5; font-size: 14px; color:#434C5B; selection-background-color:#BACBFA; }");
-
-    // set the tab stop to the width of 4 spaces in the editor
-    const int tabStop = 4;
-    QFontMetrics metrics(font);
-    setTabStopDistance(tabStop * metrics.horizontalAdvance(' '));
+    if (m_fontList.count() > 0) {
+        QFont font = QFont(m_fontList.at(0));
+        int primaryFontSize = SyncFolderSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 14);
+        font.setPointSize(primaryFontSize);
+        this->setFont(font);
+        // set the tab stop to the width of 4 spaces in the editor
+        const int tabStop = 4;
+        QFontMetrics metrics(font);
+        setTabStopDistance(tabStop * metrics.horizontalAdvance(' '));
+    }
+    this->setStyleSheet("QWidget {background-color:#F2F3F6; font-size: 16px; color:#434C5B; selection-background-color:#BACBFA; }");
 
     // add a layout to the widget
     auto *layout = new QVBoxLayout(this);
