@@ -44,29 +44,29 @@ void HGMarkdownHighlighter::setDefaultStyles()
     QTextCharFormat headers;
     headers.setForeground(QBrush(QColor("#3F8FFF")));
     // 遵循 css 默认 size
-    headers.setFontWeight(QFont::Bold);
+    headers.setFontWeight(QFont::Medium);
 
-    headers.setProperty(QTextFormat::FontSizeAdjustment, 4 - 1);
+    headers.setProperty(QTextFormat::FontSizeAdjustment, 3 - 1);
     headers.setToolTip(tr("H1"));
     STY(pmh_H1, headers);
 
-    headers.setProperty(QTextFormat::FontSizeAdjustment, 4 - 2);
+    headers.setProperty(QTextFormat::FontSizeAdjustment, 3 - 2);
     headers.setToolTip(tr("H2"));
     STY(pmh_H2, headers);
 
-    headers.setProperty(QTextFormat::FontSizeAdjustment, 4 - 3);
+    headers.setProperty(QTextFormat::FontSizeAdjustment, 3 - 3);
     headers.setToolTip(tr("H3"));
     STY(pmh_H3, headers);
 
-    headers.setProperty(QTextFormat::FontSizeAdjustment, 4 - 4);
+    headers.setProperty(QTextFormat::FontSizeAdjustment, 3 - 4);
     headers.setToolTip(tr("H4"));
     STY(pmh_H4, headers);
 
-    headers.setProperty(QTextFormat::FontSizeAdjustment, 4 - 5);
+    headers.setProperty(QTextFormat::FontSizeAdjustment, 3 - 5);
     headers.setToolTip(tr("H5"));
     STY(pmh_H5, headers);
 
-    headers.setProperty(QTextFormat::FontSizeAdjustment, 4 - 6);
+    headers.setProperty(QTextFormat::FontSizeAdjustment, 3 - 6);
     headers.setToolTip(tr("H6"));
     STY(pmh_H6, headers);
 
