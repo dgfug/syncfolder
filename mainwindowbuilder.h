@@ -12,6 +12,8 @@
 #define leftPanel_INDEX 0
 #define mdEditor_INDEX 1
 #define mdPreviewer_INDEX 2
+#include <QWebEngineProfile>
+#include <QWebChannel>
 
 int gSplitWeights[] = {
         1,
@@ -176,9 +178,9 @@ public:
         int primaryFontSize = SyncFolderSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
         font.setPointSize(primaryFontSize);
         fileTree->setFont(font);
-        fileTree->setStyleSheet("QWidget {background-color:#F2F3F6; color:#003244; selection-background-color:#CFD9E2; selection-color:#31A583; }");
+        fileTree->setStyleSheet("QWidget {background-color:#F8FAF7; color:#000000; selection-background-color:#CFD9E2; selection-color:#31A583; }");
         tocTree->setFont(font);
-        tocTree->setStyleSheet("QWidget {background-color:#F2F3F6; color:#003244; selection-background-color:#CFD9E2; selection-color:#31A583; }");
+        tocTree->setStyleSheet("QWidget {background-color:#F8FAF7; color:#000000; selection-background-color:#CFD9E2; selection-color:#31A583; }");
 
         // create markdown editor
         markdownEditor = new QMarkdownTextEdit(mainWindow);
@@ -194,6 +196,13 @@ public:
         markdownPreviewView = new QWebEngineView(mainWindow);
         markdownPreviewView->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
         markdownPreviewView->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
+        QWebEnginePage *webPage = new QWebEnginePage(QWebEngineProfile::defaultProfile(), markdownPreviewView);
+        markdownPreviewView->setPage(webPage);
+
+        QWebChannel *channel = new QWebChannel(webPage);
+        channel->registerObject(QString("mdEditor"), mainWindow);
+        webPage->setWebChannel(channel);
+
         splitter->addWidget(markdownPreviewView);
         splitter->setStretchFactor(mdPreviewer_INDEX, 3);
         splitter->setChildrenCollapsible(false);

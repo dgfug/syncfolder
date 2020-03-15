@@ -23,6 +23,7 @@ find_package(Qt5 COMPONENTS Concurrent REQUIRED)
 find_package(Qt5 COMPONENTS Network REQUIRED)
 find_package(Qt5 COMPONENTS WebEngineCore REQUIRED)
 find_package(Qt5 COMPONENTS WebEngineWidgets REQUIRED)
+find_package(Qt5 COMPONENTS WebChannel REQUIRED)
 
 FILE(GLOB scidownSrcs 3rdparty/scidown/*.c 3rdparty/scidown/src/*.c 3rdparty/charter/src/*.c
         3rdparty/charter/src/csv_parser/*.c 3rdparty/charter/src/tinyexpr/*.c)
@@ -83,4 +84,4 @@ set_target_properties(SyncFolder PROPERTIES
         CXX_EXTENSIONS NO
         )
 
-target_link_libraries(SyncFolder Qt5::Widgets Qt5::Concurrent Qt5::Network Qt5::WebEngineCore Qt5::WebEngineWidgets)
+target_link_libraries(SyncFolder Qt5::Widgets Qt5::Concurrent Qt5::Network Qt5::WebEngineCore Qt5::WebEngineWidgets Qt5::WebChannel)

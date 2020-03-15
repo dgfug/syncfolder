@@ -14,6 +14,9 @@
         <file>web_res/ajax/libs/KaTeX/0.11.1/contrib/auto-render.min.js</file>
         <file>web_res/ajax/libs/highlight.js/9.18.1/highlight.min.js</file>
         <file>web_res/npm/mermaid@8.4.0/dist/mermaid.min.js</file>
+        <file>web_res/npm/mermaid@8.4.0/dist/mermaid.min.js</file>
         <file>web_res/Hiragino-Sans-GB-W3.ttf</file>
+        <file>web_res/scidown_article.css</file>
+        <file>web_res/scidown_report.css</file>
     </qresource>
 </RCC>

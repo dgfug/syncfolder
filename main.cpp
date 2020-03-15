@@ -11,6 +11,8 @@
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
     SyncApp a(argc, argv);
     a.setStyleSheet("QStatusBar, QWidget[objectName^=\"centralWidget\"] { background-color: #F7F6F8; }");
     QTranslator translator;
@@ -35,8 +37,6 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("faywong personal");
     QCoreApplication::setOrganizationDomain("syncfolder.com");
     QCoreApplication::setApplicationName("SyncFolder");
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
     QCommandLineParser parser;
     parser.setApplicationDescription("SyncFolder");
     parser.addHelpOption();
