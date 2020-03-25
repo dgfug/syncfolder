@@ -42,31 +42,25 @@ void HGMarkdownHighlighter::setDefaultStyles()
     QVector<HighlightingStyle> *styles = new QVector<HighlightingStyle>();
 
     QTextCharFormat headers;
-    headers.setForeground(QBrush(QColor("#3F8FFF")));
+    headers.setForeground(QBrush(QColor("#68489A")));
     // 遵循 css 默认 size
-    headers.setFontWeight(QFont::Medium);
+    headers.setFontWeight(QFont::DemiBold);
 
-    headers.setProperty(QTextFormat::FontSizeAdjustment, 3 - 1);
     headers.setToolTip(tr("H1"));
     STY(pmh_H1, headers);
 
-    headers.setProperty(QTextFormat::FontSizeAdjustment, 3 - 2);
     headers.setToolTip(tr("H2"));
     STY(pmh_H2, headers);
 
-    headers.setProperty(QTextFormat::FontSizeAdjustment, 3 - 3);
     headers.setToolTip(tr("H3"));
     STY(pmh_H3, headers);
 
-    headers.setProperty(QTextFormat::FontSizeAdjustment, 3 - 4);
     headers.setToolTip(tr("H4"));
     STY(pmh_H4, headers);
 
-    headers.setProperty(QTextFormat::FontSizeAdjustment, 3 - 5);
     headers.setToolTip(tr("H5"));
     STY(pmh_H5, headers);
 
-    headers.setProperty(QTextFormat::FontSizeAdjustment, 3 - 6);
     headers.setToolTip(tr("H6"));
     STY(pmh_H6, headers);
 
@@ -229,6 +223,12 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
             for (int j = startBlockNum; j <= endBlockNum; j++)
             {
                 QTextBlock block = document->findBlockByNumber(j);
+                if (block.isValid()) {
+                    QTextCursor cursor(block);
+                    QTextBlockFormat blockFormat = block.blockFormat();
+                    blockFormat.setLineHeight(200, QTextBlockFormat::FixedHeight);
+                    cursor.setBlockFormat(blockFormat);
+                }
 
                 QTextLayout *layout = block.layout();
                 QList<QTextLayout::FormatRange> list = layout->additionalFormats();

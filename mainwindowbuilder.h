@@ -196,6 +196,7 @@ public:
         markdownPreviewView = new QWebEngineView(mainWindow);
         markdownPreviewView->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
         markdownPreviewView->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
+
         QWebEnginePage *webPage = new QWebEnginePage(QWebEngineProfile::defaultProfile(), markdownPreviewView);
         markdownPreviewView->setPage(webPage);
 

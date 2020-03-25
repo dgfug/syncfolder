@@ -706,7 +706,7 @@ title_to_svg(char* buffer,
 char *
 chart_to_svg(chart* chart)
 {
-    setlocale(LC_ALL, "C");
+//    setlocale(LC_ALL, "C");
     char * buffer = malloc(1024*1024*sizeof(char));
     memset(buffer, 0, 1024*1024);
     svg_header(buffer, chart->width, chart->height);

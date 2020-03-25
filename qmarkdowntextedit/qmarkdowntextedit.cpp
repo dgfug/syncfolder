@@ -70,7 +70,7 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent)
         }
     }
 
-    this->setStyleSheet("QWidget {background-color:#FFFFFF; font-size: 16px; color:#434C5B; selection-background-color:#BACBFA; }");
+    this->setStyleSheet("QWidget {background-color:#FFFFFF; font-size: 14px;color:#000000; selection-background-color:#BACBFA; }");
 
     // add a layout to the widget
     auto *layout = new QVBoxLayout(this);
