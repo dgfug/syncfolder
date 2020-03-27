@@ -233,7 +233,6 @@ void MainWindow::contextMenu(const QPoint &pos) {
 #ifndef QT_NO_CLIPBOARD
     QAction *copyAction = menu.addAction(tr("copy path to clipboard"));
 #endif
-    QAction *setAsNewRoot = nullptr;
     QAction *createFolderUnderSelectedFolder = nullptr;
     QAction *addToFileQueue = nullptr;
     QAction *removeFromFileQueue = nullptr;
@@ -242,7 +241,6 @@ void MainWindow::contextMenu(const QPoint &pos) {
     QAction *createFolderUnderTopFolder = menu.addAction(tr("create folder under top folder"));
     bool hasAddFileQueueSeparator = false;
     if (currentSelectedFileInfo.isDir()) {
-        setAsNewRoot = menu.addAction(tr("set as new root"));
         createFolderUnderSelectedFolder = menu.addAction(tr("create folder under selected folder"));
         if (!fileOperationQueue.isEmpty()) {
             if (!hasAddFileQueueSeparator) {
@@ -304,8 +302,6 @@ void MainWindow::contextMenu(const QPoint &pos) {
             }
             i++;
         }
-    } else if (action == setAsNewRoot) {
-        setCurrentRootDirPath(currentSelectedFilePath);
     } else if (action == addToFileQueue) {
         fileOperationQueue << currentSelectedFilePath;
     } else if (action == moveAllQueuedFilesHere && currentSelectedFileInfo.isDir()) {
@@ -480,7 +476,7 @@ void MainWindow::syncFiles() {
     connect(unisonProcess, SIGNAL(readyReadStandardOutput()), this,
             SLOT(processSyncStdOutput()));  // connect process signals with your code
     connect(unisonProcess, SIGNAL(readyReadStandardError()), this, SLOT(processSyncStdError()));  // same here
-    QString command(QString("/Users/faywong/bin/unison %1 %2").arg("default", "-batch"));
+    QString command(QString("unison %1 %2").arg("default", "-batch"));
     unisonProcess->start(command);
 }
 

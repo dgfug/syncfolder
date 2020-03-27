@@ -5,6 +5,11 @@
         <file>icons/file_text.svg</file>
         <file>icons/file_markdown.svg</file>
         <file>icons/file_unknown.svg</file>
+        <file>icons/jpg.svg</file>
+        <file>icons/json.svg</file>
+        <file>icons/png.svg</file>
+        <file>icons/svg.svg</file>
+        <file>icons/csv.svg</file>
         <file>icons/update.png</file>
         <file>animations/sync.apng</file>
         <file>translations/syncfolder_zh_CN.qm</file>

@@ -297,11 +297,15 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
 
 void HGMarkdownHighlighter::parse()
 {
-    if (parseTaskFuture.isRunning()) {
+    // TODO: check status
+    qDebug()<<"parseTaskFuture.isRunning(): " << parseTaskFuture.isRunning();
+    qDebug()<<"parseTaskFuture.isStarted(): " << parseTaskFuture.isStarted();
+    qDebug()<<"parseTaskFuture.isFinished(): " << parseTaskFuture.isFinished();
+    if (parseTaskFuture.isStarted()) {
         parseTaskFuture.cancel();
     }
 
-    if (toMdTaskFuture.isRunning()) {
+    if (toMdTaskFuture.isStarted()) {
         toMdTaskFuture.cancel();
     }
     QString content = document->toPlainText();

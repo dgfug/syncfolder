@@ -6,7 +6,7 @@
  </g>
  <g>
   <title>Layer 1</title>
-  <polygon stroke="null" id="svg_1" fill="#EFEEEE" points="72,132 275.0000030994415,132 275.0000030994415,194.0869623231447 210.89474056109066,216.00000166893005 72,216.00000166893005 "/>
+  <polygon id="svg_1" fill="#EFEEEE" points="72,8 376,8 376,280 280,376 72,376 "/>
   <polygon id="svg_2" fill="#ABABAB" points="280,280 376,280 280,376 "/>
   <rect id="svg_3" fill="#CB5641" height="128" width="256" y="88" x="8"/>
   <path id="svg_4" fill="#010101" d="m64,0l0,80l-64,0l0,144l64,0l0,160l224,0l96,-96l0,-288l-320,0zm-48,96l240,0l0,112l-240,0l0,-112zm272,265.6l0,-73.6l73.6,0l-73.6,73.6zm80,-89.6l-96,0l0,96l-192,0l0,-144l192,0l0,-144l-192,0l0,-64l288,0l0,256z"/>
@@ -25,7 +25,6 @@
   <g id="svg_18"/>
   <g id="svg_19"/>
   <g id="svg_20"/>
-  <text stroke="null" transform="matrix(1,0,0,1,0,0) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="76" id="svg_23" y="180" x="60" fill-opacity="null" stroke-opacity="null" stroke-width="0" fill="#000000"/>
-  <text xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="90" id="svg_32" y="186.453125" x="37.5" stroke-opacity="null" stroke-width="0" stroke="null" fill="#ffffff">MD</text>
+  <text xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="90" id="svg_23" y="184.453125" x="16" stroke-opacity="null" stroke-width="0" stroke="null" fill="#ffffff">JPEG</text>
  </g>
 </svg>
