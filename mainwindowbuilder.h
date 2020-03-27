@@ -57,7 +57,7 @@ public:
     QMarkdownTextEdit *markdownEditor;
     QWebEngineView *markdownPreviewView;
     QMenuBar *menuBar;
-    QStatusBar *statusBar;
+//    QStatusBar *statusBar;
     QHBoxLayout *bodyLayout;
     QSplitter *splitter;
     QTreeView *fileTree;
@@ -251,9 +251,12 @@ public:
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
         menuBar->setGeometry(QRect(0, 0, windowWidth, 22));
         mainWindow->setMenuBar(menuBar);
-        statusBar = new QStatusBar(mainWindow);
-        statusBar->setObjectName(QString::fromUtf8("statusBar"));
-        mainWindow->setStatusBar(statusBar);
+
+//        statusBar = new QStatusBar(mainWindow);
+//        statusBar->setObjectName(QString::fromUtf8("statusBar"));
+//        mainWindow->setStatusBar(statusBar);
+
+        mainWindow->centralWidget()->layout()->setContentsMargins(0, 0, 0, 0);
 
         retranslateUi(mainWindow);
 

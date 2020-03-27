@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
                                       "    subcontrol-origin: margin;"
                                       "}"
                                       "QStatusBar, QWidget[objectName^=\"centralWidget\"] {"
-                                      "    background-color: #F7F6F8; "
+                                      "    background-color: #F7F6F8;"
                                       "}"
     ));
     QTranslator translator;
