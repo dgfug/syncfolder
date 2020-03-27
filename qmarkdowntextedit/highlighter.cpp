@@ -223,13 +223,6 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
             for (int j = startBlockNum; j <= endBlockNum; j++)
             {
                 QTextBlock block = document->findBlockByNumber(j);
-                if (block.isValid()) {
-                    QTextCursor cursor(block);
-                    QTextBlockFormat blockFormat = block.blockFormat();
-                    blockFormat.setLineHeight(200, QTextBlockFormat::FixedHeight);
-                    cursor.setBlockFormat(blockFormat);
-                }
-
                 QTextLayout *layout = block.layout();
                 QList<QTextLayout::FormatRange> list = layout->additionalFormats();
                 int blockpos = block.position();
@@ -301,13 +294,9 @@ void HGMarkdownHighlighter::parse()
     qDebug()<<"parseTaskFuture.isRunning(): " << parseTaskFuture.isRunning();
     qDebug()<<"parseTaskFuture.isStarted(): " << parseTaskFuture.isStarted();
     qDebug()<<"parseTaskFuture.isFinished(): " << parseTaskFuture.isFinished();
-    if (parseTaskFuture.isStarted()) {
-        parseTaskFuture.cancel();
-    }
+    parseTaskFuture.cancel();
+    toMdTaskFuture.cancel();
 
-    if (toMdTaskFuture.isStarted()) {
-        toMdTaskFuture.cancel();
-    }
     QString content = document->toPlainText();
     if (content.length() > 1) {
         parseTaskFuture = QtConcurrent::run([=]() {
@@ -336,12 +325,13 @@ void HGMarkdownHighlighter::handleContentsChange(int position, int charsRemoved,
 {
     if (charsRemoved == 0 && charsAdded == 0)
         return;
-//    qDebug() << "contents changed. chars removed/added:" << charsRemoved << charsAdded;
+    qDebug() << "contents changed. chars removed/added:" << charsRemoved << charsAdded;
     timer->stop();
     timer->start();
 }
 
 void HGMarkdownHighlighter::timerTimeout()
 {
+    qDebug() << "timerTimeout:";
     this->parse();
 }
