@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     SyncApp a(argc, argv);
     a.setStyleSheet(QString::fromUtf8("QScrollBar:vertical {"
                                       "    background:white;"
-                                      "    width:7px;    "
+                                      "    width: 6.4px;    "
                                       "    margin: 0px 0px 0px 0px;"
                                       "}"
                                       "QScrollBar::handle:vertical {"

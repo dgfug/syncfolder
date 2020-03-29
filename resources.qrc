@@ -10,6 +10,7 @@
         <file>icons/png.svg</file>
         <file>icons/svg.svg</file>
         <file>icons/csv.svg</file>
+        <file>icons/pdf.svg</file>
         <file>icons/update.png</file>
         <file>animations/sync.apng</file>
         <file>translations/syncfolder_zh_CN.qm</file>

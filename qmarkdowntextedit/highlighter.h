@@ -13,6 +13,7 @@
 #include <QTextCharFormat>
 #include <QThread>
 #include <QFuture>
+#include <QRegularExpression>
 #include "EditorDelegate.h"
 
 extern "C" {
@@ -55,6 +56,7 @@ private:
     QVector<HighlightingStyle> *highlightingStyles;
     int waitInterval;
     QTimer *timer;
+    QRegularExpression postfixRe;
 
     void clearFormatting();
     void parse();

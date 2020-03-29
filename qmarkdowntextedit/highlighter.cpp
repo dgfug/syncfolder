@@ -18,7 +18,8 @@ HGMarkdownHighlighter::HGMarkdownHighlighter(QTextDocument *parent,
     mainWin(mainWindow),
     document(parent),
     highlightingStyles(nullptr),
-    waitInterval(aWaitInterval)
+    waitInterval(aWaitInterval),
+    postfixRe("(\"|\\n|\\r|#|-|=|\")*")
 {
 
     timer = new QTimer(this);
@@ -258,9 +259,6 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
         tok t = tocs[i];
         int j = i;
         QString keyword = textContent.mid(t.pos, t.len);
-        QRegularExpression prefixRe("^(\"|\\s|#|-|=)+");
-        keyword = keyword.replace(prefixRe, "");
-        QRegularExpression postfixRe("(\"|\\n|\\r|#|-|=|\")*");
 //        qDebug()<<"keyword: " <<keyword;
         keyword = keyword.replace(postfixRe, "");
         QStandardItem *item = new QStandardItem(keyword);
@@ -290,10 +288,9 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
 
 void HGMarkdownHighlighter::parse()
 {
-    // TODO: check status
-    qDebug()<<"parseTaskFuture.isRunning(): " << parseTaskFuture.isRunning();
-    qDebug()<<"parseTaskFuture.isStarted(): " << parseTaskFuture.isStarted();
-    qDebug()<<"parseTaskFuture.isFinished(): " << parseTaskFuture.isFinished();
+//    qDebug()<<"parseTaskFuture.isRunning(): " << parseTaskFuture.isRunning();
+//    qDebug()<<"parseTaskFuture.isStarted(): " << parseTaskFuture.isStarted();
+//    qDebug()<<"parseTaskFuture.isFinished(): " << parseTaskFuture.isFinished();
     parseTaskFuture.cancel();
     toMdTaskFuture.cancel();
 
@@ -325,7 +322,7 @@ void HGMarkdownHighlighter::handleContentsChange(int position, int charsRemoved,
 {
     if (charsRemoved == 0 && charsAdded == 0)
         return;
-    qDebug() << "contents changed. chars removed/added:" << charsRemoved << charsAdded;
+//    qDebug() << "contents changed. chars removed/added:" << charsRemoved << charsAdded;
     timer->stop();
     timer->start();
 }

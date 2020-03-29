@@ -178,9 +178,9 @@ public:
         int primaryFontSize = SyncFolderSettings::getInt(KEY_LAST_PRIMARY_FONT_SIZE, 12);
         font.setPointSize(primaryFontSize);
         fileTree->setFont(font);
-        fileTree->setStyleSheet("QWidget {background-color:#F8FAF7; color:#000000; selection-background-color:#CFD9E2; selection-color:#31A583; }");
+        fileTree->setStyleSheet("QWidget {background-color:#ECECEC; color:#000000; selection-background-color:#DCDCDC; selection-color:#564C4F; }");
         tocTree->setFont(font);
-        tocTree->setStyleSheet("QWidget {background-color:#F8FAF7; color:#000000; selection-background-color:#CFD9E2; selection-color:#31A583; }");
+        tocTree->setStyleSheet("QWidget {background-color:#ECECEC; color:#000000; selection-background-color:#DCDCDC; selection-color:#564C4F; }");
 
         // create markdown editor
         markdownEditor = new QMarkdownTextEdit(mainWindow);

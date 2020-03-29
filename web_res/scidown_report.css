@@ -24,9 +24,10 @@ body
   font-size: 11pt;
   margin-right: auto;
   margin-left: auto;
-  max-width: 210mm;
+  /*max-width: 210mm;*/
   background: #eee;
-  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  overflow-anchor: none;
+  overscroll-behavior: none;
 }
 
 a {

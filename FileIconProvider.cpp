@@ -8,6 +8,7 @@ DMFileIconProvider::DMFileIconProvider() : QFileIconProvider ()
 QIcon DMFileIconProvider::icon(const QFileInfo &info) const {
     QString fileName = info.fileName();
     if (info.isDir()) {
+        // TODO: check if sync function is on, then folder icon with sync is used
         return QIcon(":/icons/folder.svg");
     } else if (info.isFile()) {
         if (fileName.endsWith(".txt")) {
@@ -24,6 +25,8 @@ QIcon DMFileIconProvider::icon(const QFileInfo &info) const {
             return QIcon(":/icons/json.svg");
         } else if (fileName.endsWith(".png")) {
             return QIcon(":/icons/png.svg");
+        } else if (fileName.endsWith(".pdf")) {
+            return QIcon(":/icons/pdf.svg");
         }
     }
     return QIcon(":/icons/file_unknown.svg");
