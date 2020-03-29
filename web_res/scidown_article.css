@@ -9,6 +9,7 @@
     /*height: 297mm;*/
     overflow-anchor: none;
     overscroll-behavior: none;
+    margin: 0 !important;
   }
   figure {page-break-inside: avoid;}
   .abstract{page-break-inside: avoid;}

@@ -22,12 +22,11 @@
 body
 {
   font-size: 11pt;
-  margin-right: auto;
-  margin-left: auto;
   /*max-width: 210mm;*/
   background: #eee;
   overflow-anchor: none;
   overscroll-behavior: none;
+  margin: 0 !important;
 }
 
 a {
