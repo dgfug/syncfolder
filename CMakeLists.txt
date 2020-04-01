@@ -50,9 +50,7 @@ add_executable(SyncFolder
     qmarkdowntextedit/qplaintexteditsearchwidget.cpp
     qmarkdowntextedit/qplaintexteditsearchwidget.ui
     qmarkdowntextedit/media.qrc
-    qmarkdowntextedit/LineNumberArea.cpp
-    qmarkdowntextedit/LineNumberArea.h
-    3rdparty/QSimpleUpdater/src/Updater.cpp
+        3rdparty/QSimpleUpdater/src/Updater.cpp
     3rdparty/QSimpleUpdater/src/Updater.h
     3rdparty/QSimpleUpdater/src/Downloader.cpp
     3rdparty/QSimpleUpdater/src/Downloader.h

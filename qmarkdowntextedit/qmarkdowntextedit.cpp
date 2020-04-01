@@ -14,14 +14,9 @@
 
 
 #include "qmarkdowntextedit.h"
-#include "LineNumberArea.h"
 #include <QKeyEvent>
 #include <QGuiApplication>
-#include <QDebug>
 #include <QRegularExpression>
-#include <QRegularExpressionMatch>
-#include <QRegularExpressionMatchIterator>
-#include <QDir>
 #include <QDesktopServices>
 #include <QLayout>
 #include <QTimer>
@@ -70,7 +65,7 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent)
         }
     }
 
-    this->setStyleSheet("QWidget {background-color:#FFFFFF; font-size: 14px;color:#000000; selection-background-color:#BACBFA; }");
+    this->setStyleSheet("QWidget {background-color:#FFFFFF; font-size: 14px;color:#000000; font-weight: 400; selection-background-color:#BACBFA; }");
 
     // add a layout to the widget
     auto *layout = new QVBoxLayout(this);
@@ -89,13 +84,8 @@ QMarkdownTextEdit::QMarkdownTextEdit(QWidget *parent)
     // workaround for disabled signals up initialization
     QTimer::singleShot(300, this, SLOT(adjustRightMargin()));
 
-    lineNumberArea = new LineNumberArea(this);
-
-    connect(this, &QMarkdownTextEdit::blockCountChanged, this, &QMarkdownTextEdit::updateLineNumberAreaWidth);
-    connect(this, &QMarkdownTextEdit::updateRequest, this, &QMarkdownTextEdit::updateLineNumberArea);
     connect(this, &QMarkdownTextEdit::cursorPositionChanged, this, &QMarkdownTextEdit::highlightCurrentLine);
 
-    updateLineNumberAreaWidth(0);
     highlightCurrentLine();
 }
 
@@ -1142,10 +1132,6 @@ void QMarkdownTextEdit::highlightRichText(pmh_element **result) {
     _highlighter->highlight(result);
 }
 
-void QMarkdownTextEdit::updateLineNumberAreaWidth(int newBlockCount) {
-    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
-}
-
 void QMarkdownTextEdit::highlightCurrentLine() {
     QList<QTextEdit::ExtraSelection> extraSelections;
 
@@ -1162,61 +1148,4 @@ void QMarkdownTextEdit::highlightCurrentLine() {
     }
 
     setExtraSelections(extraSelections);
-}
-
-void QMarkdownTextEdit::updateLineNumberArea(const QRect &rect, int dy) {
-    if (dy)
-        lineNumberArea->scroll(0, dy);
-    else
-        lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
-
-    if (rect.contains(viewport()->rect()))
-        updateLineNumberAreaWidth(0);
-}
-
-int QMarkdownTextEdit::lineNumberAreaWidth()
-{
-    int digits = getDigitsNum();
-
-    int space = fontMetrics().horizontalAdvance(QLatin1Char('9')) * (digits + 2);
-    return space;
-}
-
-int QMarkdownTextEdit::getDigitsNum() const {
-    int digits = 1;
-    int max = qMax(1, blockCount());
-    while (max >= 10) {
-        max /= 10;
-        ++digits;
-    }
-    return digits;
-}
-
-void QMarkdownTextEdit::resizeEvent(QResizeEvent *e)
-{
-    QPlainTextEdit::resizeEvent(e);
-    QRect cr = contentsRect();
-    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
-}
-
-void QMarkdownTextEdit::lineNumberAreaPaintEvent(QPaintEvent *event) {
-    QPainter painter(lineNumberArea);
-    painter.fillRect(event->rect(), QColor("#F0F0F0"));
-    QTextBlock block = firstVisibleBlock();
-    int blockNumber = block.blockNumber();
-    int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
-    int bottom = top + qRound(blockBoundingRect(block).height());
-    while (block.isValid() && top <= event->rect().bottom()) {
-        if (block.isVisible() && bottom >= event->rect().top()) {
-            QString number = QString::number(blockNumber + 1);
-            painter.setPen(QColor("#000000"));
-            painter.drawText(0, top, lineNumberArea->width() - fontMetrics().horizontalAdvance(QLatin1Char('9')), fontMetrics().height(),
-                             Qt::AlignRight, QString::number(blockNumber + 1));
-        }
-
-        block = block.next();
-        top = bottom;
-        bottom = top + qRound(blockBoundingRect(block).height());
-        ++blockNumber;
-    }
 }

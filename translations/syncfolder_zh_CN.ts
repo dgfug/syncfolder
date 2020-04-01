@@ -16,15 +16,15 @@
     <name>ConfigurationPage</name>
     <message>
         <source>Remote configuration</source>
-        <translation>同步服务器</translation>
+        <translation type="vanished">同步服务器</translation>
     </message>
     <message>
         <source>syncfolder cloud</source>
-        <translation>SyncFolder云存储</translation>
+        <translation type="vanished">SyncFolder云存储</translation>
     </message>
     <message>
         <source>Self-built server</source>
-        <translation>自建服务器</translation>
+        <translation type="vanished">自建服务器</translation>
     </message>
     <message>
         <source>Sync service type:</source>
@@ -32,7 +32,43 @@
     </message>
     <message>
         <source>uri:</source>
-        <translation>统一资源标识（URI）</translation>
+        <translation type="vanished">统一资源标识（URI）</translation>
+    </message>
+    <message>
+        <source>Sync Remote</source>
+        <translation>同步远端</translation>
+    </message>
+    <message>
+        <source>SyncFolder cloud</source>
+        <translation>SyncFolder云</translation>
+    </message>
+    <message>
+        <source>Self deploy server</source>
+        <translation>自部署服务器</translation>
+    </message>
+    <message>
+        <source>service api endpoint:</source>
+        <translation>服务api地址</translation>
+    </message>
+    <message>
+        <source>username:</source>
+        <translation>用户名</translation>
+    </message>
+    <message>
+        <source>your subscribed account name here</source>
+        <translation>已订阅用户名</translation>
+    </message>
+    <message>
+        <source>password:</source>
+        <translation>密码</translation>
+    </message>
+    <message>
+        <source>password of your subscribed account here</source>
+        <translation>订阅账户密码</translation>
+    </message>
+    <message>
+        <source>apply account:</source>
+        <translation>申请账户</translation>
     </message>
 </context>
 <context>
@@ -184,11 +220,11 @@
     <name>FullTextSearchWindow</name>
     <message>
         <source>Find Files</source>
-        <translation>查找文件</translation>
+        <translation type="vanished">查找文件</translation>
     </message>
     <message>
         <source>&amp;Browse...</source>
-        <translation>浏览</translation>
+        <translation type="vanished">浏览</translation>
     </message>
     <message>
         <source>&amp;Find</source>
@@ -204,27 +240,47 @@
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>取消</translation>
+        <translation type="vanished">取消</translation>
     </message>
     <message numerus="yes">
         <source>Searching file number %1 of %n...</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>搜索文件(第%1个/总%n)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n file(s) found (Double click on a file to open it)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n个文件找到(双击文件来打开)</numerusform>
         </translation>
     </message>
     <message>
         <source>Filename</source>
-        <translation>文件名</translation>
+        <translation type="vanished">文件名</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>尺寸</translation>
+        <translation type="vanished">尺寸</translation>
+    </message>
+    <message>
+        <source>Find content search with keyword</source>
+        <translation>搜索内容</translation>
+    </message>
+    <message>
+        <source>&amp;Copy</source>
+        <translation>复制</translation>
+    </message>
+    <message numerus="yes">
+        <source>(%n matches)</source>
+        <translation>
+            <numerusform>(%n 次匹配)</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n matches found, consumes </source>
+        <translation>
+            <numerusform>%n 次匹配，消耗了</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -370,7 +426,7 @@
     </message>
     <message>
         <source>set as new root</source>
-        <translation>设置为新顶层目录</translation>
+        <translation type="vanished">设置为新顶层目录</translation>
     </message>
     <message>
         <source>untitled</source>
@@ -430,15 +486,11 @@
     </message>
     <message>
         <source>&amp;tidy</source>
-        <translation>整理</translation>
+        <translation type="vanished">整理</translation>
     </message>
     <message>
         <source>&amp;about</source>
         <translation>关于</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;&lt;b&gt;作者&lt;/b&gt;：&lt;a href=&quot;mailto://philip584521@gmail.com&quot;&gt;philip584521@gmail.com&lt;/a&gt;&lt;p&gt;&lt;b&gt;反馈&lt;/b&gt;：&lt;a href=&quot;https://doc.qt.io/qt-5/qtwidgets-widgets-imageviewer-example.html&quot;&gt;官方论坛&lt;/a&gt;&lt;p&gt;&lt;b&gt;版本&lt;/b&gt;：v0.1.0</source>
-        <translation></translation>
     </message>
     <message>
         <source>Deletion confirm</source>
@@ -450,7 +502,7 @@
     </message>
     <message>
         <source>&amp;check update</source>
-        <translation>检查更新</translation>
+        <translation type="vanished">检查更新</translation>
     </message>
     <message>
         <source>create folder under selected folder</source>
@@ -479,6 +531,14 @@
     <message>
         <source>show in explorer</source>
         <translation>在文件管理器中打开</translation>
+    </message>
+    <message>
+        <source>&amp;help</source>
+        <translation>帮助</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;b&gt;反馈&lt;/b&gt;：&lt;a href=&quot;http://syncfolder.chengxi.fun/&quot;&gt;官网&lt;/a&gt;&lt;br /&gt;&lt;p&gt;&lt;b&gt;版本&lt;/b&gt;：</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -555,50 +615,50 @@
     <name>QueryPage</name>
     <message>
         <source>Look for packages</source>
-        <translation>正寻找安装包</translation>
+        <translation type="vanished">正寻找安装包</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation>姓名：</translation>
+        <translation type="vanished">姓名：</translation>
     </message>
     <message>
         <source>Released after:</source>
-        <translation>发布于</translation>
+        <translation type="vanished">发布于</translation>
     </message>
     <message>
         <source>Releases</source>
-        <translation>发布</translation>
+        <translation type="vanished">发布</translation>
     </message>
     <message>
         <source>Upgrades</source>
-        <translation>更新</translation>
+        <translation type="vanished">更新</translation>
     </message>
     <message>
         <source>Return up to </source>
-        <translation>返回高于</translation>
+        <translation type="vanished">返回高于</translation>
     </message>
     <message>
         <source> results</source>
-        <translation>所有结果</translation>
+        <translation type="vanished">所有结果</translation>
     </message>
     <message>
         <source>Return only the first result</source>
-        <translation>只返回第一个结果</translation>
+        <translation type="vanished">只返回第一个结果</translation>
     </message>
     <message>
         <source>Start query</source>
-        <translation>开始查询</translation>
+        <translation type="vanished">开始查询</translation>
     </message>
 </context>
 <context>
     <name>SettingDialog</name>
     <message>
         <source>Close</source>
-        <translation>关闭</translation>
+        <translation type="vanished">关闭</translation>
     </message>
     <message>
         <source>Config Dialog</source>
-        <translation>配置对话框</translation>
+        <translation type="vanished">配置对话框</translation>
     </message>
     <message>
         <source>Sync</source>
@@ -606,11 +666,19 @@
     </message>
     <message>
         <source>Update</source>
-        <translation>更新</translation>
+        <translation type="vanished">更新</translation>
     </message>
     <message>
         <source>Query</source>
-        <translation>查询</translation>
+        <translation type="vanished">查询</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <source>Setting Dialog</source>
+        <translation>设置对话框</translation>
     </message>
 </context>
 <context>
@@ -624,39 +692,31 @@
     <name>UpdatePage</name>
     <message>
         <source>Package selection</source>
-        <translation>安装包选择</translation>
+        <translation type="vanished">安装包选择</translation>
     </message>
     <message>
         <source>Update system</source>
-        <translation>更新系统</translation>
+        <translation type="vanished">更新系统</translation>
     </message>
     <message>
         <source>Update applications</source>
-        <translation>更新应用</translation>
+        <translation type="vanished">更新应用</translation>
     </message>
     <message>
         <source>Update documentation</source>
-        <translation>更新文档</translation>
+        <translation type="vanished">更新文档</translation>
     </message>
     <message>
         <source>Existing packages</source>
-        <translation>已存在的安装包</translation>
+        <translation type="vanished">已存在的安装包</translation>
     </message>
     <message>
         <source>Qt</source>
-        <translation>Qt</translation>
+        <translation type="vanished">Qt</translation>
     </message>
     <message>
         <source>QSA</source>
-        <translation>QSA</translation>
-    </message>
-    <message>
-        <source>Teambuilder</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Start update</source>
-        <translation></translation>
+        <translation type="vanished">QSA</translation>
     </message>
 </context>
 <context>

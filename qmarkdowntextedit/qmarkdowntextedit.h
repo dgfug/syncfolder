@@ -51,8 +51,6 @@ public:
     void doSearch(QString &searchText,
                   QPlainTextEditSearchWidget::SearchMode searchMode = QPlainTextEditSearchWidget::SearchMode::PlainTextMode);
     void jumpTo(qlonglong pos);
-    void lineNumberAreaPaintEvent(QPaintEvent *event);
-    int lineNumberAreaWidth();
 
 public slots:
     void duplicateText();
@@ -76,7 +74,6 @@ protected:
     bool quotationMarkCheck(const QString& quotationCharacter);
     void focusOutEvent(QFocusEvent *event);
     void paintEvent(QPaintEvent *e);
-    void resizeEvent(QResizeEvent *event) override;
     HGMarkdownHighlighter *_highlighter;
     QStringList _ignoredClickUrlSchemata;
     QPlainTextEditSearchWidget *_searchWidget;
@@ -84,12 +81,8 @@ protected:
     AutoTextOptions _autoTextOptions;
     QStringList _openingCharacters;
     QStringList _closingCharacters;
-    QWidget *lineNumberArea;
-    int getDigitsNum() const;
 private slots:
-    void updateLineNumberAreaWidth(int newBlockCount);
     void highlightCurrentLine();
-    void updateLineNumberArea(const QRect &rect, int dy);
 signals:
     void urlClicked(QString url);
 };
