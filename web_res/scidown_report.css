@@ -174,10 +174,19 @@ table.eq_table tfoot .links a{
 }
 
 blockquote {
-  margin: 1em 0;
-  border-left: 4px solid #ddd;
-  padding: 0 1em;
-  color: #666;
+    display: block;
+    font-size: 0.9em;
+    overflow: auto;
+    overflow-scrolling: touch;
+    border-left: 3px solid rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.05);
+    color: #6a737d;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 td.counter {

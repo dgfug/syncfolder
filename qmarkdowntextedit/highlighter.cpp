@@ -21,7 +21,7 @@ HGMarkdownHighlighter::HGMarkdownHighlighter(QTextDocument *parent,
     waitInterval(aWaitInterval),
     postfixRe("(\"|\\n|\\r|#|-|=|\")*")
 {
-
+    threadPool.setMaxThreadCount(1);
     timer = new QTimer(this);
     timer->setSingleShot(true);
     timer->setInterval(aWaitInterval);
@@ -291,12 +291,13 @@ void HGMarkdownHighlighter::parse()
 //    qDebug()<<"parseTaskFuture.isRunning(): " << parseTaskFuture.isRunning();
 //    qDebug()<<"parseTaskFuture.isStarted(): " << parseTaskFuture.isStarted();
 //    qDebug()<<"parseTaskFuture.isFinished(): " << parseTaskFuture.isFinished();
+    threadPool.clear();
     parseTaskFuture.cancel();
     toMdTaskFuture.cancel();
 
     QString content = document->toPlainText();
     if (content.length() > 1) {
-        parseTaskFuture = QtConcurrent::run([=]() {
+        parseTaskFuture = QtConcurrent::run(&threadPool, [=]() {
             QByteArray ba = content.toUtf8();
             char *contentCString = (char *)ba.data();
             pmh_element **result;
@@ -304,7 +305,7 @@ void HGMarkdownHighlighter::parse()
             emit parseFinished(result);
         });
 
-        toMdTaskFuture = QtConcurrent::run([=]() {
+        toMdTaskFuture = QtConcurrent::run(&threadPool, [=]() {
             QByteArray ba = content.toUtf8();
             char *contentCString = (char *)ba.data();
             uint8_t* output_data = nullptr;

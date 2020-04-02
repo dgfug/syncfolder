@@ -14,6 +14,7 @@
 #include <QThread>
 #include <QFuture>
 #include <QRegularExpression>
+#include <QThreadPool>
 #include "EditorDelegate.h"
 
 extern "C" {
@@ -36,7 +37,7 @@ class HGMarkdownHighlighter : public QObject
     Q_OBJECT
 
 public:
-    HGMarkdownHighlighter(QTextDocument *parent, DMEditorDelegate *mainWindow, int aWaitInterval = 250);
+    HGMarkdownHighlighter(QTextDocument *parent, DMEditorDelegate *mainWindow, int aWaitInterval = 50);
     void setStyles(QVector<HighlightingStyle> &styles);
     void highlight(pmh_element **result);
 
@@ -61,6 +62,7 @@ private:
     void clearFormatting();
     void parse();
     void setDefaultStyles();
+    QThreadPool threadPool;
 };
 
 #endif
