@@ -1,7 +1,5 @@
 #include "mainwindow.h"
-#include <QApplication>
 #include <QCommandLineParser>
-#include <qsettings.h>
 #include <QDebug>
 #include <QStyleFactory>
 #include <QtGlobal>
@@ -16,19 +14,17 @@ int main(int argc, char *argv[])
     SyncApp a(argc, argv);
     a.setStyleSheet(QString::fromUtf8("QScrollBar:vertical {"
                                       "    background:white;"
-                                      "    width: 6.4px;    "
+                                      "    width: 8px;    "
                                       "    margin: 0px 0px 0px 0px;"
                                       "}"
                                       "QScrollBar::handle:vertical {"
-                                      "    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,"
-                                      "    stop: 0 rgb(175, 175, 175), stop: 0.5 rgb(175, 175, 175), stop:1 rgb(175, 175, 175));"
+                                      "    background: #C2C2C2;"
                                       "    min-height: 0px;"
                                       "    border: 1px transparent #2A2929;\n"
                                       "    border-radius: 3px;"
                                       "}"
                                       "QScrollBar::add-line:vertical {"
-                                      "    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,"
-                                      "    stop: 0 rgb(175, 175, 175), stop: 0.5 rgb(175, 175, 175),  stop:1 rgb(175, 175, 175));"
+                                      "    background: #C2C2C2;"
                                       "    border: 1px transparent #2A2929;\n"
                                       "    border-radius: 3px;"
                                       "    height: 0px;"
@@ -36,8 +32,7 @@ int main(int argc, char *argv[])
                                       "    subcontrol-origin: margin;"
                                       "}"
                                       "QScrollBar::sub-line:vertical {"
-                                      "    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,"
-                                      "    stop: 0  rgb(175, 175, 175), stop: 0.5 rgb(175, 175, 175),  stop:1 rgb(175, 175, 175));"
+                                      "    background: #C2C2C2;"
                                       "    height: 0 px;"
                                       "    subcontrol-position: top;"
                                       "    subcontrol-origin: margin;"

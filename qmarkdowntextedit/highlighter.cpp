@@ -308,7 +308,7 @@ void HGMarkdownHighlighter::parse()
             QByteArray ba = content.toUtf8();
             char *contentCString = (char *)ba.data();
             uint8_t* output_data = nullptr;
-            size_t output_size;
+            size_t output_size = 0;
             md2html(reinterpret_cast<const uint8_t *>(contentCString), ba.size(), &output_data, &output_size);
             QString html = QString::fromUtf8(reinterpret_cast<const char *>(output_data), output_size);
             emit md2htmlFinished(html);
