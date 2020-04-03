@@ -194,11 +194,18 @@ public:
         splitter->setStretchFactor(mdEditor_INDEX, 3);
 
         markdownPreviewView = new QWebEngineView(mainWindow);
-        markdownPreviewView->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
-        markdownPreviewView->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
 
         QWebEnginePage *webPage = new QWebEnginePage(QWebEngineProfile::defaultProfile(), markdownPreviewView);
+        webPage->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
+        webPage->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
+        webPage->settings()->setAttribute(QWebEngineSettings::XSSAuditingEnabled, false);
+        webPage->settings()->setAttribute(QWebEngineSettings::HyperlinkAuditingEnabled, false);
+
         markdownPreviewView->setPage(webPage);
+        QPalette pal(markdownPreviewView->palette());
+        pal.setColor(QPalette::Background, Qt::black);
+        markdownPreviewView->setPalette(pal);
+        markdownPreviewView->setAutoFillBackground(true);
 
         QWebChannel *channel = new QWebChannel(webPage);
         channel->registerObject(QString("mdEditor"), mainWindow);

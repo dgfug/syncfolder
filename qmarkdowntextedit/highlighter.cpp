@@ -288,9 +288,6 @@ void HGMarkdownHighlighter::highlight(pmh_element **parsedElement)
 
 void HGMarkdownHighlighter::parse()
 {
-//    qDebug()<<"parseTaskFuture.isRunning(): " << parseTaskFuture.isRunning();
-//    qDebug()<<"parseTaskFuture.isStarted(): " << parseTaskFuture.isStarted();
-//    qDebug()<<"parseTaskFuture.isFinished(): " << parseTaskFuture.isFinished();
     threadPool.clear();
     parseTaskFuture.cancel();
     toMdTaskFuture.cancel();
@@ -321,8 +318,6 @@ void HGMarkdownHighlighter::parse()
 void HGMarkdownHighlighter::handleContentsChange(int position, int charsRemoved,
                                                  int charsAdded)
 {
-    if (charsRemoved == 0 && charsAdded == 0)
-        return;
 //    qDebug() << "contents changed. chars removed/added:" << charsRemoved << charsAdded;
     timer->stop();
     timer->start();
