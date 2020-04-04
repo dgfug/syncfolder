@@ -642,9 +642,9 @@ MainWindow::~MainWindow() {
 void MainWindow::updateMarkdownPreview(const QString &html) {
     QFileInfo fileInfo(currentFilePath);
     QString baseDocUrl = QUrl::fromLocalFile(fileInfo.canonicalFilePath()).toString();
-//    qDebug()<<"html: "<<html;
-    ui->markdownPreviewView->setHtml(html, baseDocUrl/*QUrl("qrc:/main.html")*/);
-//    ui->markdownPreviewView->load(QUrl("qrc:/web_res/test.html"));
+    qDebug()<<"abcde html: "<<html;
+//    ui->markdownPreviewView->setContent(html.toUtf8(), "text/html;charset=UTF-8", baseDocUrl);
+    ui->markdownPreviewView->setHtml(html, baseDocUrl);
     connect(ui->markdownPreviewView, &QWebEngineView::loadFinished, [&]() {
         QList<int> sizes = ui->splitter->sizes();
         int sumWidth = 0;

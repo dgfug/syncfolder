@@ -28,6 +28,10 @@ body
   margin: 0 !important;
 }
 
+svg {
+  width: 100%;
+}
+
 a {
   color: #000;
 }

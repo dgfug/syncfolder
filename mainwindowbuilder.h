@@ -22,7 +22,7 @@ int gSplitWeights[] = {
 };
 
 #include "FileIconProvider.h"
-
+#include "MarkdownPreviewWebPage.h"
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMainWindow>
@@ -195,7 +195,7 @@ public:
 
         markdownPreviewView = new QWebEngineView(mainWindow);
 
-        QWebEnginePage *webPage = new QWebEnginePage(QWebEngineProfile::defaultProfile(), markdownPreviewView);
+        QWebEnginePage *webPage = new MarkdownPreviewWebPage(QWebEngineProfile::defaultProfile(), markdownPreviewView);
         webPage->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
         webPage->settings()->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
         webPage->settings()->setAttribute(QWebEngineSettings::XSSAuditingEnabled, false);

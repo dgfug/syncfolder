@@ -62,7 +62,7 @@ add_executable(SyncFolder
     ISettingPage.h
     ${scidownSrcs}
     3rdparty/scidown/bin/scidown.c
-    3rdparty/scidown/bin/scidown_md.h)
+    3rdparty/scidown/bin/scidown_md.h uiwidgets/MarkdownPreviewWebPage.cpp uiwidgets/MarkdownPreviewWebPage.h)
 
 target_include_directories(SyncFolder PUBLIC
         .
