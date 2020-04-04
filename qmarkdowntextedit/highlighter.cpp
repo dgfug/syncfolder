@@ -7,6 +7,8 @@
 
 #include <QtGui>
 #include <QtConcurrent>
+#include <QApplication>
+#include <QDesktopWidget>
 #include <algorithm>
 #include <settings/settings_def.h>
 #include "highlighter.h"
@@ -307,7 +309,7 @@ void HGMarkdownHighlighter::parse()
             char *contentCString = (char *)ba.data();
             uint8_t* output_data = nullptr;
             size_t output_size = 0;
-            md2html(reinterpret_cast<const uint8_t *>(contentCString), ba.size(), &output_data, &output_size);
+            md2html(reinterpret_cast<const uint8_t *>(contentCString), ba.size(), &output_data, &output_size, QApplication::desktop()->screenGeometry().height());
             QString html = QString::fromUtf8(reinterpret_cast<const char *>(output_data), output_size);
             emit md2htmlFinished(html);
             free(reinterpret_cast<void *>(output_data));

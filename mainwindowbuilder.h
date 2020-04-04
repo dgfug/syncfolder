@@ -202,10 +202,6 @@ public:
         webPage->settings()->setAttribute(QWebEngineSettings::HyperlinkAuditingEnabled, false);
 
         markdownPreviewView->setPage(webPage);
-        QPalette pal(markdownPreviewView->palette());
-        pal.setColor(QPalette::Background, Qt::black);
-        markdownPreviewView->setPalette(pal);
-        markdownPreviewView->setAutoFillBackground(true);
 
         QWebChannel *channel = new QWebChannel(webPage);
         channel->registerObject(QString("mdEditor"), mainWindow);
