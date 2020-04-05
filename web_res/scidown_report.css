@@ -18,7 +18,6 @@
   .abstract{page-break-inside: avoid;}
 }
 
-
 body
 {
   font-size: 11pt;
@@ -26,6 +25,11 @@ body
   overflow-anchor: none;
   overscroll-behavior: none;
   margin: 0 !important;
+}
+
+.task-list-done {
+  /* styles for completed tasks */
+  text-decoration: line-through;
 }
 
 svg {
