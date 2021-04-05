@@ -39,7 +39,7 @@ void HGMarkdownHighlighter::setStyles(QVector<HighlightingStyle> &styles)
     this->highlightingStyles = &styles;
 }
 
-#define STY(type, format) styles->append((HighlightingStyle){type, format})
+#define STY(type, format) styles->append(HighlightingStyle{type, format})
 void HGMarkdownHighlighter::setDefaultStyles()
 {
     QVector<HighlightingStyle> *styles = new QVector<HighlightingStyle>();

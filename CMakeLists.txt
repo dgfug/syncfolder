@@ -14,6 +14,10 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(Qt5_DIR "/Users/faywong/tools/Qt5.14.1/5.14.1/clang_64/lib/cmake/Qt5")
     message( STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH} )
     message( STATUS "Qt5_DIR: " ${Qt5_DIR} )
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(Qt5_DIR "E:\\Qt\\5.15.2\\msvc2019\\lib\\cmake\\Qt5")
+    message( STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH} )
+    message( STATUS "Qt5_DIR: " ${Qt5_DIR} )
 endif()
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
@@ -40,7 +44,7 @@ add_executable(SyncFolder
     configurationpage.cpp
     uiwidgets/ProgressCircle.cpp
     uiwidgets/DisplayQueuedFilesAction.cpp
-        uiwidgets/MarkdownPreviewView.h
+    uiwidgets/MarkdownPreviewView.h
     resources.qrc
     translations/syncfolder_zh_CN.ts
     qmarkdowntextedit/highlighter.cpp
@@ -50,7 +54,7 @@ add_executable(SyncFolder
     qmarkdowntextedit/qplaintexteditsearchwidget.cpp
     qmarkdowntextedit/qplaintexteditsearchwidget.ui
     qmarkdowntextedit/media.qrc
-        3rdparty/QSimpleUpdater/src/Updater.cpp
+    3rdparty/QSimpleUpdater/src/Updater.cpp
     3rdparty/QSimpleUpdater/src/Updater.h
     3rdparty/QSimpleUpdater/src/Downloader.cpp
     3rdparty/QSimpleUpdater/src/Downloader.h

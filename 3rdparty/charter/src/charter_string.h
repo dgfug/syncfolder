@@ -14,5 +14,5 @@ cstr* cstr_add   (cstr        *str,
 
 void  cstr_printf (cstr       *str,
                    const char *fmt,
-                   ...) __attribute__ ((format (printf, 2, 3)));
+                   ...) /*__attribute__ ((format (printf, 2, 3)))*/ ;
 #endif

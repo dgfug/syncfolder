@@ -607,11 +607,7 @@ void MainWindow::revealInTreeView() {
 }
 
 void MainWindow::about() {
-    QMessageBox::about(this, tr("SyncFolder"),
-                       tr(
-                               "<p><b>反馈</b>：<a href=\"http://syncfolder.chengxi.fun/\">官网</a>"
-                               "<br /><p><b>版本</b>：" SYNC_FOLDER_VER
-                       ));
+    QMessageBox::about(this, tr("SyncFolder"),tr( SYNC_FOLDER_VER));
 }
 
 void MainWindow::help() {
